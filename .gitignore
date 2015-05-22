@@ -1,0 +1,7 @@
+.idea
+CMakeLists.txt
+Makefile
+*.Makefile
+*.target.mk
+out/
+atlassian-ide-plugin.xml
