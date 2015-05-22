@@ -10,7 +10,8 @@
       'target_name': 'peeracle',
       'type': 'static_library',
       'cflags': [
-        '-std=c++11'
+        '-std=c++11',
+        '-fPIC'
       ],
       'defines': [
         'WEBRTC_POSIX=1'
