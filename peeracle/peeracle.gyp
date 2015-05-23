@@ -2,8 +2,8 @@
   'variables': {
     'target_arch%': 'x64',
     'configuration%': 'Release',
-    'peeracle_dir': '<!(echo `pwd`)/peeracle',
-    'webrtc_dir': '<!(echo `pwd`)/../third_party/webrtc',
+    'peeracle_dir': '<(DEPTH)/peeracle',
+    'webrtc_dir': '<(DEPTH)/third_party/webrtc',
     'conditions': [
       ['OS=="android" or OS=="linux"', {
         'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); assert os.path.exists(os.path.join(dir, \'include/jni.h\')), \'Point \\$JAVA_HOME or the java_home gyp variable to a directory containing include/jni.h!\'; print dir")',
@@ -18,9 +18,6 @@
         '-std=c++11',
         '-fPIC'
       ],
-      'defines': [
-        'WEBRTC_POSIX=1'
-      ],
       'sources': [
         'lib/createanswerobserver.cc',
         'lib/createofferobserver.cc',
@@ -33,23 +30,58 @@
         'lib/setsessiondescriptionobserver.cc',
       ],
       'include_dirs': [
-          '<(webrtc_dir)',
-          '<(webrtc_dir)/third_party',
+        '<(webrtc_dir)',
+        '<(webrtc_dir)/third_party',
       ],
-      'link_settings': {
-        'libraries': [
-          '-Wl,--start-group',
-          '<!@(find <(webrtc_dir)/out/Release -name *.a -type f)',
-          '-lpthread',
-          '-ldl',
-          '-lnss3',
-          '-lnssutil3',
-          '-lplc4',
-          '-lnspr4',
-          '-lX11',
-          '-Wl,--end-group'
-        ],
-      },
+      'conditions': [
+        ['OS == "win"', {
+          'defines': [
+            'WEBRTC_WIN',
+          ],
+          'msvs_settings': {
+            'VCCLCompilerTool': {
+              'RuntimeLibrary': 0,
+            },
+          },
+          'link_settings': {
+            'libraries': [
+              '<!@(C:/MinGW/msys/1.0/bin/find <(webrtc_dir)/out/Release -name *.lib -type f)',
+              '-ladvapi32.lib',
+              '-lamstrmid.lib',
+              '-ldmoguids.lib',
+              '-lmsdmo.lib',
+              '-lole32.lib',
+              '-lsecur32.lib',
+              '-lshell32.lib',
+              '-lstrmiids.lib',
+              '-lwmcodecdspuuid.lib',
+            ],
+          },
+        }, {
+          'defines': [
+            'WEBRTC_POSIX',
+          ],
+        }],
+        ['OS == "linux"', {
+          'defines': [
+            'WEBRTC_LINUX'
+          ],
+          'link_settings': {
+            'libraries': [
+              '-Wl,--start-group',
+              '<!@(find <(webrtc_dir)/out/Release -name *.a -type f)',
+              '-lpthread',
+              '-ldl',
+              '-lnss3',
+              '-lnssutil3',
+              '-lplc4',
+              '-lnspr4',
+              '-lX11',
+              '-Wl,--end-group'
+            ],
+          },
+        }],
+      ],
     }],
   'conditions': [
     ['OS=="linux" or OS=="android"', {
