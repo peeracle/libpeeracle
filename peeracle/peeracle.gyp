@@ -7,6 +7,11 @@
     'configuration%': 'Release',
     'peeracle_dir': '<(DEPTH)/peeracle',
     'webrtc_dir': '<!(pwd)/../third_party/webrtc',
+    'conditions': [
+      ['OS=="android" or OS=="linux"', {
+        'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); assert os.path.exists(os.path.join(dir, \'include/jni.h\')), \'Point \\$JAVA_HOME or the java_home gyp variable to a directory containing include/jni.h!\'; print dir")',
+      }],
+    ],
   },
   'targets': [
     {
@@ -183,18 +188,18 @@
         {
           'target_name': 'libpeeracle_so',
           'type': 'shared_library',
-          'cflags': [
-            '-fPIC'
-          ],
           'dependencies': [
             'peeracle',
+          ],
+          'cflags': [
+            '-fPIC'
           ],
           'include_dirs': [
             '<(java_home)/include',
             '<(java_home)/include/linux',
           ],
           'sources': [
-            'java/jni/peeracle_jni.c',
+            'java/jni/peeracle_jni.cc',
           ],
           'conditions': [
             ['OS=="android"', {
@@ -224,7 +229,7 @@
               },
               'action_name': 'create_jar',
               'inputs': [
-                '<(DEPTH)/build/build_jar.sh',
+                'build/build_jar.sh',
                 '<@(java_files)',
               ],
               'outputs': [
@@ -246,7 +251,7 @@
               'action': [
                 'bash', '-ec',
                 'mkdir -p <(INTERMEDIATE_DIR) && '
-                '{ <(DEPTH)/build/build_jar.sh <(java_home) <@(_outputs) '
+                '{ build/build_jar.sh <(java_home) <@(_outputs) '
                 '      <(INTERMEDIATE_DIR)/build_jar.tmp '
                 '      <(build_classpath) <@(java_files) '
                 '      > <(build_jar_log) 2>&1 || '
