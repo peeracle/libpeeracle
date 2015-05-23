@@ -23,6 +23,9 @@ class Peer::PeerImpl : public webrtc::PeerConnectionObserver {
 
   std::list<PeerInterface::Observer*> _peerObservers;
 
+ protected:
+  virtual ~PeerImpl();
+
  private:
   void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState state);
   void OnStateChange(StateType state_changed);
@@ -70,6 +73,10 @@ Peer::Peer() : peer_(new PeerImpl) {
 
   peer_->_peerConnection = peer_->_peerConnectionFactory->CreatePeerConnection(
     iceServers, &constr, NULL, NULL, peer_);
+}
+
+Peer::~Peer() {
+
 }
 
 void Peer::subscribe(PeerInterface::Observer *observer) {
@@ -206,6 +213,10 @@ void Peer::PeerImpl::OnIceCandidate(const webrtc::IceCandidateInterface *candida
 void Peer::PeerImpl::OnIceComplete() {
   std::cout << "Peer::OnIceComplete " <<
   std::endl;
+}
+
+Peer::PeerImpl::~PeerImpl() {
+
 }
 
 }

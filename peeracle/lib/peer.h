@@ -25,6 +25,9 @@ class Peer
                        int sdpMLineIndex,
                        const std::string &candidate);
 
+ protected:
+  virtual ~Peer();
+
  private:
   class PeerImpl;
   PeerImpl *peer_;

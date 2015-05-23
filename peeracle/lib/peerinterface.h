@@ -20,6 +20,9 @@ class PeerInterface {
     virtual void onIceConnectionChange(int state) = 0;
 
     virtual void onIceGatheringChange(int state) = 0;
+
+   protected:
+    ~Observer() {}
   };
 
   class SessionDescriptionObserver {
@@ -32,6 +35,9 @@ class PeerInterface {
     virtual void onCreateFailure(const std::string &error) = 0;
 
     virtual void onSetFailure(const std::string &error) = 0;
+
+   protected:
+    ~SessionDescriptionObserver() {}
   };
 
   virtual void subscribe(PeerInterface::Observer *observer) = 0;
@@ -49,6 +55,9 @@ class PeerInterface {
   virtual bool addIceCandidate(const std::string &sdpMid,
                                int sdpMLineIndex,
                                const std::string &candidate) = 0;
+
+ protected:
+  ~PeerInterface() {}
 };
 
 }

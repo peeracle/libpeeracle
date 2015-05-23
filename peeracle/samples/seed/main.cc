@@ -40,6 +40,11 @@ class MyPeerAObserver : public peeracle::PeerInterface::Observer {
   void onIceGatheringChange(int state) {
     std::cout << "PeerA onIceGatheringChange : " << state << std::endl;
   }
+
+ protected:
+  ~MyPeerAObserver() {
+
+  }
 };
 
 class MyPeerBObserver : public peeracle::PeerInterface::Observer {
@@ -70,6 +75,11 @@ class MyPeerBObserver : public peeracle::PeerInterface::Observer {
   void onIceGatheringChange(int state) {
     std::cout << "PeerB onIceGatheringChange : " << state << std::endl;
   }
+
+ protected:
+  ~MyPeerBObserver() {
+
+  }
 };
 
 class MyPeerASessionDescriptionObserver
@@ -82,6 +92,11 @@ class MyPeerASessionDescriptionObserver
   void onSetSuccess();
   void onCreateFailure(const std::string &error);
   void onSetFailure(const std::string &error);
+
+ protected:
+  ~MyPeerASessionDescriptionObserver() {
+
+  }
 
  private:
   peeracle::PeerInterface *_peerA;
@@ -118,6 +133,11 @@ class MyPeerBSessionDescriptionObserver :
   }
 
   void onSetFailure(const std::string &error) {
+
+  }
+
+ protected:
+  ~MyPeerBSessionDescriptionObserver() {
 
   }
 
