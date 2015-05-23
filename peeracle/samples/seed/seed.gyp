@@ -1,4 +1,7 @@
 {
+  'includes': [
+    '../../../build/common.gypi'
+  ],
   'targets': [
     {
       'target_name': 'seed',
@@ -21,6 +24,20 @@
             'VCCLCompilerTool': {
               'RuntimeLibrary': 0,
             },
+          },
+        }, {
+          'defines': [
+            'WEBRTC_POSIX',
+          ],
+        }],
+        ['OS == "mac"', {
+          'defines': [
+            'WEBRTC_MAC',
+          ],
+          'xcode_settings': {
+            'OTHER_CFLAGS': [
+             '-std=c++11',
+            ],
           },
         }],
       ],
