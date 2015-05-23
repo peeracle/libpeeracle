@@ -176,9 +176,9 @@ int main(int argc, char **argv) {
     peeracle::Manager::getSingleton().Update();
   }
 
-  delete peerAObserver;
-  delete peerAOfferObserver;
-  delete peerBObserver;
-  delete peeracle::Manager::getSingletonPtr();
+  //delete peerAObserver;
+  //delete peerAOfferObserver;
+  //delete peerBObserver;
+  //delete peeracle::Manager::getSingletonPtr();
   return EXIT_SUCCESS;
 }
