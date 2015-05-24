@@ -18,7 +18,7 @@ with Objective-C and Java bindings for iOS and Android applications.
     * [Cloning libpeeracle](#cloning-libpeeracle)
     * [Cloning depot_tools](#cloning-depot_tools)
     * [Cloning GYP](#cloning-gyp)
-    * [WebRTC](#webrtc)
+    * [Cloning WebRTC](#cloning-webrtc)
   * [Windows, Git and Symbolic Links](#windows-git-and-symbolic-links)
     * [Install the symlink script](#install-the-symlink-script)
   * [Compiling](#compiling)
