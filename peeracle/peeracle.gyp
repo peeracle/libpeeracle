@@ -13,7 +13,7 @@
       }, {
         'peeracle_dir': '<!(pwd)/peeracle',
         'webrtc_dir': '<!(pwd)/../third_party/webrtc',
-	  }],
+      }],
     ],
   },
   'targets': [
@@ -102,7 +102,7 @@
               '-framework OpenGL',
               '-framework QTKit',
               '-framework CFNetwork',
-              '<(webrtc_dir)/out/<(configuration)/libapprtc_signaling.a',
+#              '<(webrtc_dir)/out/<(configuration)/libapprtc_signaling.a',
               '<(webrtc_dir)/out/<(configuration)/libjingle_peerconnection.a',
               '<(webrtc_dir)/out/<(configuration)/librtc_base.a',
               '<(webrtc_dir)/out/<(configuration)/libwebrtc_common.a',
@@ -173,7 +173,7 @@
               '<(webrtc_dir)/out/<(configuration)/libvideo_render_module_internal_impl.a',
               '<(webrtc_dir)/out/<(configuration)/libjingle_p2p.a',
               '<(webrtc_dir)/out/<(configuration)/libsrtp.a',
-              '<(webrtc_dir)/out/<(configuration)/libsocketrocket.a',
+#              '<(webrtc_dir)/out/<(configuration)/libsocketrocket.a',
               '-lc++',
               '-framework ApplicationServices',
               '-lm',
