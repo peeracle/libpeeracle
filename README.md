@@ -1,45 +1,48 @@
 # libpeeracle
 
-[![Coverity](https://scan.coverity.com/projects/5244/badge.svg)](https://scan.coverity.com/projects/5244)
+[![Travis-CI](https://travis-ci.org/peeracle/libpeeracle.svg)](https://travis-ci.org/peeracle/libpeeracle) [![Coverity](https://scan.coverity.com/projects/5244/badge.svg)](https://scan.coverity.com/projects/5244)
 
-### Peer-to-Peer Video on Demand for all.
+### Peer-to-Peer Video on Demand for all
 
-This repository contains the C++ version of the [original peeracle library](https://github.com/peeracle/peeracle),
+This is the C++ version of the [Peeracle library](https://github.com/peeracle/peeracle),
 with Objective-C and Java bindings for iOS and Android applications.
 
-## Table of Contents
+## Topics
 
-* [Prerequisites](#prerequisites)
-  * [For every operating systems](#for-every-operating-systems)
-  * [For Windows](#for-windows)
-  * [For Mac OS X](#for-mac-os-x)
-* [Retrieving the source code](#retrieving-the-source-code)
-  * [Cloning libpeeracle](#cloning-libpeeracle)
-  * [Cloning depot_tools](#cloning-depot_tools)
-  * [Cloning GYP](#cloning-gyp)
-  * [WebRTC](#webrtc)
-* [Windows, Git and Symbolic Links](#windows-git-and-symbolic-links)
-  * [Install the symlink script](#install-the-symlink-script)
-* [Compiling](#compiling)
-  * [Compiling WebRTC](#compiling-webrtc)
-  * [Compiling libpeeracle](#compiling-libpeeracle)
+* [Setting up the Development Environment](#setting-up-the-development-environment)
+  * [Prerequisites](#prerequisites)
+    * [General](#general)
+    * [Windows](#windows)
+    * [Mac OS X](#mac-os-x)
+  * [Getting the source code](#getting-the-source-code)
+    * [Cloning libpeeracle](#cloning-libpeeracle)
+    * [Cloning depot_tools](#cloning-depot_tools)
+    * [Cloning GYP](#cloning-gyp)
+    * [WebRTC](#webrtc)
+  * [Windows, Git and Symbolic Links](#windows-git-and-symbolic-links)
+    * [Install the symlink script](#install-the-symlink-script)
+  * [Compiling](#compiling)
+    * [Compiling WebRTC](#compiling-webrtc)
+    * [Compiling libpeeracle](#compiling-libpeeracle)
 
-## Prerequisites
+## Setting up the Development Environment
 
-### For every operating systems
+### Prerequisites
+
+#### General
 - Python 2.7.6
 
-### For Windows
+#### Windows
 - Shell prompt, such as msys, Msysgit or Cygwin
 - Microsoft Visual Studio 2013 - [download Community Edition](https://www.visualstudio.com/en-us/products/visual-studio-community-vs.aspx)
 - Microsoft DirectX SDK - [download](https://www.microsoft.com/en-us/download/details.aspx?id=6812)
 
-### For Mac OS X
+#### Mac OS X
 - XCode
 
-## Retrieving the source code
+### Getting the source code
 
-### Cloning libpeeracle
+#### Cloning libpeeracle
 
 First, clone the repository
 
@@ -47,7 +50,7 @@ First, clone the repository
 $ git clone git@github.com:peeracle/libpeeracle
 ```
 
-### Cloning depot_tools
+#### Cloning depot_tools
 
 Retrieve [depot_tools](https://www.chromium.org/developers/how-tos/install-depot-tools) if you don't have it
 
@@ -68,7 +71,7 @@ $ export PATH=$PATH:`pwd`/third_party/depot_tools
 > set PATH=%PATH%;%cd%\third_party\depot_tools
 ```
 
-### Cloning GYP
+#### Cloning GYP
 
 The same goes for [GYP](https://chromium.googlesource.com/external/gyp) :
 
@@ -87,7 +90,7 @@ $ export PATH=$PATH:`pwd`/third_party/gyp
 > set PATH=%PATH%;%cd%\third_party\gyp
 ```
 
-### WebRTC
+#### Cloning WebRTC
 
 Retrieve WebRTC
 
@@ -96,14 +99,14 @@ $ git submodule init third_party/webrtc
 $ git submodule update third_party/webrtc
 ```
 
-## Windows, Git and Symbolic Links
+### Windows, Git and Symbolic Links
 
 This repository is using a lot of symbolic links, which are, for now, required
-to build correctly with WebRTC. If your Git client doesn't support symbolic
+to build correctly with WebRTC. If you are running Windows and if your Git client doesn't support symbolic
 links (Msysgit doesn't), you will have to use [this wonderful script](http://stackoverflow.com/a/16754068) inside
 a GNU Shell, such as Git Bash, MSys or Cygwin.
 
-### Install the symlink script
+#### Install the symlink script
 
 Run a shell
 
@@ -172,19 +175,30 @@ $ git submodule foreach --recursive git checkout-symlinks
 
 It might display three failures, you shouldn't worry about it.
 
-## Compiling
+### Compiling
 
-### Compiling WebRTC
+#### Compiling WebRTC
 
-For Windows users: this commands **MUST** be ran in your Windows CMD Prompt.
+Get inside the WebRTC repository :
 
 ```bash
 $ cd third_party/webrtc
-$ python webrtc\build/gyp_webrtc.py
+```
+
+Linux and Mac OS X users must retrieve another clang binary with the following command :
+
+```bash
+$ ./tools/clang/scripts/update.sh
+```
+
+Generate the build scripts and run ninja, Windows users **MUST** run these commands from their Windows CMD Prompt and not from a GNU Shell :
+
+```bash
+$ python webrtc/build/gyp_webrtc.py
 $ ninja -C out/Release
 ```
 
-### Compiling libpeeracle
+#### Compiling libpeeracle
 
 Simply go back to the libpeeracle repository and generate the build scripts
 
