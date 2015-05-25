@@ -47,7 +47,7 @@ with Objective-C and Java bindings for iOS and Android applications.
 First, clone the repository
 
 ```bash
-$ git clone git@github.com:peeracle/libpeeracle
+$ git clone https://github.com/peeracle/libpeeracle.git
 ```
 
 #### Cloning depot_tools
