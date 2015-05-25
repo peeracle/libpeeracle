@@ -2,6 +2,9 @@ language: cpp
 
 before_install:
 - sudo apt-get update -qq
+- sudo apt-get install -qq -y build-essential libglib2.0-dev libgtk2.0-dev libxtst-dev 
+  libxss-dev libpci-dev libdbus-1-dev libgconf2-dev libgnome-keyring-dev 
+  libnss3-dev libasound2-dev libpulse-dev libudev-dev
 
 install:
 - unset CC
@@ -9,8 +12,6 @@ install:
 - export PATH=$PATH:`pwd`/third_party/depot_tools
 - export PATH=$PATH:`pwd`/third_party/gyp
 - cd third_party/webrtc
-- sudo ./chromium/src/build/install-build-deps.sh --no-syms --no-nacl
-  --no-chromeos-fonts --no-prompt
 - bash tools/clang/scripts/update.sh
 - python webrtc/build/gyp_webrtc.py
 - ninja -C out/Release
