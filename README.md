@@ -1,6 +1,6 @@
 # libpeeracle
 
-[![Travis-CI](https://travis-ci.org/peeracle/libpeeracle.svg)](https://travis-ci.org/peeracle/libpeeracle) [![Coverity](https://scan.coverity.com/projects/5244/badge.svg)](https://scan.coverity.com/projects/5244)
+[![Travis-CI](https://travis-ci.org/peeracle/libpeeracle.svg)](https://travis-ci.org/peeracle/libpeeracle) [![Build status](https://ci.appveyor.com/api/projects/status/a5pf8w7c60vssv5c?svg=true)](https://ci.appveyor.com/project/aisouard/libpeeracle)
 
 ### Peer-to-Peer Video on Demand for all
 
