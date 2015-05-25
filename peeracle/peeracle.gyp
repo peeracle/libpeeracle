@@ -83,6 +83,7 @@
               '-lplc4',
               '-lnspr4',
               '-lX11',
+              '-lrt',
               '-Wl,--end-group'
             ],
           },
