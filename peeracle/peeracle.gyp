@@ -4,9 +4,6 @@
   ],
   'variables': {
     'conditions': [
-      ['OS=="android" or OS=="linux"', {
-        'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); assert os.path.exists(os.path.join(dir, \'include/jni.h\')), \'Point \\$JAVA_HOME or the java_home gyp variable to a directory containing include/jni.h!\'; print dir")',
-      }],
       ['OS == "win"', {
         'peeracle_dir': '<!(python build\\get_current_dir.py)\\peeracle',
         'webrtc_dir': '<!(python build\\get_current_dir.py)\\..\\third_party\\webrtc',
@@ -15,6 +12,7 @@
         'webrtc_dir': '<!(pwd)/../third_party/webrtc',
       }],
     ],
+    'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); print dir if os.path.exists(os.path.join(dir, \'include/jni.h\')) else 0")',
   },
   'targets': [
     {
@@ -187,7 +185,7 @@
       ],
     }],
   'conditions': [
-    ['OS=="linux" or OS=="android"', {
+    ['java_home!=0', {
       'targets': [
         {
           'target_name': 'libpeeracle_so',
