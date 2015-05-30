@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef INCLUDE_PEERACLE_HASH_HASHINTERFACE_H_
-#define INCLUDE_PEERACLE_HASH_HASHINTERFACE_H_
+#ifndef PEERACLE_HASH_HASHINTERFACE_H_
+#define PEERACLE_HASH_HASHINTERFACE_H_
 
 #include <cstdlib>
 
@@ -44,4 +44,4 @@ class HashInterface {
 
 }  // namespace peeracle
 
-#endif  // INCLUDE_PEERACLE_HASH_HASHINTERFACE_H_
+#endif  // PEERACLE_HASH_HASHINTERFACE_H_

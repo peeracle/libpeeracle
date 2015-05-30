@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef INCLUDE_PEERACLE_HASH_CRC32HASH_H_
-#define INCLUDE_PEERACLE_HASH_CRC32HASH_H_
+#ifndef PEERACLE_HASH_CRC32HASH_H_
+#define PEERACLE_HASH_CRC32HASH_H_
 
 #include "HashInterface.h"
 
@@ -46,4 +46,4 @@ class Crc32Hash
 }  // namespace peeracle
 
 
-#endif  // INCLUDE_PEERACLE_HASH_CRC32HASH_H_
+#endif  // PEERACLE_HASH_CRC32HASH_H_
