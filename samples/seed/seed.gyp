@@ -1,19 +1,19 @@
 {
   'includes': [
-    '../../../build/common.gypi'
+    '../../common.gypi',
   ],
   'targets': [
     {
       'target_name': 'seed',
       'type': 'executable',
       'dependencies': [
-        '../../peeracle.gyp:peeracle'
+        '<(DEPTH)/src/peeracle/peeracle.gyp:peeracle'
       ],
       'sources': [
-        'main.cc',
+        'src/main.cc',
       ],
       'include_dirs': [
-        '../../lib',
+        '<(DEPTH)/include',
       ],
       'conditions': [
         ['OS == "win"', {

@@ -20,29 +20,7 @@
  * SOFTWARE.
  */
 
-#ifndef LIBPEERACLE_HTTPDATASOURCE_H
-#define LIBPEERACLE_HTTPDATASOURCE_H
+#ifndef LIBPEERACLE_UNITTEST_MAIN_H
+#define LIBPEERACLE_UNITTEST_MAIN_H
 
-#include "DataSourceInterface.h"
-
-namespace peeracle {
-
-namespace DataSource {
-
-class HttpDataSource
-  : public DataSourceInterface {
-
- public:
-  size_t open();
-  void close();
-  int read(unsigned char *buffer, int length);
-
- protected:
-  virtual ~HttpDataSource() {}
-};
-
-}
-
-}
-
-#endif //LIBPEERACLE_HTTPDATASOURCE_H
+#endif  // LIBPEERACLE_UNITTEST_MAIN_H

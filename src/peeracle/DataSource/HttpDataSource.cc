@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-#include "HttpDataSource.h"
+#include "peeracle/DataSource/HttpDataSource.h"
 
 namespace peeracle {
 
@@ -37,6 +37,6 @@ int HttpDataSource::read(unsigned char *buffer, int length) {
   return 0;
 }
 
-}
+}  // namespace DataSource
 
-}
+}  // namespace peeracle

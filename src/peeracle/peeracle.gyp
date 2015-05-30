@@ -1,34 +1,26 @@
 {
   'includes': [
-    '../build/common.gypi',
+    '../../common.gypi'
   ],
   'variables': {
     'conditions': [
       ['OS == "win"', {
-        'peeracle_dir': '<!(python build\\get_current_dir.py)\\peeracle',
-        'webrtc_dir': '<!(python build\\get_current_dir.py)\\..\\third_party\\webrtc',
+        'webrtc_dir': '<!(python build\\get_current_dir.py)\\..\..\third_party\\webrtc',
       }, {
-        'peeracle_dir': '<!(pwd)/peeracle',
-        'webrtc_dir': '<!(pwd)/../third_party/webrtc',
+        'webrtc_dir': '<!(pwd)/../../third_party/webrtc',
       }],
     ],
-    'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); print dir if os.path.exists(os.path.join(dir, \'include/jni.h\')) else 0")',
   },
   'targets': [
     {
       'target_name': 'peeracle',
       'type': 'static_library',
+      'dependencies': [
+        'DataSource/peeracle_datasource.gyp:*',
+      ],
       'cflags': [
         '-std=c++11',
         '-fPIC'
-      ],
-      'sources': [
-        'lib/DataSource/FileDataSource.cc',
-        'lib/DataSource/HttpDataSource.cc',
-      ],
-      'include_dirs': [
-        '<(webrtc_dir)',
-        '<(webrtc_dir)/third_party',
       ],
       'conditions': [
         ['OS == "win"', {
@@ -42,7 +34,7 @@
           },
           'link_settings': {
             'libraries': [
-              '<!@(python build\\find_libs.py <(webrtc_dir)\\out\\<(configuration))',
+              '<!@(python scripts\\find_libs.py <(webrtc_dir)\\out\\<(configuration))',
               '-ladvapi32.lib',
               '-lamstrmid.lib',
               '-ldmoguids.lib',
@@ -175,89 +167,6 @@
           }
         }],
       ],
-    }],
-  'conditions': [
-    ['java_home!=0', {
-      'targets': [
-        {
-          'target_name': 'libpeeracle_so',
-          'type': 'shared_library',
-          'dependencies': [
-            'peeracle',
-          ],
-          'cflags': [
-            '-fPIC'
-          ],
-          'include_dirs': [
-            '<(java_home)/include',
-            '<(java_home)/include/linux',
-          ],
-          'sources': [
-            'java/jni/peeracle_jni.cc',
-          ],
-          'conditions': [
-            ['OS=="android"', {
-              'variables': {
-                # This library uses native JNI exports; tell GYP so that the
-                # required symbols will be kept.
-                'use_native_jni_exports': 1,
-              },
-            }],
-          ],
-        },
-        {
-          'target_name': 'libpeeracle_jar',
-          'type': 'none',
-          'actions': [
-            {
-              'variables': {
-                'java_src_dir': 'java/src',
-                'build_jar_log': '<(INTERMEDIATE_DIR)/build_jar.log',
-                'peeracle_java_files': [
-                  'java/src/org/peeracle/DataSource.java',
-                  'java/src/org/peeracle/HttpDataSource.java',
-                  'java/src/org/peeracle/FileDataSource.java',
-                ],
-                'android_java_files': [
-                ],
-              },
-              'action_name': 'create_jar',
-              'inputs': [
-                'build/build_jar.sh',
-                '<@(java_files)',
-              ],
-              'outputs': [
-                '<(PRODUCT_DIR)/libpeeracle.jar',
-              ],
-              'conditions': [
-                ['OS=="android"', {
-                  'variables': {
-                    'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
-                    'build_classpath': '<(java_src_dir):<(DEPTH)/third_party/android_tools/sdk/platforms/android-<(android_sdk_version)/android.jar',
-                  },
-                }, {
-                  'variables': {
-                    'java_files': ['<@(peeracle_java_files)'],
-                    'build_classpath': '<(java_src_dir)',
-                  },
-                }],
-              ],
-              'action': [
-                'bash', '-ec',
-                'mkdir -p <(INTERMEDIATE_DIR) && '
-                '{ build/build_jar.sh <(java_home) <@(_outputs) '
-                '      <(INTERMEDIATE_DIR)/build_jar.tmp '
-                '      <(build_classpath) <@(java_files) '
-                '      > <(build_jar_log) 2>&1 || '
-                '  { cat <(build_jar_log) ; exit 1; } }'
-              ],
-            },
-          ],
-          'dependencies': [
-            'libpeeracle_so',
-          ],
-        },
-      ],
-    }],
+    },
   ],
 }

@@ -20,27 +20,29 @@
  * SOFTWARE.
  */
 
-#ifndef LIBPEERACLE_DATASOURCEINTERFACE_H
-#define LIBPEERACLE_DATASOURCEINTERFACE_H
+#ifndef INCLUDE_PEERACLE_DATASOURCE_FILEDATASOURCE_H_
+#define INCLUDE_PEERACLE_DATASOURCE_FILEDATASOURCE_H_
 
-#include <cstdlib>
+#include "DataSourceInterface.h"
 
 namespace peeracle {
 
 namespace DataSource {
 
-class DataSourceInterface {
+class FileDataSource
+  : public DataSourceInterface {
  public:
-  virtual size_t open() = 0;
-  virtual void close() = 0;
-  virtual int read(unsigned char *buffer, int length) = 0;
+  size_t open();
+  void close();
+  int read(unsigned char *buffer, int length);
 
  protected:
-  virtual ~DataSourceInterface() {}
+  virtual ~FileDataSource() {}
 };
 
-}
+}  // namespace DataSource
 
-}
+}  // namespace peeracle
 
-#endif //LIBPEERACLE_DATASOURCEINTERFACE_H
+
+#endif  // INCLUDE_PEERACLE_DATASOURCE_FILEDATASOURCE_H_
