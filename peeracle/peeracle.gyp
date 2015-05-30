@@ -21,6 +21,7 @@
       'dependencies': [
         'DataSource/DataSource.gyp:*',
         'Hash/Hash.gyp:*',
+        'Media/Media.gyp:*',
       ],
       'cflags': [
         '-std=c++11',
