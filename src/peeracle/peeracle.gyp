@@ -16,6 +16,7 @@
       'target_name': 'peeracle',
       'type': 'static_library',
       'dependencies': [
+        'Crypto/Crypto.gyp:*',
         'DataSource/DataSource.gyp:*',
       ],
       'cflags': [
