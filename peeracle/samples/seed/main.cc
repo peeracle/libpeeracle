@@ -1,3 +1,4 @@
+#if 0
 #include <iostream>
 #include <map>
 #include <cstring>
@@ -200,5 +201,12 @@ int main(int argc, char **argv) {
   //delete peerAOfferObserver;
   //delete peerBObserver;
   //delete peeracle::Manager::getSingletonPtr();
+  return EXIT_SUCCESS;
+}
+#endif
+
+#include <cstdlib>
+
+int main(int argc, char **argv) {
   return EXIT_SUCCESS;
 }
