@@ -1,8 +1,6 @@
 #include <iostream>
 #include "talk/app/webrtc/test/fakeconstraints.h"
 #include "talk/app/webrtc/peerconnectioninterface.h"
-#include "talk/app/webrtc/peerconnectioninterface.h"
-#include "webrtc/base/scoped_ref_ptr.h"
 #include "webrtc/base/thread.h"
 #include "createofferobserver.h"
 #include "setremoteofferobserver.h"
@@ -12,8 +10,10 @@
 
 namespace peeracle {
 
-class Peer::PeerImpl : public webrtc::PeerConnectionObserver {
+class Peer::PeerImpl
+  : public webrtc::PeerConnectionObserver {
  public:
+  rtc::scoped_refptr<webrtc::DataChannelInterface> _dataChannel;
   rtc::scoped_refptr<webrtc::PeerConnectionInterface> _peerConnection;
 
   rtc::Thread *_signaling_thread;
@@ -21,23 +21,32 @@ class Peer::PeerImpl : public webrtc::PeerConnectionObserver {
   rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface>
     _peerConnectionFactory;
 
-  std::list<PeerInterface::Observer*> _peerObservers;
+  std::list<PeerInterface::Observer *> _peerObservers;
 
  protected:
   virtual ~PeerImpl();
 
  private:
   void OnSignalingChange(webrtc::PeerConnectionInterface::SignalingState state);
+
   void OnStateChange(StateType state_changed);
-  void OnAddStream(webrtc::MediaStreamInterface* stream);
-  void OnRemoveStream(webrtc::MediaStreamInterface* stream);
-  void OnDataChannel(webrtc::DataChannelInterface* data_channel);
+
+  void OnAddStream(webrtc::MediaStreamInterface *stream);
+
+  void OnRemoveStream(webrtc::MediaStreamInterface *stream);
+
+  void OnDataChannel(webrtc::DataChannelInterface *data_channel);
+
   void OnRenegotiationNeeded();
+
   void OnIceConnectionChange(
     webrtc::PeerConnectionInterface::IceConnectionState new_state);
+
   void OnIceGatheringChange(
     webrtc::PeerConnectionInterface::IceGatheringState new_state);
-  void OnIceCandidate(const webrtc::IceCandidateInterface* candidate);
+
+  void OnIceCandidate(const webrtc::IceCandidateInterface *candidate);
+
   void OnIceComplete();
 };
 
@@ -63,9 +72,9 @@ Peer::Peer() : peer_(new PeerImpl) {
   CHECK(peer_->_worker_thread->Start() && peer_->_signaling_thread->Start())
   << "Failed to start threads";*/
 
-  peer_->_signaling_thread = (rtc::Thread*)peeracle::Manager::getSingleton().
+  peer_->_signaling_thread = (rtc::Thread *) peeracle::Manager::getSingleton().
     getSignalingThread();
-  peer_->_worker_thread = (rtc::Thread*)peeracle::Manager::getSingleton().
+  peer_->_worker_thread = (rtc::Thread *) peeracle::Manager::getSingleton().
     getWorkerThread();
 
   peer_->_peerConnectionFactory = webrtc::CreatePeerConnectionFactory(
@@ -94,9 +103,9 @@ void Peer::createOffer(PeerInterface::SessionDescriptionObserver *observer) {
     new rtc::RefCountedObject<CreateOfferObserver>
       (peer_->_peerConnection, observer);
 
-  // webrtc::DataChannelInit dataChannelInit;
-  // _dataChannel = _peerConnection->CreateDataChannel("signal",
-  //  &dataChannelInit);
+  webrtc::DataChannelInit dataChannelInit;
+  peer_->_dataChannel = peer_->_peerConnection->CreateDataChannel("signal",
+                                                           &dataChannelInit);
 
   peer_->_peerConnection->CreateOffer(createOfferObserver, NULL);
 }
@@ -199,7 +208,8 @@ void Peer::PeerImpl::OnIceGatheringChange(
   }
 }
 
-void Peer::PeerImpl::OnIceCandidate(const webrtc::IceCandidateInterface *candidate) {
+void Peer::PeerImpl::OnIceCandidate(
+  const webrtc::IceCandidateInterface *candidate) {
   std::string cand;
 
   candidate->ToString(&cand);

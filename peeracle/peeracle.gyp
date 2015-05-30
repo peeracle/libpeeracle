@@ -23,15 +23,6 @@
         '-fPIC'
       ],
       'sources': [
-        'lib/createanswerobserver.cc',
-        'lib/createofferobserver.cc',
-        'lib/createsessiondescriptionobserver.cc',
-        'lib/manager.cc',
-        'lib/peer.cc',
-        'lib/setanswerobserver.cc',
-        'lib/setlocalofferobserver.cc',
-        'lib/setremoteofferobserver.cc',
-        'lib/setsessiondescriptionobserver.cc',
       ],
       'include_dirs': [
         '<(webrtc_dir)',
