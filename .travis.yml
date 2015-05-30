@@ -1,8 +1,8 @@
 language: cpp
 
 before_install:
-- sudo apt-get update -qq
-- sudo apt-get install -qq -y build-essential libglib2.0-dev libgtk2.0-dev libxtst-dev 
+- sudo apt-get -qq update
+- sudo apt-get -qq install -y build-essential libglib2.0-dev libgtk2.0-dev libxtst-dev
   libxss-dev libpci-dev libdbus-1-dev libgconf2-dev libgnome-keyring-dev 
   libnss3-dev libasound2-dev libpulse-dev libudev-dev
 
@@ -15,13 +15,13 @@ install:
 - bash tools/clang/scripts/update.sh
 - python webrtc/build/gyp_webrtc.py
 - ninja -C out/Release
-
-script:
 - cd ../..
 - gyp build.gyp -f ninja -Dconfiguration=Release --no-circular-check --check
   -Ithird_party/webrtc/webrtc/build/common.gypi
   -Ithird_party/webrtc/webrtc/supplement.gypi
   --depth=.
+
+script:
 - ninja -C out/Release
 
 notifications:
