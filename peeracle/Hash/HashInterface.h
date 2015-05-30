@@ -20,44 +20,28 @@
  * SOFTWARE.
  */
 
-#include "gtest/gtest.h"
-#include "peeracle/Crypto/Crc32Crypto.h"
+#ifndef INCLUDE_PEERACLE_HASH_HASHINTERFACE_H_
+#define INCLUDE_PEERACLE_HASH_HASHINTERFACE_H_
+
+#include <cstdlib>
 
 namespace peeracle {
 
-namespace Crypto {
+namespace Hash {
 
-class Crc32CryptoTest : public testing::Test {
+class HashInterface {
+ public:
+  virtual void init() = 0;
+  virtual void update(unsigned char *) = 0;
+  virtual unsigned char *finish() = 0;
+  virtual unsigned char *checksum(unsigned char *) = 0;
+
  protected:
-  Crc32CryptoTest() : crypto_(NULL) {
-  }
-
-  virtual void SetUp() {
-    crypto_ = new Crc32Crypto();
-  }
-
-  virtual void TearDown() {
-  }
-
-  Crc32Crypto *crypto_;
+  virtual ~HashInterface() {}
 };
 
-TEST(Crc32CryptoTest, init) {
-  EXPECT_FALSE(true);
-}
-
-TEST(Crc32CryptoTest, update) {
-  EXPECT_FALSE(true);
-}
-
-TEST(Crc32CryptoTest, finish) {
-  EXPECT_FALSE(true);
-}
-
-TEST(Crc32CryptoTest, checksum) {
-  EXPECT_FALSE(true);
-}
-
-}  // namespace Crypto
+}  // namespace Hash
 
 }  // namespace peeracle
+
+#endif  // INCLUDE_PEERACLE_HASH_HASHINTERFACE_H_

@@ -20,30 +20,26 @@
  * SOFTWARE.
  */
 
-#ifndef INCLUDE_PEERACLE_CRYPTO_CRC32CRYPTO_H_
-#define INCLUDE_PEERACLE_CRYPTO_CRC32CRYPTO_H_
-
-#include "CryptoInterface.h"
+#include "peeracle/Hash/Crc32Hash.h"
 
 namespace peeracle {
 
-namespace Crypto {
+namespace Hash {
 
-class Crc32Crypto
-  : public CryptoInterface {
- public:
-  void init();
-  void update(unsigned char *);
-  unsigned char *finish();
-  unsigned char *checksum(unsigned char *);
+void Crc32Hash::init() {
+}
 
- protected:
-  virtual ~Crc32Crypto() {}
-};
+void Crc32Hash::update(unsigned char *bytes) {
+}
 
-}  // namespace Crypto
+unsigned char *Crc32Hash::finish() {
+  return 0;
+}
+
+unsigned char *Crc32Hash::checksum(unsigned char *) {
+  return 0;
+}
+
+}  // namespace Hash
 
 }  // namespace peeracle
-
-
-#endif  // INCLUDE_PEERACLE_CRYPTO_CRC32CRYPTO_H_
