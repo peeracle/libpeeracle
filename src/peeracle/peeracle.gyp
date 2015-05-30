@@ -16,7 +16,7 @@
       'target_name': 'peeracle',
       'type': 'static_library',
       'dependencies': [
-        'DataSource/peeracle_datasource.gyp:*',
+        'DataSource/DataSource.gyp:*',
       ],
       'cflags': [
         '-std=c++11',
