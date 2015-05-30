@@ -6,9 +6,6 @@
     {
       'target_name': 'peeracle_tests_utils',
       'type': 'static_library',
-      'include_dirs': [
-        '<(DEPTH)',
-      ],
       'sources': [
         'unittest_main.cc',
       ],

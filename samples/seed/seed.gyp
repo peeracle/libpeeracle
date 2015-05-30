@@ -7,13 +7,10 @@
       'target_name': 'seed',
       'type': 'executable',
       'dependencies': [
-        '<(DEPTH)/src/peeracle/peeracle.gyp:peeracle'
+        '<(DEPTH)/peeracle/peeracle.gyp:peeracle'
       ],
       'sources': [
         'src/main.cc',
-      ],
-      'include_dirs': [
-        '<(DEPTH)/include',
       ],
       'conditions': [
         ['OS == "win"', {

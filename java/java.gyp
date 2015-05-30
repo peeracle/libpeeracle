@@ -12,7 +12,7 @@
           'target_name': 'libpeeracle_so',
           'type': 'shared_library',
           'dependencies': [
-            '../src/peeracle/peeracle.gyp:peeracle',
+            '<(DEPTH)/peeracle/peeracle.gyp:peeracle',
           ],
           'cflags': [
             '-fPIC'

@@ -1,13 +1,13 @@
 {
   'includes': [
-    '../../common.gypi'
+    '../common.gypi'
   ],
   'variables': {
     'conditions': [
       ['OS == "win"', {
-        'webrtc_dir': '<!(python build\\get_current_dir.py)\\..\..\third_party\\webrtc',
+        'webrtc_dir': '<!(python build\\get_current_dir.py)\\..\third_party\\webrtc',
       }, {
-        'webrtc_dir': '<!(pwd)/../../third_party/webrtc',
+        'webrtc_dir': '<!(pwd)/../third_party/webrtc',
       }],
     ],
   },
@@ -16,8 +16,8 @@
       'target_name': 'peeracle',
       'type': 'static_library',
       'dependencies': [
-        'Crypto/Crypto.gyp:*',
         'DataSource/DataSource.gyp:*',
+        'Hash/Hash.gyp:*',
       ],
       'cflags': [
         '-std=c++11',

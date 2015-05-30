@@ -1,6 +1,6 @@
 {
   'includes': [
-    '../../../common.gypi'
+    '../../common.gypi'
   ],
   'targets': [
     {
@@ -10,16 +10,12 @@
         '-std=c++11',
         '-fPIC'
       ],
-      'include_dirs': [
-        '<(DEPTH)/include',
-      ],
       'sources': [
+        'DataSourceInterface.h',
         'FileDataSource.cc',
+        'FileDataSource.h',
         'HttpDataSource.cc',
-
-        '<(DEPTH)/include/peeracle/DataSource/HttpDataSource.h',
-        '<(DEPTH)/include/peeracle/DataSource/FileDataSource.h',
-        '<(DEPTH)/include/peeracle/DataSource/DataSourceInterface.h',
+        'HttpDataSource.h',
       ]
     },
     {
@@ -27,9 +23,6 @@
       'type': 'executable',
       'dependencies': [
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
-      ],
-      'include_dirs': [
-        '<(DEPTH)/include',
       ],
       'sources': [
         'FileDataSource_unittest.cc',

@@ -10,7 +10,7 @@
       'target_name': 'build',
       'type': 'none',
       'dependencies': [
-        'src/peeracle/peeracle.gyp:*',
+        'peeracle/peeracle.gyp:*',
         'samples/samples.gyp:*',
         'test/test.gyp:*',
       ],
