@@ -23,6 +23,8 @@
         '-fPIC'
       ],
       'sources': [
+        'lib/DataSource/FileDataSource.cc',
+        'lib/DataSource/HttpDataSource.cc',
       ],
       'include_dirs': [
         '<(webrtc_dir)',
