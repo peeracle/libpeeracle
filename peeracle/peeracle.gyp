@@ -89,7 +89,6 @@
               '-framework Security',
               '-framework SystemConfiguration',
               '-weak_framework AVFoundation',
-              '-framework CoreAudio',
               '-framework CoreVideo',
               '-framework OpenGL',
               '-framework QTKit',
