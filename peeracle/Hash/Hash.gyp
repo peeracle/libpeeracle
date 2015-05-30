@@ -10,6 +10,9 @@
         '-std=c++11',
         '-fPIC'
       ],
+      'include_dirs': [
+        '<(DEPTH)',
+      ],
       'sources': [
         'HashInterface.h',
         'Crc32Hash.cc',
@@ -21,6 +24,9 @@
       'type': 'executable',
       'dependencies': [
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+      ],
+      'include_dirs': [
+        '<(DEPTH)',
       ],
       'sources': [
         'Crc32Hash_unittest.cc',

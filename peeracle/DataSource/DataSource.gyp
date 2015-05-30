@@ -10,6 +10,9 @@
         '-std=c++11',
         '-fPIC'
       ],
+      'include_dirs': [
+        '<(DEPTH)',
+      ],
       'sources': [
         'DataSourceInterface.h',
         'FileDataSource.cc',
@@ -23,6 +26,9 @@
       'type': 'executable',
       'dependencies': [
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+      ],
+      'include_dirs': [
+        '<(DEPTH)',
       ],
       'sources': [
         'FileDataSource_unittest.cc',

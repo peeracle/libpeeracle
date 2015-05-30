@@ -15,6 +15,9 @@
     {
       'target_name': 'peeracle',
       'type': 'static_library',
+      'include_dirs': [
+        '<(DEPTH)',
+      ],
       'dependencies': [
         'DataSource/DataSource.gyp:*',
         'Hash/Hash.gyp:*',
