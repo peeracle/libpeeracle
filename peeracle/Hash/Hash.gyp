@@ -23,6 +23,7 @@
       'target_name': 'peeracle_hash_unittest',
       'type': 'executable',
       'dependencies': [
+        'peeracle_hash',
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
       ],
       'include_dirs': [

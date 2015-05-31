@@ -32,13 +32,14 @@ namespace Hash {
 class Crc32Hash
   : public HashInterface {
  public:
-  void init();
-  void update(unsigned char *);
-  unsigned char *finish();
-  unsigned char *checksum(unsigned char *);
+  Crc32Hash();
+  virtual ~Crc32Hash();
 
- protected:
-  virtual ~Crc32Hash() {}
+  void init();
+  void update(unsigned char const *buffer, unsigned int length);
+  void final(unsigned char *result);
+  void checksum(unsigned char const *buffer, unsigned int length,
+                unsigned char *result);
 };
 
 }  // namespace Hash

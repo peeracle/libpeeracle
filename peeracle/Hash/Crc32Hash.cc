@@ -26,18 +26,23 @@ namespace peeracle {
 
 namespace Hash {
 
+Crc32Hash::Crc32Hash() {
+}
+
+Crc32Hash::~Crc32Hash() {
+}
+
 void Crc32Hash::init() {
 }
 
-void Crc32Hash::update(unsigned char *bytes) {
+void Crc32Hash::update(unsigned char const *buffer, unsigned int length) {
 }
 
-unsigned char *Crc32Hash::finish() {
-  return 0;
+void Crc32Hash::final(unsigned char *result) {
 }
 
-unsigned char *Crc32Hash::checksum(unsigned char *) {
-  return 0;
+void Crc32Hash::checksum(unsigned char const *buffer, unsigned int length,
+                         unsigned char *result) {
 }
 
 }  // namespace Hash
