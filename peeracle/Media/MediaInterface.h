@@ -24,22 +24,58 @@
 #define PEERACLE_MEDIA_MEDIAINTERFACE_H_
 
 #include <cstdlib>
+#include <ios>
 
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup Media
+ * @{
+ * @namespace peeracle::Media
+ * @brief Media namespace
+ */
 namespace Media {
 
+/**
+ * Media module interface.
+ */
 class MediaInterface {
  public:
-  virtual unsigned char *getInitSegment() = 0;
-  virtual unsigned char *getMediaSegment(size_t) = 0;
+  /**
+   * Retrieve the initialization segment.
+   * @param buffer
+   * @param length
+   */
+  virtual void getInitSegment(unsigned char *buffer,
+                              std::streamsize length) = 0;
+
+  /**
+   * Retrieve a media segment by the specified \p timecode.
+   * @param timecode
+   * @param buffer
+   * @param length
+   */
+  virtual void getMediaSegment(std::streampos timecode, unsigned char *buffer,
+                               std::streamsize length) = 0;
 
  protected:
   virtual ~MediaInterface() {}
 };
 
+/**
+ * @}
+ */
 }  // namespace Media
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 #endif  // PEERACLE_MEDIA_MEDIAINTERFACE_H_

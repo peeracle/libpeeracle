@@ -32,8 +32,9 @@ namespace Media {
 class WebMMedia
   : public MediaInterface {
  public:
-  unsigned char *getInitSegment();
-  unsigned char *getMediaSegment(size_t);
+  void getInitSegment(unsigned char *buffer, std::streamsize length);
+  void getMediaSegment(std::streampos timecode, unsigned char *buffer,
+                       std::streamsize length);
 
  protected:
   virtual ~WebMMedia() {}

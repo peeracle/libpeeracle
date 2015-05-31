@@ -26,12 +26,11 @@ namespace peeracle {
 
 namespace Media {
 
-unsigned char *MP4Media::getInitSegment() {
-  return 0;
+void MP4Media::getInitSegment(unsigned char *buffer, std::streamsize length) {
 }
 
-unsigned char *MP4Media::getMediaSegment(size_t timecode) {
-  return 0;
+void MP4Media::getMediaSegment(std::streampos timecode, unsigned char *buffer,
+                               std::streamsize length) {
 }
 
 }  // namespace Media
