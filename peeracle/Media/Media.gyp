@@ -27,6 +27,7 @@
       'target_name': 'peeracle_media_unittest',
       'type': 'executable',
       'dependencies': [
+        'peeracle_media',
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
       ],
       'include_dirs': [
