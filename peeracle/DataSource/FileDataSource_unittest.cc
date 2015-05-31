@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <fstream>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/DataSource/FileDataSource.h"
 
@@ -27,31 +28,102 @@ namespace peeracle {
 
 namespace DataSource {
 
-class FileDataSourceTest : public testing::Test {
- protected:
-  FileDataSourceTest() : ds_(NULL) {
+TEST(FileDataSourceTestInvalid, FileNotFound) {
+  std::streampos result;
+  char filename[16];
+  unsigned int seed;
+  FileDataSource *ds;
+
+  seed = (unsigned int)(time(NULL));
+  for (size_t i = 0; i < sizeof(filename); i++) {
+    filename[i] = (unsigned char)(rand_r(&seed) % (122 - 1) + 97);
   }
 
+  ds = new FileDataSource(filename);
+  result = ds->open();
+  EXPECT_EQ((std::streampos)0, result);
+}
+
+class FileDataSourceTest : public ::testing::Test {
+ protected:
   virtual void SetUp() {
-    ds_ = new FileDataSource();
+    unsigned int seed;
+    const ::testing::TestInfo* const test_info =
+      ::testing::UnitTest::GetInstance()->current_test_info();
+
+    std::stringstream strm;
+    strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
+    filename_ = strm.str();
+
+    std::ofstream tmpfile(filename_,
+                          std::ofstream::out | std::ofstream::binary);
+
+    seed = (unsigned int)(time(NULL));
+    for (size_t i = 0; i < sizeof(data_); i++) {
+      data_[i] = (unsigned char)(rand_r(&seed) % (255));
+    }
+
+    tmpfile << data_;
+    tmpfile.close();
   }
 
   virtual void TearDown() {
+    remove(filename_.c_str());
   }
 
-  FileDataSource *ds_;
+  std::string filename_;
+  unsigned char data_[64];
 };
 
-TEST(FileDataSourceTest, open) {
-  EXPECT_FALSE(true);
-}
+TEST_F(FileDataSourceTest, RandomFile) {
+  std::streampos result;
+  unsigned int seed;
+  unsigned char old;
+  unsigned char buffer[4];
+  unsigned char buffer_full[sizeof(data_)];
+  FileDataSource *ds = new FileDataSource(filename_);
 
-TEST(FileDataSourceTest, close) {
-  EXPECT_FALSE(true);
-}
+  result = ds->open();
+  EXPECT_EQ((std::streampos)sizeof(data_), result);
 
-TEST(FileDataSourceTest, read) {
-  EXPECT_FALSE(true);
+  result = ds->read(0, 0);
+  EXPECT_EQ((std::streampos)0, result);
+
+  seed = (unsigned int)(time(NULL));
+  buffer[0] = (unsigned char)(rand_r(&seed) % (255));
+  old = buffer[0];
+  result = ds->read(buffer, 0);
+  EXPECT_EQ((std::streampos)0, result);
+  EXPECT_EQ(old, buffer[0]);
+
+  result = ds->read(buffer, 1);
+  EXPECT_EQ((std::streampos)1, result);
+  EXPECT_EQ(data_[0], buffer[0]);
+
+  result = ds->read(buffer, 1);
+  EXPECT_EQ((std::streampos)1, result);
+  EXPECT_EQ(data_[1], buffer[0]);
+
+  result = ds->read(buffer, 4);
+  EXPECT_EQ((std::streampos)4, result);
+  EXPECT_EQ(data_[2], buffer[0]);
+  EXPECT_EQ(data_[3], buffer[1]);
+  EXPECT_EQ(data_[4], buffer[2]);
+  EXPECT_EQ(data_[5], buffer[3]);
+
+  result = ds->read(buffer_full, sizeof(data_) + 20);
+  EXPECT_EQ((std::streampos)sizeof(data_), result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer_full[i]);
+  }
+
+  result = ds->read(buffer_full, 0);
+  EXPECT_EQ((std::streampos)0, result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer_full[i]);
+  }
+
+  delete ds;
 }
 
 }  // namespace DataSource
