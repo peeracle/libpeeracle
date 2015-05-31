@@ -25,16 +25,49 @@
 
 #include <cstdlib>
 
+/**
+ * \addtogroup peeracle
+ * @{
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup Hash
+ * @{
+ */
 namespace Hash {
 
+/**
+ * Hash module interface.
+ */
 class HashInterface {
  public:
+  /**
+   * Initialize the hash algorithm module.
+   */
   virtual void init() = 0;
-  virtual void update(unsigned char *) = 0;
-  virtual unsigned char *finish() = 0;
-  virtual unsigned char *checksum(unsigned char *) = 0;
+
+  /**
+   * Append some bytes inside the hash module's internal buffer.
+   * @param buffer a pointer to a buffer containing the bytes to hash.
+   * @param length the number of bytes to hash inside the buffer.
+   */
+  virtual void update(unsigned char const *buffer, unsigned int length) = 0;
+
+  /**
+   * Execute the hash operation from the bytes inside the internal buffer.
+   * @param result a pointer to the buffer which will receive the checksum.
+   */
+  virtual void final(unsigned char *result) = 0;
+
+  /**
+   * Execute init, update and final methods at once.
+   * @param buffer a pointer to a buffer containing the bytes to hash.
+   * @param length the number of bytes to hash inside the buffer.
+   * @param result a pointer to the buffer which will receive the checksum.
+   */
+  virtual void checksum(unsigned char const *buffer, unsigned int length,
+                        unsigned char *result) = 0;
 
  protected:
   virtual ~HashInterface() {}
