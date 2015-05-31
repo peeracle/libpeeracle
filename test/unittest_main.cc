@@ -25,7 +25,7 @@
 #endif
 
 #include "test/unittest_main.h"
-#include "testing/gtest/include/gtest/gtest.h"
+#include "third_party/googletest/gtest/include/gtest/gtest.h"
 
 /*#include "webrtc/base/flags.h"
 #include "webrtc/base/fileutils.h"

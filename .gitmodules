@@ -7,6 +7,6 @@
 [submodule "third_party/gyp"]
 	path = third_party/gyp
 	url = https://chromium.googlesource.com/external/gyp.git
-[submodule "testing/gtest"]
-	path = testing/gtest
-	url = https://chromium.googlesource.com/external/googletest.git
+[submodule "third_party/googletest"]
+	path = third_party/googletest
+	url = git@github.com:peeracle/googletest

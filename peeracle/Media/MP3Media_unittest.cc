@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-#include "gtest/gtest.h"
+#include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/Media/MP3Media.h"
 
 namespace peeracle {

@@ -31,5 +31,15 @@
         ],
       },
     ],
+    'conditions': [
+      ['coverage==1 and OS=="linux"', {
+        'cflags': [
+          '--coverage'
+        ],
+        'ldflags': [
+          '--coverage'
+        ],
+      }],
+    ],
   },
 }
