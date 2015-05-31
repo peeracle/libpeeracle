@@ -53,7 +53,7 @@ class HttpDataSource
 
   std::streampos open();
   void close();
-  std::streampos read(unsigned char *buffer, std::streampos length);
+  std::streamsize read(unsigned char *buffer, std::streamsize length);
 };
 
 /**

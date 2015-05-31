@@ -36,8 +36,10 @@ std::streampos FileDataSource::open() {
 void FileDataSource::close() {
 }
 
-std::streampos FileDataSource::read(unsigned char *buffer,
-                                    std::streampos length) {
+std::streamsize FileDataSource::read(unsigned char *buffer,
+                                     std::streamsize length) {
+  return 0;
+}
   return 0;
 }
 

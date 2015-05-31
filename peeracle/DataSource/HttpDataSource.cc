@@ -37,8 +37,10 @@ std::streampos HttpDataSource::open() {
 void HttpDataSource::close() {
 }
 
-std::streampos HttpDataSource::read(unsigned char *buffer,
-                                    std::streampos length) {
+std::streamsize HttpDataSource::read(unsigned char *buffer,
+                                     std::streamsize length) {
+  return 0;
+}
   return 0;
 }
 

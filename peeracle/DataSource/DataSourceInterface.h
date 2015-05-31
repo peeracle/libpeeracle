@@ -63,7 +63,8 @@ class DataSourceInterface {
    * @param length the number of bytes to read.
    * @return The number of bytes read.
    */
-  virtual std::streampos read(unsigned char *buffer, std::streampos length) = 0;
+  virtual std::streamsize read(unsigned char *buffer,
+                               std::streamsize length) = 0;
 
  protected:
   virtual ~DataSourceInterface() {}
