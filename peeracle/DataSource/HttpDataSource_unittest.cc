@@ -46,14 +46,14 @@ TEST_F(HttpDataSourceTest, InvalidUrl) {
 
   result = ds->read(buffer, 1);
   EXPECT_EQ((std::streampos)0, result);
-  EXPECT_EQ(0, result[0]);
+  EXPECT_EQ(0, buffer[0]);
 
   result = ds->read(buffer, 4);
   EXPECT_EQ((std::streampos)0, result);
-  EXPECT_EQ(0, result[0]);
-  EXPECT_EQ(0, result[1]);
-  EXPECT_EQ(0, result[2]);
-  EXPECT_EQ(0, result[3]);
+  EXPECT_EQ(0, buffer[0]);
+  EXPECT_EQ(0, buffer[1]);
+  EXPECT_EQ(0, buffer[2]);
+  EXPECT_EQ(0, buffer[3]);
 
   ds->close();
   delete ds;
