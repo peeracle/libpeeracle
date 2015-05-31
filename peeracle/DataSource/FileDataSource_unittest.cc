@@ -55,7 +55,7 @@ class FileDataSourceTest : public ::testing::Test {
     strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
     filename_ = strm.str();
 
-    std::ofstream tmpfile(filename_,
+    std::ofstream tmpfile(filename_.c_str(),
                           std::ofstream::out | std::ofstream::binary);
 
     seed = (unsigned int)(time(NULL));
