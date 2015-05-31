@@ -29,29 +29,34 @@ namespace DataSource {
 
 class HttpDataSourceTest : public testing::Test {
  protected:
-  HttpDataSourceTest() : ds_(NULL) {
-  }
-
   virtual void SetUp() {
-    ds_ = new HttpDataSource();
   }
 
   virtual void TearDown() {
   }
-
-  HttpDataSource *ds_;
 };
 
-TEST(HttpDataSourceTest, open) {
-  EXPECT_FALSE(true);
-}
+TEST_F(HttpDataSourceTest, InvalidUrl) {
+  std::streampos result;
+  unsigned char buffer[4] = { 0, 0, 0, 0 };
+  HttpDataSource *ds = new HttpDataSource("http://invalid_url");
 
-TEST(HttpDataSourceTest, close) {
-  EXPECT_FALSE(true);
-}
+  result = ds->open();
+  EXPECT_EQ((std::streampos)0, result);
 
-TEST(HttpDataSourceTest, read) {
-  EXPECT_FALSE(true);
+  result = ds->read(buffer, 1);
+  EXPECT_EQ((std::streampos)0, result);
+  EXPECT_EQ(0, result[0]);
+
+  result = ds->read(buffer, 4);
+  EXPECT_EQ((std::streampos)0, result);
+  EXPECT_EQ(0, result[0]);
+  EXPECT_EQ(0, result[1]);
+  EXPECT_EQ(0, result[2]);
+  EXPECT_EQ(0, result[3]);
+
+  ds->close();
+  delete ds;
 }
 
 }  // namespace DataSource
