@@ -76,6 +76,7 @@ class FileDataSourceTest : public ::testing::Test {
 };
 
 TEST_F(FileDataSourceTest, RandomFile) {
+  std::streampos fileLength;
   std::streampos result;
   unsigned int seed;
   unsigned char old;
@@ -83,8 +84,8 @@ TEST_F(FileDataSourceTest, RandomFile) {
   unsigned char buffer_full[sizeof(data_)];
   FileDataSource *ds = new FileDataSource(filename_);
 
-  result = ds->open();
-  EXPECT_EQ((std::streampos)sizeof(data_), result);
+  fileLength = ds->open();
+  EXPECT_EQ((std::streampos)sizeof(data_), fileLength);
 
   result = ds->read(0, 0);
   EXPECT_EQ((std::streampos)0, result);
@@ -111,6 +112,17 @@ TEST_F(FileDataSourceTest, RandomFile) {
   EXPECT_EQ(data_[4], buffer[2]);
   EXPECT_EQ(data_[5], buffer[3]);
 
+  ds->seek((std::streampos)4);
+  result = ds->read(buffer, 1);
+  EXPECT_EQ((std::streampos)1, result);
+  EXPECT_EQ(data_[4], buffer[0]);
+
+  ds->seek((std::streampos)(sizeof(data_) + 20));
+  result = ds->read(buffer, 1);
+  EXPECT_EQ(fileLength, result);
+  EXPECT_EQ(data_[4], buffer[0]);
+
+  ds->seek((std::streampos)0);
   result = ds->read(buffer_full, sizeof(data_) + 20);
   EXPECT_EQ((std::streampos)sizeof(data_), result);
   for (size_t i = 0; i < sizeof(data_); ++i) {

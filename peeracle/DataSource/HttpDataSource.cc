@@ -41,6 +41,8 @@ std::streamsize HttpDataSource::read(unsigned char *buffer,
                                      std::streamsize length) {
   return 0;
 }
+
+std::streampos HttpDataSource::seek(std::streampos offset) {
   return 0;
 }
 

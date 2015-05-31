@@ -40,6 +40,8 @@ std::streamsize FileDataSource::read(unsigned char *buffer,
                                      std::streamsize length) {
   return 0;
 }
+
+std::streampos FileDataSource::seek(std::streampos offset) {
   return 0;
 }
 

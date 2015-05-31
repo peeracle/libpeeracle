@@ -54,6 +54,7 @@ class HttpDataSource
   std::streampos open();
   void close();
   std::streamsize read(unsigned char *buffer, std::streamsize length);
+  std::streampos seek(std::streampos offset);
 };
 
 /**

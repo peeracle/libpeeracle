@@ -66,6 +66,15 @@ class DataSourceInterface {
   virtual std::streamsize read(unsigned char *buffer,
                                std::streamsize length) = 0;
 
+  /**
+   * Move the cursor to \p offset.
+   * It will set the cursor at the same value as the length of the DataSource
+   * if the \p offset value is higher than it's length.
+   * @param offset the position to move the cursor to.
+   * @return The new cursor's position.
+   */
+  virtual std::streampos seek(std::streampos offset) = 0;
+
  protected:
   virtual ~DataSourceInterface() {}
 };
