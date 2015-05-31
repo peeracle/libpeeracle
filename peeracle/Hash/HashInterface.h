@@ -28,12 +28,16 @@
 /**
  * \addtogroup peeracle
  * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
  */
 namespace peeracle {
 
 /**
  * \addtogroup Hash
  * @{
+ * @namespace peeracle::Hash
+ * @brief Hash namespace
  */
 namespace Hash {
 
@@ -48,20 +52,22 @@ class HashInterface {
   virtual void init() = 0;
 
   /**
-   * Append some bytes inside the hash module's internal buffer.
+   * Read up to \p length bytes from the provided \p buffer and store these
+   * inside the module's internal buffer.
    * @param buffer a pointer to a buffer containing the bytes to hash.
    * @param length the number of bytes to hash inside the buffer.
    */
   virtual void update(unsigned char const *buffer, unsigned int length) = 0;
 
   /**
-   * Execute the hash operation from the bytes inside the internal buffer.
+   * Execute the hash operation from the bytes provided by the #update calls,
+   * and store the \p result.
    * @param result a pointer to the buffer which will receive the checksum.
    */
   virtual void final(unsigned char *result) = 0;
 
   /**
-   * Execute init, update and final methods at once.
+   * Execute #init, #update and #final methods at once.
    * @param buffer a pointer to a buffer containing the bytes to hash.
    * @param length the number of bytes to hash inside the buffer.
    * @param result a pointer to the buffer which will receive the checksum.
@@ -73,8 +79,14 @@ class HashInterface {
   virtual ~HashInterface() {}
 };
 
+/**
+ * @}
+ */
 }  // namespace Hash
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 #endif  // PEERACLE_HASH_HASHINTERFACE_H_

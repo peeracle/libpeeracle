@@ -25,16 +25,34 @@
 
 #include "HashInterface.h"
 
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup Hash
+ * @{
+ * @namespace peeracle::Hash
+ * @brief Hash namespace
+ */
 namespace Hash {
 
+/**
+ * Crc32 hash algorithm module.
+ */
 class Crc32Hash
   : public HashInterface {
  public:
   Crc32Hash();
   virtual ~Crc32Hash();
 
+  /**
+   * Initialize the Crc32 hash algorithm module.
+   */
   void init();
   void update(unsigned char const *buffer, unsigned int length);
   void final(unsigned char *result);
@@ -42,8 +60,14 @@ class Crc32Hash
                 unsigned char *result);
 };
 
+/**
+ * @}
+ */
 }  // namespace Hash
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 
