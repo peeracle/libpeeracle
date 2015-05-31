@@ -23,25 +23,47 @@
 #ifndef PEERACLE_DATASOURCE_HTTPDATASOURCE_H_
 #define PEERACLE_DATASOURCE_HTTPDATASOURCE_H_
 
+#include <string>
 #include "DataSourceInterface.h"
 
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup DataSource
+ * @{
+ * @namespace peeracle::DataSource
+ * @brief DataSource namespace
+ */
 namespace DataSource {
 
+/**
+ * A class that retrieves data remotely with the HTTP protocol.
+ */
 class HttpDataSource
   : public DataSourceInterface {
  public:
-  size_t open();
-  void close();
-  int read(unsigned char *buffer, int length);
-
- protected:
+  explicit HttpDataSource(const std::string &url);
   virtual ~HttpDataSource() {}
+
+  std::streampos open();
+  void close();
+  std::streampos read(unsigned char *buffer, std::streampos length);
 };
 
+/**
+ * @}
+ */
 }  // namespace DataSource
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 #endif  // PEERACLE_DATASOURCE_HTTPDATASOURCE_H_

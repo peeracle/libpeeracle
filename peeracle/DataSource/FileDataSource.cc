@@ -26,14 +26,18 @@ namespace peeracle {
 
 namespace DataSource {
 
-size_t FileDataSource::open() {
+FileDataSource::FileDataSource(const std::string &filename) {
+}
+
+std::streampos FileDataSource::open() {
   return 0;
 }
 
 void FileDataSource::close() {
 }
 
-int FileDataSource::read(unsigned char *buffer, int length) {
+std::streampos FileDataSource::read(unsigned char *buffer,
+                                    std::streampos length) {
   return 0;
 }
 

@@ -25,22 +25,58 @@
 
 #include <cstdlib>
 
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup DataSource
+ * @{
+ * @namespace peeracle::DataSource
+ * @brief DataSource namespace
+ */
 namespace DataSource {
 
+/**
+ * DataSource module interface.
+ */
 class DataSourceInterface {
  public:
-  virtual size_t open() = 0;
+  /**
+   * Open the DataSource for reading.
+   * @return The number of bytes that can be read from the DataSource.
+   */
+  virtual std::streampos open() = 0;
+
+  /**
+   * Close the DataSource.
+   */
   virtual void close() = 0;
-  virtual int read(unsigned char *buffer, int length) = 0;
+
+  /**
+   * Read up to \p length bytes of data and stores them into the \p buffer.
+   * @param buffer a pointer to the buffer which will receive the data.
+   * @param length the number of bytes to read.
+   * @return The number of bytes read.
+   */
+  virtual std::streampos read(unsigned char *buffer, std::streampos length) = 0;
 
  protected:
   virtual ~DataSourceInterface() {}
 };
 
+/**
+ * @}
+ */
 }  // namespace DataSource
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 #endif  // PEERACLE_DATASOURCE_DATASOURCEINTERFACE_H_

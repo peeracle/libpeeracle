@@ -23,8 +23,9 @@
     },
     {
       'target_name': 'peeracle_datasource_unittest',
-      'type': 'executable',
+      'type': '<(gtest_target_type)',
       'dependencies': [
+        'peeracle_datasource',
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
       ],
       'include_dirs': [

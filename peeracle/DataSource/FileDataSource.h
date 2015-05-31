@@ -23,25 +23,47 @@
 #ifndef PEERACLE_DATASOURCE_FILEDATASOURCE_H_
 #define PEERACLE_DATASOURCE_FILEDATASOURCE_H_
 
+#include <string>
 #include "DataSourceInterface.h"
 
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup DataSource
+ * @{
+ * @namespace peeracle::DataSource
+ * @brief DataSource namespace
+ */
 namespace DataSource {
 
+/**
+ * A class that retrieves data from a local file.
+ */
 class FileDataSource
   : public DataSourceInterface {
  public:
-  size_t open();
-  void close();
-  int read(unsigned char *buffer, int length);
-
- protected:
+  explicit FileDataSource(const std::string &filename);
   virtual ~FileDataSource() {}
+
+  std::streampos open();
+  void close();
+  std::streampos read(unsigned char *buffer, std::streampos length);
 };
 
+/**
+ * @}
+ */
 }  // namespace DataSource
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 #endif  // PEERACLE_DATASOURCE_FILEDATASOURCE_H_

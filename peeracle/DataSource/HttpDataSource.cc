@@ -20,20 +20,25 @@
  * SOFTWARE.
  */
 
+#include <string>
 #include "peeracle/DataSource/HttpDataSource.h"
 
 namespace peeracle {
 
 namespace DataSource {
 
-size_t HttpDataSource::open() {
+HttpDataSource::HttpDataSource(const std::string &url) {
+}
+
+std::streampos HttpDataSource::open() {
   return 0;
 }
 
 void HttpDataSource::close() {
 }
 
-int HttpDataSource::read(unsigned char *buffer, int length) {
+std::streampos HttpDataSource::read(unsigned char *buffer,
+                                    std::streampos length) {
   return 0;
 }
 
