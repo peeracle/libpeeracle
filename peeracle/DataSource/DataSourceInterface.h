@@ -58,7 +58,8 @@ class DataSourceInterface {
   virtual void close() = 0;
 
   /**
-   * Read up to \p length bytes of data and stores them into the \p buffer.
+   * Read up to \p length bytes of data from the cursor and store these into
+   * the \p buffer.
    * @param buffer a pointer to the buffer which will receive the data.
    * @param length the number of bytes to read.
    * @return The number of bytes read.
