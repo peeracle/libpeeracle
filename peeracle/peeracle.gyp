@@ -22,6 +22,7 @@
         'DataSource/DataSource.gyp:*',
         'Hash/Hash.gyp:*',
         'Media/Media.gyp:*',
+        'Metadata/Metadata.gyp:*',
       ],
       'cflags': [
         '-std=c++11',
