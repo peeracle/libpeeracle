@@ -43,9 +43,9 @@
                 'java_src_dir': 'java/src',
                 'build_jar_log': '<(INTERMEDIATE_DIR)/build_jar.log',
                 'peeracle_java_files': [
-                  'src/org/peeracle/DataSource.java',
-                  'src/org/peeracle/HttpDataSource.java',
-                  'src/org/peeracle/FileDataSource.java',
+                  'src/org/peeracle/DataSource/DataSource.java',
+                  'src/org/peeracle/DataSource/HttpDataSource.java',
+                  'src/org/peeracle/DataSource/FileDataSource.java',
                 ],
                 'android_java_files': [
                 ],
