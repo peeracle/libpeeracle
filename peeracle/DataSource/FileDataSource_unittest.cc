@@ -21,12 +21,20 @@
  */
 
 #include <fstream>
+#include <cstdlib>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/DataSource/FileDataSource.h"
 
 namespace peeracle {
 
 namespace DataSource {
+
+#ifdef _MSC_VER
+int rand_r(unsigned int *seed) {
+  srand(*seed);
+  return rand();
+}
+#endif
 
 TEST(FileDataSourceTestInvalid, FileNotFound) {
   bool result;
