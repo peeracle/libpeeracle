@@ -22,6 +22,7 @@
 
 #if defined(WEBRTC_WIN)
 #include <crtdbg.h>
+#include <windows.h>
 #endif
 
 #include "test/unittest_main.h"
@@ -39,18 +40,18 @@ void TestInvalidParameterHandler(const wchar_t* expression,
                                  const wchar_t* file,
                                  unsigned int line,
                                  uintptr_t pReserved) {
-  LOG(LS_ERROR) << "InvalidParameter Handler called.  Exiting.";
-  LOG(LS_ERROR) << expression << std::endl << function << std::endl << file
+  std::cerr << "InvalidParameter Handler called.  Exiting.";
+  std::cerr << expression << std::endl << function << std::endl << file
                 << std::endl << line;
   exit(1);
 }
 void TestPureCallHandler() {
-  LOG(LS_ERROR) << "Purecall Handler called.  Exiting.";
+  std::cerr << "Purecall Handler called.  Exiting.";
   exit(1);
 }
 int TestCrtReportHandler(int report_type, char* msg, int* retval) {
-    LOG(LS_ERROR) << "CrtReport Handler called...";
-    LOG(LS_ERROR) << msg;
+    std::cerr << "CrtReport Handler called...";
+    std::cerr << msg;
   if (report_type == _CRT_ASSERT) {
     exit(1);
   } else {
@@ -64,26 +65,24 @@ int main(int argc, char** argv) {
   testing::InitGoogleTest(&argc, argv);
 
 #if defined(WEBRTC_WIN)
-  if (!FLAG_default_error_handlers) {
     // Make sure any errors don't throw dialogs hanging the test run.
-    _set_invalid_parameter_handler(TestInvalidParameterHandler);
-    _set_purecall_handler(TestPureCallHandler);
-    _CrtSetReportHook2(_CRT_RPTHOOK_INSTALL, TestCrtReportHandler);
-  }
+  _set_invalid_parameter_handler(TestInvalidParameterHandler);
+  _set_purecall_handler(TestPureCallHandler);
+  _CrtSetReportHook2(_CRT_RPTHOOK_INSTALL, TestCrtReportHandler);
 
 #ifdef _DEBUG  // Turn on memory leak checking on Windows.
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF |_CRTDBG_LEAK_CHECK_DF);
-  if (FLAG_crt_break_alloc >= 0) {
-    _crtBreakAlloc = FLAG_crt_break_alloc;
-  }
+  // if (FLAG_crt_break_alloc >= 0) {
+  _crtBreakAlloc = FLAG_crt_break_alloc;
+  // }
 #endif  // _DEBUG
 #endif  // WEBRTC_WIN
 
 #if defined(WEBRTC_WIN)
   // Unhook crt function so that we don't ever log after statics have been
   // uninitialized.
-  if (!FLAG_default_error_handlers)
-    _CrtSetReportHook2(_CRT_RPTHOOK_REMOVE, TestCrtReportHandler);
+  // if (!FLAG_default_error_handlers)
+  _CrtSetReportHook2(_CRT_RPTHOOK_REMOVE, TestCrtReportHandler);
 #endif
 
   int res = RUN_ALL_TESTS();
