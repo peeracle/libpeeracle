@@ -30,11 +30,15 @@ namespace DataSource {
 HttpDataSource::HttpDataSource(const std::string &url) {
 }
 
-std::streampos HttpDataSource::open() {
+bool HttpDataSource::open() {
   return 0;
 }
 
 void HttpDataSource::close() {
+}
+
+std::streamsize HttpDataSource::length() const {
+  return 0;
 }
 
 std::streamsize HttpDataSource::read(unsigned char *buffer,
@@ -42,7 +46,7 @@ std::streamsize HttpDataSource::read(unsigned char *buffer,
   return 0;
 }
 
-std::streampos HttpDataSource::seek(std::streampos offset) {
+std::streamsize HttpDataSource::seek(std::streamsize offset) {
   return 0;
 }
 

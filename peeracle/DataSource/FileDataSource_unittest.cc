@@ -29,7 +29,7 @@ namespace peeracle {
 namespace DataSource {
 
 TEST(FileDataSourceTestInvalid, FileNotFound) {
-  std::streampos result;
+  bool result;
   char filename[16];
   unsigned int seed;
   FileDataSource *ds;
@@ -41,7 +41,7 @@ TEST(FileDataSourceTestInvalid, FileNotFound) {
 
   ds = new FileDataSource(filename);
   result = ds->open();
-  EXPECT_EQ((std::streampos)0, result);
+  EXPECT_EQ(false, result);
 }
 
 class FileDataSourceTest : public ::testing::Test {
@@ -76,38 +76,148 @@ class FileDataSourceTest : public ::testing::Test {
   unsigned char data_[64];
 };
 
+TEST_F(FileDataSourceTest, ReadFullRandomFile) {
+  bool opened;
+  std::streamsize result;
+  FileDataSource *ds = new FileDataSource(filename_);
+  unsigned char buffer[sizeof(data_)];
+
+  opened = ds->open();
+  EXPECT_EQ(true, opened);
+
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)sizeof(data_), result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer[i]);
+  }
+
+  memset(buffer, 0, sizeof(buffer));
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)0, result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(0, buffer[i]);
+  }
+
+  ds->close();
+  delete ds;
+}
+
+TEST_F(FileDataSourceTest, ReadFullRandomFileTwice) {
+  bool opened;
+  std::streamsize result;
+  FileDataSource *ds = new FileDataSource(filename_);
+  unsigned char buffer[sizeof(data_)];
+
+  opened = ds->open();
+  EXPECT_EQ(true, opened);
+
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)sizeof(data_), result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer[i]);
+  }
+
+  ds->close();
+
+  memset(buffer, 0, sizeof(buffer));
+
+  opened = ds->open();
+  EXPECT_EQ(true, opened);
+
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)sizeof(data_), result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer[i]);
+  }
+
+  ds->close();
+  delete ds;
+}
+
+TEST_F(FileDataSourceTest, ReadBeforeOpening) {
+  bool opened;
+  std::streamsize result;
+  FileDataSource *ds = new FileDataSource(filename_);
+  unsigned char buffer[sizeof(data_)];
+
+  memset(buffer, 0, sizeof(buffer));
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)0, result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(0, buffer[i]);
+  }
+
+  opened = ds->open();
+  EXPECT_EQ(true, opened);
+
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)sizeof(data_), result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer[i]);
+  }
+
+  ds->close();
+  delete ds;
+}
+
+TEST_F(FileDataSourceTest, SeekBeforeOpening) {
+  bool opened;
+  std::streamsize result;
+  FileDataSource *ds = new FileDataSource(filename_);
+  unsigned char buffer[sizeof(data_)];
+
+  opened = ds->open();
+  EXPECT_EQ(true, opened);
+
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)sizeof(data_), result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(data_[i], buffer[i]);
+  }
+
+  memset(buffer, 0, sizeof(buffer));
+  result = ds->read(buffer, sizeof(data_));
+  EXPECT_EQ((std::streamsize)0, result);
+  for (size_t i = 0; i < sizeof(data_); ++i) {
+    EXPECT_EQ(0, buffer[i]);
+  }
+
+  ds->close();
+  delete ds;
+}
+
 TEST_F(FileDataSourceTest, RandomFile) {
-  std::streampos fileLength;
-  std::streampos result;
+  bool opened;
+  std::streamsize result;
   unsigned int seed;
   unsigned char old;
   unsigned char buffer[4];
   unsigned char buffer_full[sizeof(data_)];
   FileDataSource *ds = new FileDataSource(filename_);
 
-  fileLength = ds->open();
-  EXPECT_EQ((std::streampos)sizeof(data_), fileLength);
+  opened = ds->open();
+  EXPECT_EQ(true, opened);
 
   result = ds->read(0, 0);
-  EXPECT_EQ((std::streampos)0, result);
+  EXPECT_EQ((std::streamsize)0, result);
 
   seed = (unsigned int)(time(NULL));
   buffer[0] = (unsigned char)(rand_r(&seed) % (255));
   old = buffer[0];
   result = ds->read(buffer, 0);
-  EXPECT_EQ((std::streampos)0, result);
+  EXPECT_EQ((std::streamsize)0, result);
   EXPECT_EQ(old, buffer[0]);
 
   result = ds->read(buffer, 1);
-  EXPECT_EQ((std::streampos)1, result);
+  EXPECT_EQ((std::streamsize)1, result);
   EXPECT_EQ(data_[0], buffer[0]);
 
   result = ds->read(buffer, 1);
-  EXPECT_EQ((std::streampos)1, result);
+  EXPECT_EQ((std::streamsize)1, result);
   EXPECT_EQ(data_[1], buffer[0]);
 
   result = ds->read(buffer, 4);
-  EXPECT_EQ((std::streampos)4, result);
+  EXPECT_EQ((std::streamsize)4, result);
   EXPECT_EQ(data_[2], buffer[0]);
   EXPECT_EQ(data_[3], buffer[1]);
   EXPECT_EQ(data_[4], buffer[2]);

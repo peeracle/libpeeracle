@@ -50,12 +50,18 @@ class DataSourceInterface {
    * Open the DataSource for reading.
    * @return The number of bytes that can be read from the DataSource.
    */
-  virtual std::streampos open() = 0;
+  virtual bool open() = 0;
 
   /**
    * Close the DataSource.
    */
   virtual void close() = 0;
+
+  /**
+   * Get the stream's length in bytes.
+   * @return The opened stream's length.
+   */
+  virtual std::streamsize length() const = 0;
 
   /**
    * Read up to \p length bytes of data from the cursor and store these into
@@ -74,7 +80,7 @@ class DataSourceInterface {
    * @param offset the position to move the cursor to.
    * @return The new cursor's position.
    */
-  virtual std::streampos seek(std::streampos offset) = 0;
+  virtual std::streamsize seek(std::streamsize offset) = 0;
 
  protected:
   virtual ~DataSourceInterface() {}

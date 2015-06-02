@@ -51,10 +51,11 @@ class HttpDataSource
   explicit HttpDataSource(const std::string &url);
   virtual ~HttpDataSource() {}
 
-  std::streampos open();
+  bool open();
   void close();
+  std::streamsize length() const;
   std::streamsize read(unsigned char *buffer, std::streamsize length);
-  std::streampos seek(std::streampos offset);
+  std::streamsize seek(std::streamsize offset);
 };
 
 /**

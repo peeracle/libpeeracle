@@ -27,40 +27,62 @@ namespace peeracle {
 namespace DataSource {
 
 FileDataSource::FileDataSource(const std::string &filename)
-: filename_(filename) {}
+  : filename_(filename) { }
 
-std::streampos FileDataSource::open() {
+bool FileDataSource::open() {
   this->file_.open(this->filename_.c_str(), std::ifstream::binary);
+
   if (!this->file_.is_open()) {
-    return 0;
+    return false;
   }
-  this->file_.seekg(0, std::ios::beg);
-  std::streampos tmp = this->file_.tellg();
+
+  std::streamsize tmp = this->file_.tellg();
   this->file_.seekg(0, std::ios::end);
   this->fileSize_ = this->file_.tellg() - tmp;
   this->file_.seekg(0, std::ios::beg);
-  return this->fileSize_;
+  return true;
 }
 
 void FileDataSource::close() {
+  if (!this->file_.is_open()) {
+    return;
+  }
+
   this->file_.close();
 }
 
 std::streamsize FileDataSource::read(unsigned char *buffer,
                                      std::streamsize length) {
-  int tmp = this->file_.tellg();
-  if (tmp + length > this->fileSize_)
-    length = this->fileSize_ - tmp;
-  this->file_.read((reinterpret_cast<char*>(buffer)), length);
-  return length;
+  if (!this->file_.is_open() || length < 1) {
+    return 0;
+  }
+
+  std::streampos cursor = this->file_.tellg();
+  if (cursor + length > this->fileSize_) {
+    length = this->fileSize_ - cursor;
+  }
+
+  this->file_.read(reinterpret_cast<char*>(buffer), length);
+  std::streamsize s = this->file_.gcount();
+  return s;
 }
 
-std::streampos FileDataSource::seek(std::streampos offset) {
+std::streamsize FileDataSource::seek(std::streamsize offset) {
+  if (!this->file_.is_open()) {
+    return 0;
+  }
+
   if (offset > this->fileSize_) {
     this->file_.seekg(this->fileSize_);
-    return this->fileSize_; } else {
-    this->file_.seekg(offset);
-    return offset; }
+    return this->file_.tellg();
+  }
+
+  this->file_.seekg(offset);
+  return this->file_.tellg();
+}
+
+std::streamsize FileDataSource::length() const {
+  return this->fileSize_;
 }
 
 }  // namespace DataSource

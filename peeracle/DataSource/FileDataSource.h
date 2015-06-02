@@ -53,14 +53,15 @@ class FileDataSource
   explicit FileDataSource(const std::string &filename);
   virtual ~FileDataSource() {}
 
-  std::streampos open();
+  bool open();
   void close();
+  std::streamsize length() const;
   std::streamsize read(unsigned char *buffer, std::streamsize length);
-  std::streampos seek(std::streampos offset);
+  std::streamsize seek(std::streamsize offset);
  protected:
-  const std::string &filename_;
+  const std::string filename_;
   std::ifstream file_;
-  int fileSize_;
+  std::streamsize fileSize_;
 };
 
 /**
