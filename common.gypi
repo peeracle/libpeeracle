@@ -16,8 +16,16 @@
         'outputs': [
           '>(INTERMEDIATE_DIR)/<(RULE_INPUT_NAME).lintstamp',
         ],
-        'action': [
-          'python', '>(_inputs)', '$$(pwd)/<(RULE_INPUT_PATH)'
+        'conditions': [
+          ['OS == "win"', {
+            'action': [
+              'python', '>(_inputs)', '<!(python <(DEPTH)\\scripts\\get_current_dir.py)\\<(RULE_INPUT_PATH)'
+            ],
+          }, {
+            'action': [
+              'python', '>(_inputs)', '$$(pwd)/<(RULE_INPUT_PATH)'
+            ],
+          }],
         ],
       },
       {
@@ -29,8 +37,16 @@
         'outputs': [
           '>(INTERMEDIATE_DIR)/<(RULE_INPUT_NAME).lintstamp',
         ],
-        'action': [
-          'python', '>(_inputs)', '$$(pwd)/<(RULE_INPUT_PATH)'
+        'conditions': [
+          ['OS == "win"', {
+            'action': [
+              'python', '>(_inputs)', '<!(python <(DEPTH)\\scripts\\get_current_dir.py)\\<(RULE_INPUT_PATH)'
+            ],
+          }, {
+            'action': [
+              'python', '>(_inputs)', '$$(pwd)/<(RULE_INPUT_PATH)'
+            ],
+          }],
         ],
       },
     ],
