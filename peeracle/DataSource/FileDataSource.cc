@@ -38,7 +38,8 @@ bool FileDataSource::open() {
 
   std::streamsize tmp = this->file_.tellg();
   this->file_.seekg(0, std::ios::end);
-  this->fileSize_ = this->file_.tellg() - tmp;
+  this->fileSize_ = static_cast<std::streamsize>
+    (this->file_.tellg()) - tmp;
   this->file_.seekg(0, std::ios::beg);
   return true;
 }
@@ -57,7 +58,7 @@ std::streamsize FileDataSource::read(unsigned char *buffer,
     return 0;
   }
 
-  std::streampos cursor = this->file_.tellg();
+  std::streamsize cursor = this->file_.tellg();
   if (cursor + length > this->fileSize_) {
     length = this->fileSize_ - cursor;
   }
