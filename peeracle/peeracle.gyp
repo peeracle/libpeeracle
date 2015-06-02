@@ -5,7 +5,7 @@
   'variables': {
     'conditions': [
       ['OS == "win"', {
-        'webrtc_dir': '<!(python build\\get_current_dir.py)\\..\third_party\\webrtc',
+        'webrtc_dir': '<!(python ..\\scripts\\get_current_dir.py)\\..\\third_party\\webrtc',
       }, {
         'webrtc_dir': '<!(pwd)/../third_party/webrtc',
       }],
@@ -41,7 +41,7 @@
           },
           'link_settings': {
             'libraries': [
-              '<!@(python scripts\\find_libs.py <(webrtc_dir)\\out\\<(configuration))',
+              '<!@(python ..\\scripts\\find_libs.py <(webrtc_dir)\\out\\<(configuration))',
               '-ladvapi32.lib',
               '-lamstrmid.lib',
               '-ldmoguids.lib',
