@@ -12,4 +12,4 @@
 	url = https://github.com/peeracle/googletest.git
 [submodule "third_party/curl"]
 	path = third_party/curl
-	url = git@github.com:peeracle/curl
+	url = https://github.com/peeracle/curl.git
