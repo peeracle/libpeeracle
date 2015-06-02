@@ -23,6 +23,7 @@
         'Hash/Hash.gyp:*',
         'Media/Media.gyp:*',
         'Metadata/Metadata.gyp:*',
+        'Tracker/Tracker.gyp:*',
       ],
       'cflags': [
         '-std=c++11',
