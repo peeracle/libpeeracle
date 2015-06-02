@@ -63,7 +63,8 @@ class FileDataSourceTest : public ::testing::Test {
       data_[i] = (unsigned char)(rand_r(&seed) % (255));
     }
 
-    tmpfile << data_;
+    // tmpfile << data_;
+    tmpfile.write(reinterpret_cast<char*>(data_), sizeof(data_));
     tmpfile.close();
   }
 
@@ -119,7 +120,7 @@ TEST_F(FileDataSourceTest, RandomFile) {
 
   ds->seek((std::streampos)(sizeof(data_) + 20));
   result = ds->read(buffer, 1);
-  EXPECT_EQ(fileLength, result);
+  EXPECT_EQ((std::streampos)0, result);
   EXPECT_EQ(data_[4], buffer[0]);
 
   ds->seek((std::streampos)0);

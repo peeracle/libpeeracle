@@ -23,6 +23,8 @@
 #ifndef PEERACLE_DATASOURCE_FILEDATASOURCE_H_
 #define PEERACLE_DATASOURCE_FILEDATASOURCE_H_
 
+#include <iostream>
+#include <fstream>
 #include <string>
 #include "DataSourceInterface.h"
 
@@ -55,6 +57,10 @@ class FileDataSource
   void close();
   std::streamsize read(unsigned char *buffer, std::streamsize length);
   std::streampos seek(std::streampos offset);
+ protected:
+  const std::string &filename_;
+  std::ifstream file_;
+  int fileSize_;
 };
 
 /**

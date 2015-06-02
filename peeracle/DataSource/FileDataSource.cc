@@ -26,23 +26,41 @@ namespace peeracle {
 
 namespace DataSource {
 
-FileDataSource::FileDataSource(const std::string &filename) {
-}
+FileDataSource::FileDataSource(const std::string &filename)
+: filename_(filename) {}
 
 std::streampos FileDataSource::open() {
-  return 0;
+  this->file_.open(this->filename_.c_str(), std::ifstream::binary);
+  if (!this->file_.is_open()) {
+    return 0;
+  }
+  this->file_.seekg(0, std::ios::beg);
+  std::streampos tmp = this->file_.tellg();
+  this->file_.seekg(0, std::ios::end);
+  this->fileSize_ = this->file_.tellg() - tmp;
+  this->file_.seekg(0, std::ios::beg);
+  return this->fileSize_;
 }
 
 void FileDataSource::close() {
+  this->file_.close();
 }
 
 std::streamsize FileDataSource::read(unsigned char *buffer,
                                      std::streamsize length) {
-  return 0;
+  int tmp = this->file_.tellg();
+  if (tmp + length > this->fileSize_)
+    length = this->fileSize_ - tmp;
+  this->file_.read((reinterpret_cast<char*>(buffer)), length);
+  return length;
 }
 
 std::streampos FileDataSource::seek(std::streampos offset) {
-  return 0;
+  if (offset > this->fileSize_) {
+    this->file_.seekg(this->fileSize_);
+    return this->fileSize_; } else {
+    this->file_.seekg(offset);
+    return offset; }
 }
 
 }  // namespace DataSource
