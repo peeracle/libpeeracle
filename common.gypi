@@ -3,6 +3,9 @@
     'build/common.gypi'
   ],
   'target_defaults': {
+    'defines': [
+      'LIBPEERACLE_REVISION="<!(git describe --tag --always)"',
+    ],
     'rules': [
       {
         'rule_name': 'lint_cc',
