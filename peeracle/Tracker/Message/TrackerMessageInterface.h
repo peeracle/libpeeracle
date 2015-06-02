@@ -23,11 +23,29 @@
 #ifndef PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
 #define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
 
+#include <string>
+
 namespace peeracle {
 
 class TrackerMessageInterface {
+ public:
+  enum Type {
+    kNone,
+    kHello,
+    kWelcome,
+    kAnnounce,
+    kOffer,
+    kAnswer,
+    kIce
+  };
+
+  virtual void set(const std::string& key, int value) = 0;
+  virtual void set(const std::string& key, const std::string& value) = 0;
+  virtual void get(const std::string& key, int *value) = 0;
+  virtual void get(const std::string& key, std::string *value) = 0;
+
  protected:
-  virtual ~TrackerMessageInterface() {}
+  virtual ~TrackerMessageInterface() { }
 };
 
 }  // namespace peeracle

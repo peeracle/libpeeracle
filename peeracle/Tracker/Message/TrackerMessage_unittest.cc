@@ -20,6 +20,8 @@
  * SOFTWARE.
  */
 
+#include <string>
+#include <sstream>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/Tracker/Message/TrackerMessage.h"
 
@@ -34,8 +36,29 @@ class TrackerMessageTest : public testing::Test {
   }
 };
 
-TEST_F(TrackerMessageTest, CreateMessage) {
+TEST_F(TrackerMessageTest, GetNSetInteger) {
+  int type;
   TrackerMessage *msg = new TrackerMessage();
+
+  msg->set("type", TrackerMessage::kHello);
+  msg->get("type", &type);
+  EXPECT_EQ(type, TrackerMessage::kHello);
+
+  delete msg;
+}
+
+TEST_F(TrackerMessageTest, GetNSetString) {
+  std::string rev;
+  std::stringstream strm;
+  TrackerMessage *msg = new TrackerMessage();
+
+  strm << "libpeeracle-" << LIBPEERACLE_REVISION;
+  rev = strm.str();
+
+  std::string resultStr;
+  msg->set("client", rev);
+  msg->get("client", &resultStr);
+  EXPECT_EQ(rev, resultStr);
 
   delete msg;
 }

@@ -21,3 +21,19 @@
  */
 
 #include "peeracle/Tracker/Message/TrackerMessage.h"
+
+namespace peeracle {
+
+void TrackerMessage::set(const std::string &key, int value) {
+}
+
+void TrackerMessage::set(const std::string &key, const std::string &value) {
+}
+
+void TrackerMessage::get(const std::string &key, int *value) {
+}
+
+void TrackerMessage::get(const std::string &key, std::string *value) {
+}
+
+}  // namespace peeracle

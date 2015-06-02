@@ -23,12 +23,18 @@
 #ifndef PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
 #define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
 
+#include <string>
 #include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 
 namespace peeracle {
 
 class TrackerMessage : public TrackerMessageInterface {
  public:
+  virtual void set(const std::string &key, int value);
+  virtual void set(const std::string &key, const std::string &value);
+  virtual void get(const std::string &key, int *value);
+  virtual void get(const std::string &key, std::string *value);
+
   virtual ~TrackerMessage() {}
 };
 
