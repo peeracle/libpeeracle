@@ -13,6 +13,9 @@
       'include_dirs': [
         '<(DEPTH)',
       ],
+      'dependencies': [
+        '<(DEPTH)/third_party/curl/curl.gyp:*',
+      ],
       'sources': [
         'DataSourceInterface.h',
         'FileDataSource.cc',
