@@ -16,10 +16,7 @@ install:
 - python webrtc/build/gyp_webrtc.py
 - ninja -C out/Release
 - cd ../..
-- gyp build.gyp -f ninja -Dconfiguration=Release --no-circular-check --check
-  -Ithird_party/webrtc/webrtc/build/common.gypi
-  -Ithird_party/webrtc/webrtc/supplement.gypi
-  --depth=.
+- ./gyp.sh
 
 script:
 - ninja -C out/Release
