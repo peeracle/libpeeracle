@@ -2,7 +2,7 @@
 version: "{build}"
 
 # Operating system (build VM template)
-os: Visual Studio Community 2013 with Update 4
+# os: Visual Studio Community 2013 with Update 4
 
 # build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
 platform:
@@ -46,6 +46,7 @@ before_build:
   - cmd: cd third_party\webrtc
   - cmd: python setup_links.py -f -n
   - cmd: cd ..\..
+  - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
   - cmd: python gyp_peeracle.py
   - cmd: cd build
 
