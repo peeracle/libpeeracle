@@ -28,7 +28,11 @@ import vs_toolchain
 sys.path.insert(0, os.path.join(checkout_root, webrtc_root, 'tools', 'gyp',
   'pylib'))
 
+sys.path.insert(0, os.path.join(checkout_root, webrtc_root, 'tools', 'clang',
+  'scripts'))
+
 import gyp
+import update
 
 def GetSupplementalFiles():
   """Returns a list of the supplemental files that are included in all GYP
@@ -50,6 +54,8 @@ if __name__ == '__main__':
     gyp_env_path = os.path.join(os.path.dirname(checkout_root),
                                 'webrtc.gyp_env')
     gyp_helper.apply_gyp_environment_from_file(gyp_env_path)
+
+  update.main()
 
   # This could give false positives since it doesn't actually do real option
   # parsing.  Oh well.
@@ -103,7 +109,6 @@ if __name__ == '__main__':
   # Set the gyp depth variable to the root of the checkout.
   args.append('--depth=' + os.path.relpath(checkout_root))
 
-  print repr(args)
   print 'Updating projects from gyp files...'
   sys.stdout.flush()
 
