@@ -1,6 +1,12 @@
 # Specify version format
 version: "{build}"
 
+notifications:
+  - provider: Slack
+    auth_token:
+      secure: /Skjk2rKaHX6RpI2yGEbIdSSA+U2/nhHpC6dEQhF/La8+NyMhyvdkYYbpu7g57Ez
+    channel: libpeeracle
+
 # Operating system (build VM template)
 # os: Visual Studio Community 2013 with Update 4
 
