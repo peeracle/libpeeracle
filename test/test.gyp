@@ -1,7 +1,4 @@
 {
-  'includes': [
-    '../build/common.gypi'
-  ],
   'targets': [
     {
       'target_name': 'peeracle_tests_utils',
