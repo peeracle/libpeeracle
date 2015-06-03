@@ -58,4 +58,4 @@ build:
   parallel: true
 
   # MSBuild verbosity level (quiet|minimal|normal|detailed)
-  verbosity: detailed
+  verbosity: minimal
