@@ -147,7 +147,7 @@ Generate the build scripts everytime you edit a GYP file, these commands
 **MUST** be run from the Windows Command Prompt if you are using Windows.
 
 ```
-python gyp_peeracle
+python gyp_peeracle.py
 ```
 
 Then build
