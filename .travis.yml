@@ -10,12 +10,6 @@ install:
 - unset CC
 - unset CXX
 - export PATH=$PATH:`pwd`/third_party/depot_tools
-- export PATH=$PATH:`pwd`/third_party/gyp
-- cd third_party/webrtc
-- bash tools/clang/scripts/update.sh
-- python webrtc/build/gyp_webrtc.py
-- ninja -C out/Release
-- cd ../..
 - ./gyp_peeracle
 
 script:
