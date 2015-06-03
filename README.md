@@ -17,13 +17,9 @@ with Objective-C and Java bindings for iOS and Android applications.
   * [Getting the source code](#getting-the-source-code)
     * [Cloning libpeeracle](#cloning-libpeeracle)
     * [Cloning depot_tools](#cloning-depot_tools)
-    * [Cloning GYP](#cloning-gyp)
-    * [Cloning WebRTC](#cloning-webrtc)
   * [Windows, Git and Symbolic Links](#windows-git-and-symbolic-links)
     * [Install the symlink script](#install-the-symlink-script)
   * [Compiling](#compiling)
-    * [Compiling WebRTC](#compiling-webrtc)
-    * [Compiling libpeeracle](#compiling-libpeeracle)
 
 ## Setting up the Development Environment
 
@@ -50,13 +46,11 @@ First, clone the repository
 $ git clone https://github.com/peeracle/libpeeracle.git
 ```
 
-#### Cloning depot_tools
-
-Retrieve [depot_tools](https://www.chromium.org/developers/how-tos/install-depot-tools) if you don't have it
+Init the submodules
 
 ```bash
-$ git submodule init third_party/depot_tools
-$ git submodule update third_party/depot_tools
+$ git submodule init
+$ git submodule update
 ```
 
 Add depot_tools to your PATH environment variable
@@ -69,34 +63,6 @@ $ export PATH=$PATH:`pwd`/third_party/depot_tools
 - Windows
 ```cmd
 > set PATH=%PATH%;%cd%\third_party\depot_tools
-```
-
-#### Cloning GYP
-
-The same goes for [GYP](https://chromium.googlesource.com/external/gyp) :
-
-```bash
-$ git submodule init third_party/gyp
-$ git submodule update third_party/gyp
-```
-
-- Linux, Mac OS X
-```bash
-$ export PATH=$PATH:`pwd`/third_party/gyp
-```
-
-- Windows
-```cmd
-> set PATH=%PATH%;%cd%\third_party\gyp
-```
-
-#### Cloning WebRTC
-
-Retrieve WebRTC
-
-```bash
-$ git submodule init third_party/webrtc
-$ git submodule update third_party/webrtc
 ```
 
 ### Windows, Git and Symbolic Links
@@ -177,43 +143,15 @@ It might display three failures, you shouldn't worry about it.
 
 ### Compiling
 
-#### Compiling WebRTC
+Generate the build scripts everytime you edit a GYP file, these commands
+**MUST** be run from the Windows Command Prompt if you are using Windows.
 
-Get inside the WebRTC repository :
-
-```bash
-$ cd third_party/webrtc
+```
+python gyp_peeracle
 ```
 
-Linux and Mac OS X users must retrieve another clang binary with the following command :
+Then build
 
-```bash
-$ ./tools/clang/scripts/update.sh
 ```
-
-Generate the build scripts and run ninja, Windows users **MUST** run these commands from their Windows CMD Prompt and not from a GNU Shell :
-
-```bash
-$ python webrtc/build/gyp_webrtc.py
-$ ninja -C out/Release
-```
-
-#### Compiling libpeeracle
-
-Simply go back to the libpeeracle repository and generate the build scripts
-
-```bash
-$ cd ../..
-$ gyp build.gyp -f ninja -Dconfiguration=Release --no-circular-check --check -Ithird_party/webrtc/webrtc/build/common.gypi -Ithird_party/webrtc/webrtc/supplement.gypi --depth=.
-```
-
-If you don't like ninja, you can replace `-f ninja` by one of the following :
-- `-f make` - Unix Makefile, then simply run `$ make`
-- `-f msvs` - Visual Studio solution, then open `build.sln`
-- `-f xcode` - XCode
-
-Otherwise, just run
-
-```bash
-$ ninja -C out/Release
+ninja -C out/Release
 ```
