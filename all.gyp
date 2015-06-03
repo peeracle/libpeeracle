@@ -1,7 +1,4 @@
 {
-  'includes': [
-    'build/common.gypi'
-  ],
   'targets': [
     {
       'target_name': 'build',
@@ -10,13 +7,7 @@
         'peeracle/peeracle.gyp:*',
         'samples/samples.gyp:*',
         'test/test.gyp:*',
-      ],
-      'conditions': [
-        ['java_home!=0', {
-          'dependencies': [
-            'java/java.gyp:*',
-          ],
-        }],
+        'java/java.gyp:*',
       ],
     },
   ]
