@@ -1,6 +1,6 @@
 {
   'includes': [
-    '../common.gypi',
+    '../build/common.gypi'
   ],
   'variables': {
     'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); print dir if os.path.exists(os.path.join(dir, \'include/jni.h\')) else 0")',
@@ -12,7 +12,7 @@
           'target_name': 'libpeeracle_so',
           'type': 'shared_library',
           'dependencies': [
-            '<(DEPTH)/peeracle/peeracle.gyp:peeracle',
+            '<(peeracle_root)/peeracle/peeracle.gyp:peeracle',
           ],
           'cflags': [
             '-fPIC'
@@ -62,7 +62,7 @@
                 ['OS=="android"', {
                   'variables': {
                     'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
-                    'build_classpath': '<(java_src_dir):<(DEPTH)/third_party/android_tools/sdk/platforms/android-<(android_sdk_version)/android.jar',
+                    'build_classpath': '<(java_src_dir):<(peeracle_root)/third_party/android_tools/sdk/platforms/android-<(android_sdk_version)/android.jar',
                   },
                 }, {
                   'variables': {
