@@ -21,6 +21,7 @@
  */
 
 #include <string>
+#include "third_party/curl/include/curl/curl.h"
 #include "peeracle/DataSource/HttpDataSource.h"
 
 namespace peeracle {
@@ -28,6 +29,7 @@ namespace peeracle {
 namespace DataSource {
 
 HttpDataSource::HttpDataSource(const std::string &url) {
+  curl_easy_init();
 }
 
 bool HttpDataSource::open() {
