@@ -25,12 +25,8 @@
 
 namespace peeracle {
 
-namespace Metadata {
-
 class Metadata {
 };
-
-}  // namespace Metadata
 
 }  // namespace peeracle
 

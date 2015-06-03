@@ -25,12 +25,8 @@
 
 namespace peeracle {
 
-namespace Metadata {
-
 class MetadataSerializer {
 };
-
-}  // namespace Metadata
 
 }  // namespace peeracle
 

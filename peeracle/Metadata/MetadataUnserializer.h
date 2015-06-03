@@ -25,12 +25,8 @@
 
 namespace peeracle {
 
-namespace Metadata {
-
 class MetadataUnserializer {
 };
-
-}  // namespace Metadata
 
 }  // namespace peeracle
 
