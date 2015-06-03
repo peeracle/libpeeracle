@@ -5,3 +5,4 @@ Makefile
 *.target.mk
 out/
 atlassian-ide-plugin.xml
+java/libpeeracle.iml
