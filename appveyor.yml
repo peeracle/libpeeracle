@@ -40,6 +40,8 @@ install:
 # scripts to run before build
 before_build:
   - cmd: cd C:\projects\libpeeracle
+  - cmd: git submodule init
+  - cmd: git submodule update
   - cmd: set PATH=%PATH%;%cd%\third_party\depot_tools
   - cmd: python third_party\webrtc\setup_links.py
   - cmd: python gyp_peeracle.py
