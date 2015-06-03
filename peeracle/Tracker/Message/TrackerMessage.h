@@ -30,10 +30,10 @@ namespace peeracle {
 
 class TrackerMessage : public TrackerMessageInterface {
  public:
-  virtual void set(const std::string &key, int value);
-  virtual void set(const std::string &key, const std::string &value);
-  virtual void get(const std::string &key, int *value);
-  virtual void get(const std::string &key, std::string *value);
+  void set(const std::string &key, int value);
+  void set(const std::string &key, const std::string &value);
+  void get(const std::string &key, int *value);
+  void get(const std::string &key, std::string *value);
 
   virtual ~TrackerMessage() {}
 };
