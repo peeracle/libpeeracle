@@ -43,7 +43,7 @@ before_build:
   - cmd: git submodule init
   - cmd: git submodule update
   - cmd: set PATH=%PATH%;%cd%\third_party\depot_tools
-  - cmd: python third_party\webrtc\setup_links.py
+  - cmd: python third_party\webrtc\setup_links.py -f -n
   - cmd: python gyp_peeracle.py
   - cmd: cd build
 
