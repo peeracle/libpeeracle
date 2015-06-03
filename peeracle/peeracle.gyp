@@ -13,6 +13,9 @@
         'Metadata/Metadata.gyp:*',
         'Tracker/Tracker.gyp:*',
       ],
+      'sources': [
+        'empty.cc',
+      ],
     },
   ],
 }
