@@ -2,7 +2,7 @@
 version: "{build}"
 
 # Operating system (build VM template)
-# os: Windows Server 2012 R2
+os: Visual Studio Community 2013 with Update 4
 
 # build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
 platform:
