@@ -16,7 +16,7 @@ install:
 - python webrtc/build/gyp_webrtc.py
 - ninja -C out/Release
 - cd ../..
-- ./gyp.sh
+- ./gyp_peeracle
 
 script:
 - ninja -C out/Release
