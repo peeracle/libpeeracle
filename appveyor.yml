@@ -1,0 +1,55 @@
+# Specify version format
+version: "{build}"
+
+# Operating system (build VM template)
+# os: Windows Server 2012 R2
+
+# build platform, i.e. Win32 (instead of x86), x64, Any CPU. This setting is optional.
+platform:
+  - Win32
+# - x64
+
+# specify custom environment variables
+environment:
+  GYP_GENERATORS: msvs
+
+# build Configuration, i.e. Debug, Release, etc.
+configuration:
+  - Release
+# - Debug
+
+# scripts that are called at very beginning, before repo cloning
+init:
+  - cmd: msbuild /version
+
+# clone directory
+clone_folder: C:\projects\libpeeracle
+
+# branches to build
+branches:
+  # whitelist
+  only:
+    - master
+
+# scripts that run after cloning repository
+install:
+  - cmd: cd C:\projects
+  # - ps: Start-FileDownload 'http://url_here'
+  # - cmd: C:\projects\themsi_here.msi
+
+# scripts to run before build
+before_build:
+  - cmd: cd C:\projects\libpeeracle
+  - cmd: set PATH=%PATH%;%cd%\third_party\depot_tools
+  - cmd: python third_party\webrtc\setup_links.py
+  - cmd: python gyp_peeracle.py
+  - cmd: cd build
+
+build:
+  project: C:\projects\libpeeracle\all.sln
+
+  # enable MSBuild parallel builds
+  parallel: true
+
+  # MSBuild verbosity level (quiet|minimal|normal|detailed)
+  verbosity: detailed
