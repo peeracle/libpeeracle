@@ -29,6 +29,11 @@
 namespace peeracle {
 
 class TrackerMessage : public TrackerMessageInterface {
+ private:
+  Type _type;
+  std::string _key;
+  std::string _rev;
+
  public:
   void set(const std::string &key, int value);
   void set(const std::string &key, const std::string &value);

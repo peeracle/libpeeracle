@@ -42,7 +42,7 @@ TEST_F(TrackerMessageTest, GetNSetInteger) {
 
   msg->set("type", TrackerMessage::kHello);
   msg->get("type", &type);
-  EXPECT_EQ(type, TrackerMessage::kHello);
+  EXPECT_EQ(TrackerMessage::kHello, type);
 
   delete msg;
 }

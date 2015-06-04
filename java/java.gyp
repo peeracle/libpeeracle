@@ -23,6 +23,7 @@
           'include_dirs': [
             '<(java_home)/include',
             '<(java_home)/include/linux',
+            '<(java_home)/include/darwin',
           ],
           'sources': [
             'jni/peeracle_jni.cc',
