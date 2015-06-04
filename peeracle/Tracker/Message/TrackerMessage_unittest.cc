@@ -56,7 +56,7 @@ TEST_F(TrackerMessageTest, GetNSet) {
   EXPECT_EQ("hello", type);
   EXPECT_EQ(130, version);
   EXPECT_EQ("crc32", hash);
-  EXPECT_EQ("iAmEmpty", empty);
+  EXPECT_EQ("", empty);
 
   delete msg;
 }
