@@ -7,7 +7,7 @@
       'LIBPEERACLE_REVISION="<!(git describe --tag --always)"',
     ],
     'conditions': [
-      ['OS != "win"', {
+      #['GENERATOR == "ninja"', {
         'rules': [
           {
             'rule_name': 'lint_cc',
@@ -52,7 +52,7 @@
             ],
           },
         ],
-      }],
+      #}],
     ],
   },
 }
