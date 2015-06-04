@@ -25,8 +25,6 @@
 
 namespace peeracle {
 
-namespace Metadata {
-
 class MetadataTest : public testing::Test {
  protected:
   MetadataTest() : metadata_(NULL) {
@@ -41,7 +39,5 @@ class MetadataTest : public testing::Test {
 
   Metadata *metadata_;
 };
-
-}  // namespace Metadata
 
 }  // namespace peeracle

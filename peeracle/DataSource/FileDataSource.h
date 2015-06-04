@@ -38,13 +38,6 @@ namespace peeracle {
 
 /**
  * \addtogroup DataSource
- * @{
- * @namespace peeracle::DataSource
- * @brief DataSource namespace
- */
-namespace DataSource {
-
-/**
  * A class that retrieves data from a local file.
  */
 class FileDataSource
@@ -63,11 +56,6 @@ class FileDataSource
   std::ifstream file_;
   std::streamsize fileSize_;
 };
-
-/**
- * @}
- */
-}  // namespace DataSource
 
 /**
  * @}

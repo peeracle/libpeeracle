@@ -24,8 +24,6 @@
 
 namespace peeracle {
 
-namespace DataSource {
-
 FileDataSource::FileDataSource(const std::string &filename)
   : filename_(filename) { }
 
@@ -85,7 +83,5 @@ std::streamsize FileDataSource::seek(std::streamsize offset) {
 std::streamsize FileDataSource::length() const {
   return this->fileSize_;
 }
-
-}  // namespace DataSource
 
 }  // namespace peeracle

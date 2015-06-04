@@ -20,45 +20,57 @@
  * SOFTWARE.
  */
 
+#include <fstream>
+#include <cstdlib>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
+#include "peeracle/DataSource/FileDataSource.h"
 #include "peeracle/DataSource/HttpDataSource.h"
 
 namespace peeracle {
 
-namespace DataSource {
+#ifdef _MSC_VER
+int rand_r(unsigned int *seed) {
+  srand(*seed);
+  return rand();
+}
+#endif
 
-class HttpDataSourceTest : public testing::Test {
+typedef ::testing::Types<FileDataSource, HttpDataSource> DataSourceTypes;
+TYPED_TEST_CASE(DataSourceTest, DataSourceTypes);
+
+template <typename T>
+class DataSourceTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
+    unsigned int seed;
+    const ::testing::TestInfo* const test_info =
+      ::testing::UnitTest::GetInstance()->current_test_info();
+
+    std::stringstream strm;
+    strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
+    filename_ = strm.str();
+
+    std::ofstream tmpfile(filename_.c_str(),
+                          std::ofstream::out | std::ofstream::binary);
+
+    seed = (unsigned int)(time(NULL));
+    for (size_t i = 0; i < sizeof(data_); i++) {
+      data_[i] = (unsigned char)(rand_r(&seed) % (255));
+    }
+
+    tmpfile.write(reinterpret_cast<char*>(data_), sizeof(data_));
+    tmpfile.close();
   }
 
   virtual void TearDown() {
+    remove(filename_.c_str());
   }
+
+  std::string filename_;
+  unsigned char data_[64];
 };
 
-TEST_F(HttpDataSourceTest, InvalidUrl) {
-  std::streampos result;
-  unsigned char buffer[4] = { 0, 0, 0, 0 };
-  HttpDataSource *ds = new HttpDataSource("http://invalid_url");
-
-  result = ds->open();
-  EXPECT_EQ((std::streampos)0, result);
-
-  result = ds->read(buffer, 1);
-  EXPECT_EQ((std::streampos)0, result);
-  EXPECT_EQ(0, buffer[0]);
-
-  result = ds->read(buffer, 4);
-  EXPECT_EQ((std::streampos)0, result);
-  EXPECT_EQ(0, buffer[0]);
-  EXPECT_EQ(0, buffer[1]);
-  EXPECT_EQ(0, buffer[2]);
-  EXPECT_EQ(0, buffer[3]);
-
-  ds->close();
-  delete ds;
+TYPED_TEST(DataSourceTest, OpenShouldFail) {
 }
-
-}  // namespace DataSource
 
 }  // namespace peeracle

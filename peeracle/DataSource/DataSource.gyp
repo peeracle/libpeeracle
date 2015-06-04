@@ -35,8 +35,7 @@
         '<(DEPTH)',
       ],
       'sources': [
-        'FileDataSource_unittest.cc',
-        'HttpDataSource_unittest.cc',
+        'DataSource_unittest.cc',
       ],
     },
   ],

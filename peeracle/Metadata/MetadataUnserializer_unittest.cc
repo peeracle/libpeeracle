@@ -25,8 +25,6 @@
 
 namespace peeracle {
 
-namespace Metadata {
-
 class MetadataUnserializerTest : public testing::Test {
  protected:
   MetadataUnserializerTest() : metadataUnserializer_(NULL) {
@@ -41,7 +39,5 @@ class MetadataUnserializerTest : public testing::Test {
 
   MetadataUnserializer *metadataUnserializer_;
 };
-
-}  // namespace Metadata
 
 }  // namespace peeracle

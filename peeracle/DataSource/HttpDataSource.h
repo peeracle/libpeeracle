@@ -36,13 +36,6 @@ namespace peeracle {
 
 /**
  * \addtogroup DataSource
- * @{
- * @namespace peeracle::DataSource
- * @brief DataSource namespace
- */
-namespace DataSource {
-
-/**
  * A class that retrieves data remotely with the HTTP protocol.
  */
 class HttpDataSource
@@ -57,11 +50,6 @@ class HttpDataSource
   std::streamsize read(unsigned char *buffer, std::streamsize length);
   std::streamsize seek(std::streamsize offset);
 };
-
-/**
- * @}
- */
-}  // namespace DataSource
 
 /**
  * @}

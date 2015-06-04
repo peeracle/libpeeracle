@@ -26,8 +26,6 @@
 
 namespace peeracle {
 
-namespace DataSource {
-
 HttpDataSource::HttpDataSource(const std::string &url) {
   curl_easy_init();
 }
@@ -51,7 +49,5 @@ std::streamsize HttpDataSource::read(unsigned char *buffer,
 std::streamsize HttpDataSource::seek(std::streamsize offset) {
   return 0;
 }
-
-}  // namespace DataSource
 
 }  // namespace peeracle
