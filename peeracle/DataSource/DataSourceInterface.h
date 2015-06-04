@@ -35,13 +35,6 @@ namespace peeracle {
 
 /**
  * \addtogroup DataSource
- * @{
- * @namespace peeracle::DataSource
- * @brief DataSource namespace
- */
-namespace DataSource {
-
-/**
  * DataSource module interface.
  */
 class DataSourceInterface {
@@ -85,11 +78,6 @@ class DataSourceInterface {
  protected:
   virtual ~DataSourceInterface() {}
 };
-
-/**
- * @}
- */
-}  // namespace DataSource
 
 /**
  * @}
