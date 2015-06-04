@@ -6,7 +6,7 @@
     'defines': [
       'LIBPEERACLE_REVISION="<!(git describe --tag --always)"',
     ],
-    'conditions': [
+    #'conditions': [
       #['GENERATOR == "ninja"', {
         'rules': [
           {
@@ -53,6 +53,6 @@
           },
         ],
       #}],
-    ],
+    #],
   },
 }
