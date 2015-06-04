@@ -6,8 +6,8 @@
     'defines': [
       'LIBPEERACLE_REVISION="<!(git describe --tag --always)"',
     ],
-    #'conditions': [
-      #['GENERATOR == "ninja"', {
+    'conditions': [
+      ['GENERATOR != "msvs"', {
         'rules': [
           {
             'rule_name': 'lint_cc',
@@ -52,7 +52,7 @@
             ],
           },
         ],
-      #}],
-    #],
+      }],
+    ],
   },
 }
