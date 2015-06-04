@@ -6,13 +6,6 @@
     {
       'target_name': 'peeracle_media',
       'type': 'static_library',
-      'cflags': [
-        '-std=c++11',
-        '-fPIC'
-      ],
-      'include_dirs': [
-        '<(DEPTH)',
-      ],
       'sources': [
         'MediaInterface.h',
         'MP3Media.cc',
@@ -29,9 +22,6 @@
       'dependencies': [
         'peeracle_media',
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
-      ],
-      'include_dirs': [
-        '<(DEPTH)',
       ],
       'sources': [
         'MP3Media_unittest.cc',

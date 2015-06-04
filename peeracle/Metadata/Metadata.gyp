@@ -6,13 +6,6 @@
     {
       'target_name': 'peeracle_metadata',
       'type': 'static_library',
-      'cflags': [
-        '-std=c++11',
-        '-fPIC'
-      ],
-      'include_dirs': [
-        '<(DEPTH)',
-      ],
       'sources': [
         'MetadataInterface.h',
         'Metadata.cc',
@@ -31,9 +24,6 @@
       'dependencies': [
         'peeracle_metadata',
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
-      ],
-      'include_dirs': [
-        '<(DEPTH)',
       ],
       'sources': [
         'Metadata_unittest.cc',

@@ -6,13 +6,6 @@
     {
       'target_name': 'peeracle_datasource',
       'type': 'static_library',
-      'cflags': [
-        '-std=c++11',
-        '-fPIC'
-      ],
-      'include_dirs': [
-        '<(DEPTH)',
-      ],
       'dependencies': [
         '<(DEPTH)/third_party/curl/curl.gyp:*',
       ],
@@ -30,9 +23,6 @@
       'dependencies': [
         'peeracle_datasource',
         '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
-      ],
-      'include_dirs': [
-        '<(DEPTH)',
       ],
       'sources': [
         'DataSource_unittest.cc',
