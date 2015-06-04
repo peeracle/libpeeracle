@@ -63,4 +63,33 @@ TEST_F(TrackerMessageTest, GetNSetString) {
   delete msg;
 }
 
+TEST_F(TrackerMessageTest, GetNSetBoth) {
+  int type;
+  std::string rev;
+  std::stringstream strm;
+  TrackerMessage *msg = new TrackerMessage();
+
+  strm << "libpeeracle-" << LIBPEERACLE_REVISION;
+  rev = strm.str();
+
+  msg->set("type", TrackerMessage::kHello);
+  msg->get("type", &type);
+  EXPECT_EQ(type, TrackerMessage::kHello);
+
+  std::string resultStr;
+  msg->set("client", rev);
+  msg->get("client", &resultStr);
+  EXPECT_EQ(rev, resultStr);
+
+  type = TrackerMessage::kNone;
+  msg->get("type", &type);
+  EXPECT_EQ(type, TrackerMessage::kHello);
+
+  resultStr = "";
+  msg->get("client", &resultStr);
+  EXPECT_EQ(rev, resultStr);
+
+  delete msg;
+}
+
 }  // namespace peeracle
