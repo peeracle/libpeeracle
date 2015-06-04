@@ -36,4 +36,15 @@ void TrackerMessage::get(const std::string &key, int *value) {
 void TrackerMessage::get(const std::string &key, std::string *value) {
 }
 
+unsigned int TrackerMessage::getByteLength() {
+  return 0;
+}
+
+void TrackerMessage::serialize(unsigned char *buffer, unsigned int length) {
+}
+
+void TrackerMessage::unserialize(const unsigned char *buffer,
+                                 unsigned int length) {
+}
+
 }  // namespace peeracle
