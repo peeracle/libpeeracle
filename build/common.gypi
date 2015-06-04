@@ -6,6 +6,9 @@
     'defines': [
       'LIBPEERACLE_REVISION="<!(git describe --tag --always)"',
     ],
+    'include_dirs': [
+      '<(DEPTH)',
+    ],
     'conditions': [
       ['GENERATOR != "msvs"', {
         'rules': [

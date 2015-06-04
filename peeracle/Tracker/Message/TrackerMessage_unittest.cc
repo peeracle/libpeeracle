@@ -36,58 +36,27 @@ class TrackerMessageTest : public testing::Test {
   }
 };
 
-TEST_F(TrackerMessageTest, GetNSetInteger) {
-  int type;
+TEST_F(TrackerMessageTest, GetNSet) {
+  int version;
+  std::string type;
+  std::string hash;
+  std::string empty;
   TrackerMessage *msg = new TrackerMessage();
 
-  msg->set("type", TrackerMessage::kHello);
+  msg->set("type", "hello");
+  msg->set("version", 130);
+  msg->set("hash", "crc32");
+  msg->set("iAmEmpty", "");
+
   msg->get("type", &type);
-  EXPECT_EQ(type, TrackerMessage::kHello);
+  msg->get("version", &version);
+  msg->get("hash", &hash);
+  msg->get("iAmEmpty", &empty);
 
-  delete msg;
-}
-
-TEST_F(TrackerMessageTest, GetNSetString) {
-  std::string rev;
-  std::stringstream strm;
-  TrackerMessage *msg = new TrackerMessage();
-
-  strm << "libpeeracle-" << LIBPEERACLE_REVISION;
-  rev = strm.str();
-
-  std::string resultStr;
-  msg->set("client", rev);
-  msg->get("client", &resultStr);
-  EXPECT_EQ(rev, resultStr);
-
-  delete msg;
-}
-
-TEST_F(TrackerMessageTest, GetNSetBoth) {
-  int type;
-  std::string rev;
-  std::stringstream strm;
-  TrackerMessage *msg = new TrackerMessage();
-
-  strm << "libpeeracle-" << LIBPEERACLE_REVISION;
-  rev = strm.str();
-
-  msg->set("type", TrackerMessage::kHello);
-  msg->get("type", &type);
-  EXPECT_EQ(type, TrackerMessage::kHello);
-
-  std::string resultStr;
-  msg->set("client", rev);
-  msg->get("client", &resultStr);
-  EXPECT_EQ(rev, resultStr);
-
-  type = TrackerMessage::kNone;
-  msg->get("type", &type);
-  EXPECT_EQ(type, TrackerMessage::kHello);
-
-  resultStr = "";
-  msg->get("client", &resultStr);
-  EXPECT_EQ(rev, resultStr);
+  EXPECT_EQ("hello", type);
+  EXPECT_EQ(130, version);
+  EXPECT_EQ("crc32", hash);
+  EXPECT_EQ("iAmEmpty", empty);
 
   delete msg;
 }
