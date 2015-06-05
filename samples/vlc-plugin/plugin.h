@@ -23,8 +23,8 @@
 #ifndef SAMPLES_VLCPLUGIN_PLUGIN_H_
 #define SAMPLES_VLCPLUGIN_PLUGIN_H_
 
-#include "third_party/vlc/include/vlc_common.h"
-#include "third_party/vlc/include/vlc_stream.h"
+#include <vlc_common.h>
+#include <vlc_stream.h>
 
 #define VLC_MODULE_COPYRIGHT \
     "\x43\x6f\x70\x79\x72\x69\x67\x68\x74\x20\x28\x43\x29\x20\x74\x68" \
@@ -39,6 +39,6 @@
     "\x69\x63\x20\x4c\x69\x63\x65\x6e\x73\x65\x2c\x20\x76\x65\x72\x73" \
     "\x69\x6f\x6e\x20\x32\x20\x6f\x72\x20\x6c\x61\x74\x65\x72\x2e"
 
-#include "third_party/vlc/include/vlc_plugin.h"
+#include <vlc_plugin.h>
 
 #endif  // SAMPLES_VLCPLUGIN_PLUGIN_H_

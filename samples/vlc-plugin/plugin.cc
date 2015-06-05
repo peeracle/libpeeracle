@@ -20,10 +20,6 @@
  * SOFTWARE.
  */
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
 #include "samples/vlc-plugin/plugin.h"
 
 int AccessOpen(vlc_object_t *p_this);
@@ -75,7 +71,7 @@ int StreamOpen(vlc_object_t *p_this) {
   stream_sys_t *p_sys;
   const uint8_t *p_peek;
 
-  printf("peeracle_plugin StreamOpen\n");
+  msg_Info(p_this, "peeracle_plugin StreamOpen\n");
   if (stream_Peek(s->p_source, &p_peek, i_prcl_marker) < i_prcl_marker) {
     printf("peeracle_plugin: Couldn't read 4 bytes.\n");
     return VLC_EGENERIC;
