@@ -13,3 +13,6 @@
 [submodule "third_party/libwebsockets"]
 	path = third_party/libwebsockets
 	url = https://github.com/peeracle/libwebsockets.git
+[submodule "third_party/vlc"]
+	path = third_party/vlc
+	url = https://github.com/peeracle/vlc.git
