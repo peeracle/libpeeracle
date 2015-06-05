@@ -7,7 +7,8 @@
       'target_name': 'samples',
       'type': 'none',
       'dependencies': [
-        'seed/seed.gyp:*'
+        'seed/seed.gyp:*',
+        'vlc-plugin/vlc-plugin.gyp:*'
       ],
     }
   ]
