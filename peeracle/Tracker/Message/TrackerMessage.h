@@ -24,6 +24,7 @@
 #define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
 
 #include <string>
+#include <sstream>
 #include <map>
 #include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 
@@ -31,8 +32,7 @@ namespace peeracle {
 
 class TrackerMessage : public TrackerMessageInterface {
  private:
-  std::map <std::string, std::string> _charData;
-  std::map <std::string, int> _intData;
+  std::map <std::string, std::string> _data;
 
  public:
   void set(const std::string &key, int value);
