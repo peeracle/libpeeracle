@@ -41,9 +41,52 @@ def GetSupplementalFiles():
   # is different.
   return glob.glob(os.path.join(checkout_root, 'build', 'supplement.gypi'))
 
+from optparse import OptionParser
 
 if __name__ == '__main__':
-  args = sys.argv[1:]
+  # args = sys.argv[1:]
+
+  # Set the gyp defines
+  usage = 'usage: %prog [options]'
+  parser = OptionParser(usage=usage)
+
+  parser.add_option('--disable-java', default=False, action='store_true',
+                    help='do not build Java bindings and samples')
+
+  parser.add_option('--disable-objc', default=False, action='store_true',
+                    help='do not build Objective-C bindings and samples')
+
+  parser.add_option('--disable-tests', default=False, action='store_true',
+                    help='do not build unit tests')
+
+  parser.add_option('--disable-samples', default=False, action='store_true',
+                    help='do not build samples')
+
+  parser.add_option('--disable-vlcplugin', default=False, action='store_true',
+                    help='do not build VLC plugin inside the samples')
+
+  parser.add_option('--disable-cpplint', default=False, action='store_true',
+                    help='do not use the C++ linter before compiling')
+
+  parser.add_option('--disable-curl', default=False, action='store_true',
+                    help='disable cURL')
+
+  parser.add_option('--disable-libwebsockets', default=False, action='store_true',
+                    help='disable libwebsockets')
+
+  (options, args) = parser.parse_args()
+
+  gyp_defines = ''
+  gyp_defines += 'build_java=%d ' % (0 if options.disable_java else 1)
+  gyp_defines += 'build_objc=%d ' % (0 if options.disable_objc else 1)
+  gyp_defines += 'build_tests=%d ' % (0 if options.disable_tests else 1)
+  gyp_defines += 'build_samples=%d ' % (0 if options.disable_samples else 1)
+  gyp_defines += 'build_vlcplugin=%d ' % (0 if options.disable_vlcplugin else 1)
+  gyp_defines += 'use_cpplint=%d ' % (0 if options.disable_cpplint else 1)
+  gyp_defines += 'use_curl=%d ' % (0 if options.disable_curl else 1)
+  gyp_defines += 'use_libwebsockets=%d' % (0 if options.disable_libwebsockets else 1)
+
+  os.environ['GYP_DEFINES'] = gyp_defines
 
   if int(os.environ.get('GYP_CHROMIUM_NO_ACTION', 0)):
     print 'Skipping gyp_webrtc due to GYP_CHROMIUM_NO_ACTION env var.'
@@ -55,6 +98,7 @@ if __name__ == '__main__':
                                 'webrtc.gyp_env')
     gyp_helper.apply_gyp_environment_from_file(gyp_env_path)
 
+  sys.argv = args
   update.main()
 
   # This could give false positives since it doesn't actually do real option
@@ -71,6 +115,9 @@ if __name__ == '__main__':
     # work, but chdir'ing and adding the relative path does. Spooky :/
     os.chdir(checkout_root)
     args.append('all.gyp')
+
+  os.chdir(checkout_root)
+  args.append('all.gyp')
 
   # There shouldn't be a circular dependency relationship between .gyp files,
   args.append('--no-circular-check')
