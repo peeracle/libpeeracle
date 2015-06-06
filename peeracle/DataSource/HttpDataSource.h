@@ -36,6 +36,7 @@ namespace peeracle {
 
 /**
  * \addtogroup DataSource
+ * @{
  * A class that retrieves data remotely with the HTTP protocol.
  */
 class HttpDataSource
@@ -55,5 +56,9 @@ class HttpDataSource
  * @}
  */
 }  // namespace peeracle
+
+/**
+ * @}
+ */
 
 #endif  // PEERACLE_DATASOURCE_HTTPDATASOURCE_H_

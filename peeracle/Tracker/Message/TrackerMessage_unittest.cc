@@ -36,58 +36,102 @@ class TrackerMessageTest : public testing::Test {
   }
 };
 
-TEST_F(TrackerMessageTest, GetNSetInteger) {
+TEST_F(TrackerMessageTest, GetNSet) {
+  int version;
+  std::string type;
+  std::string hash;
+  std::string empty;
+  TrackerMessage *msg = new TrackerMessage();
+
+  msg->set("type", "hello");
+  msg->set("version", 130);
+  msg->set("hash", "crc32");
+  msg->set("iAmEmpty", "");
+
+  msg->get("type", &type);
+  msg->get("version", &version);
+  msg->get("hash", &hash);
+  msg->get("iAmEmpty", &empty);
+
+  EXPECT_EQ("hello", type);
+  EXPECT_EQ(130, version);
+  EXPECT_EQ("crc32", hash);
+  EXPECT_EQ("", empty);
+
+  delete msg;
+}
+
+TEST_F(TrackerMessageTest, Serialize) {
   int type;
+  std::string client;
+  int protocol;
+  unsigned char buffer[18];
+
+  /*
+   * Hello message format
+   * --------------------
+   *
+   * Numbers must be in BIG ENDIAN
+   *
+   * Message type :
+   * 0x00, 0x01, --> 2 bytes, short and not int
+   *
+   * There comes the client name, terminated with a \0 :
+   * 0x6C, 0x69, 0x62, 0x70, 0x65, 0x65, -> 'l', 'i', 'b', 'p', 'e', 'e'
+   * 0x72, 0x61, 0x63, 0x6C, 0x65, 0x00, -> 'r', 'a', 'c', 'l', 'e', '\0'
+   *
+   * Protocol version :
+   * 0x00, 0x00, 0x00, 0x01 --> 4 bytes, int
+   */
+  unsigned char expected[] = { 0x00, 0x01,
+                               0x6C, 0x69, 0x62, 0x70, 0x65, 0x65,
+                               0x72, 0x61, 0x63, 0x6C, 0x65, 0x00,
+                               0x00, 0x00, 0x00, 0x01 };
+
   TrackerMessage *msg = new TrackerMessage();
 
   msg->set("type", TrackerMessage::kHello);
+  msg->set("client", "libpeeracle");
+  msg->set("protocol", 1);
+
   msg->get("type", &type);
+  msg->get("client", &client);
+  msg->get("protocol", &protocol);
+
   EXPECT_EQ(TrackerMessage::kHello, type);
+  EXPECT_EQ("libpeeracle", client);
+  EXPECT_EQ(1, protocol);
+
+  msg->serialize(buffer, sizeof(buffer));
+  for (int i = 0; i < sizeof(expected); ++i) {
+    EXPECT_EQ(expected[i], buffer[i]);
+  }
 
   delete msg;
 }
 
-TEST_F(TrackerMessageTest, GetNSetString) {
-  std::string rev;
-  std::stringstream strm;
-  TrackerMessage *msg = new TrackerMessage();
-
-  strm << "libpeeracle-" << LIBPEERACLE_REVISION;
-  rev = strm.str();
-
-  std::string resultStr;
-  msg->set("client", rev);
-  msg->get("client", &resultStr);
-  EXPECT_EQ(rev, resultStr);
-
-  delete msg;
-}
-
-TEST_F(TrackerMessageTest, GetNSetBoth) {
+TEST_F(TrackerMessageTest, Unserialize) {
   int type;
-  std::string rev;
-  std::stringstream strm;
+  std::string client;
+  int protocol;
+  unsigned char buffer[] = { 0x00, 0x01,
+                             0x6C, 0x69, 0x62, 0x70, 0x65, 0x65,
+                             0x72, 0x61, 0x63, 0x6C, 0x65, 0x00,
+                             0x00, 0x00, 0x00, 0x01 };
+
   TrackerMessage *msg = new TrackerMessage();
 
-  strm << "libpeeracle-" << LIBPEERACLE_REVISION;
-  rev = strm.str();
+  msg->unserialize(buffer, sizeof(buffer));
 
-  msg->set("type", TrackerMessage::kHello);
   msg->get("type", &type);
-  EXPECT_EQ(type, TrackerMessage::kHello);
+  msg->get("client", &client);
+  msg->get("protocol", &protocol);
 
-  std::string resultStr;
-  msg->set("client", rev);
-  msg->get("client", &resultStr);
-  EXPECT_EQ(rev, resultStr);
+  EXPECT_EQ(TrackerMessage::kHello, type);
+  EXPECT_EQ("libpeeracle", client);
+  EXPECT_EQ(1, protocol);
 
-  type = TrackerMessage::kNone;
-  msg->get("type", &type);
-  EXPECT_EQ(type, TrackerMessage::kHello);
-
-  resultStr = "";
-  msg->get("client", &resultStr);
-  EXPECT_EQ(rev, resultStr);
+  EXPECT_EQ(sizeof(buffer), msg->getByteLength());
 
   delete msg;
 }

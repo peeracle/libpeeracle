@@ -51,7 +51,7 @@ before_build:
   - cmd: set PATH=%PATH%;%cd%\third_party\depot_tools
   - cmd: python third_party\webrtc\setup_links.py -f -n
   - cmd: call "C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\vcvarsall.bat" x86
-  - cmd: python gyp_peeracle.py
+  - cmd: python gyp_peeracle.py --disable-cpplint
 
 build:
   project: C:\projects\libpeeracle\all.sln

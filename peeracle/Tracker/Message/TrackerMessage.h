@@ -40,6 +40,10 @@ class TrackerMessage : public TrackerMessageInterface {
   void get(const std::string &key, int *value);
   void get(const std::string &key, std::string *value);
 
+  unsigned int getByteLength();
+  void serialize(unsigned char *buffer, unsigned int length);
+  void unserialize(const unsigned char *buffer, unsigned int length);
+
   virtual ~TrackerMessage() {}
 };
 

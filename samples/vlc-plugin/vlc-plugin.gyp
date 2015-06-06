@@ -21,46 +21,51 @@
 
 {
   'includes': [
-    '../../build/common.gypi'
+    '../../build/common.gypi',
   ],
-  'targets': [
-    {
-      'target_name': 'peeracle_datasource',
-      'type': 'static_library',
-      'conditions': [
-        ['use_curl == 1', {
-          'defines': [
-            'USE_CURL',
-          ],
-          'dependencies': [
-            '<(DEPTH)/third_party/curl/curl.gyp:*',
-          ],
-        }]
-      ],
-      'sources': [
-        'DataSourceInterface.h',
-        'FileDataSource.cc',
-        'FileDataSource.h',
-        'HttpDataSource.cc',
-        'HttpDataSource.h',
-      ]
-    },
-  ],
+  'variables': {
+    'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'/usr/local/etc/vlc\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
+  },
   'conditions': [
-    ['build_tests == 1', {
+    ['build_vlcplugin == 1 and vlc_path!=0', {
       'targets': [
         {
-          'target_name': 'peeracle_datasource_unittest',
-          'type': '<(gtest_target_type)',
+          'target_name': 'libpeeracle_plugin',
+          'type': 'shared_library',
+          'defines': [
+            '__PLUGIN__',
+          ],
           'dependencies': [
-            'peeracle_datasource',
-            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+            '<(DEPTH)/peeracle/peeracle.gyp:peeracle',
           ],
           'sources': [
-            'DataSource_unittest.cc',
+            'plugin.cc',
           ],
+          'conditions': [
+            ['OS == "win"', {
+
+            }],
+            ['OS == "linux" or OS == "mac"', {
+              'include_dirs': [
+                '<(vlc_path)/include/vlc/plugins',
+              ],
+              'link_settings': {
+                'libraries': [
+                  '-L<(vlc_path)/lib',
+                  '-lvlccore',
+                ],
+              },
+            }],
+          ],
+        }
+      ]
+    }, {
+      'targets': [
+        {
+          'target_name': 'libpeeracle_plugin',
+          'type': 'none'
         },
       ],
-    }],
-  ],
+    }]
+  ]
 }

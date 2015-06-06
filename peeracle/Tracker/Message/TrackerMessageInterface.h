@@ -25,8 +25,19 @@
 
 #include <string>
 
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 namespace peeracle {
 
+/**
+ * \addtogroup Tracker
+ * @{
+ * A class that deals with messages sent to and received from the Tracker.
+ */
 class TrackerMessageInterface {
  public:
   enum Type {
@@ -39,15 +50,63 @@ class TrackerMessageInterface {
     kIce
   };
 
+  /*
+   * Set a parameter named \p key to a \p value.
+   * @param key the parameter's name
+   * @param value the parameter's value
+   */
   virtual void set(const std::string& key, int value) = 0;
+
+  /*
+   * @copydoc #set(const std::string& key, int value)
+   */
   virtual void set(const std::string& key, const std::string& value) = 0;
+
+  /*
+   * Get the \p value of the parameter named \p key. This method should set
+   * \p value to 0 or NULL if the parameter \p key has never been set before
+   * with the #set method.
+   * @param key the parameter's name
+   * @param value point to write the parameter's value to
+   */
   virtual void get(const std::string& key, int *value) = 0;
+
+  /*
+   * @copydoc #get(const std::string& key, int *value)
+   */
   virtual void get(const std::string& key, std::string *value) = 0;
+
+  /*
+   * Calculate the length of a serialized TrackerMessage in bytes. Calling
+   * this method is required in order to allocated a buffer properly before
+   * calling #serialize.
+   * \return the length of the serialized buffer in bytes
+   */
+  virtual unsigned int getByteLength() = 0;
+
+  /*
+   * Serialize the message into \p buffer. The resulting bytes could be used
+   * for sending messages to a client or a server using the Tracker protocol.
+   * @param buffer the buffer into which the bytes should be stored
+   * @param length the buffer's length
+   */
+  virtual void serialize(unsigned char *buffer, unsigned int length) = 0;
+
+  /*
+   * Unserialize the bytes located inside the \p buffer. The parameters will
+   * be restored, depending on the message type and the validity of the buffer.
+   * @param buffer the buffer containing the serialized TrackerMessage
+   */
+  virtual void unserialize(const unsigned char *buffer,
+                           unsigned int length) = 0;
 
  protected:
   virtual ~TrackerMessageInterface() { }
 };
 
+/**
+ * @}
+ */
 }  // namespace peeracle
 
 #endif  // PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
