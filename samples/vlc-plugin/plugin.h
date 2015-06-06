@@ -23,8 +23,12 @@
 #ifndef SAMPLES_VLCPLUGIN_PLUGIN_H_
 #define SAMPLES_VLCPLUGIN_PLUGIN_H_
 
+#ifndef MODULE_STRING
+# define MODULE_STRING "peeracle"
+#endif  // MODULE_STRING
+
 #include <vlc_common.h>
-#include <vlc_stream.h>
+#include <vlc_demux.h>
 
 #define VLC_MODULE_COPYRIGHT \
     "\x43\x6f\x70\x79\x72\x69\x67\x68\x74\x20\x28\x43\x29\x20\x74\x68" \
@@ -40,5 +44,22 @@
     "\x69\x6f\x6e\x20\x32\x20\x6f\x72\x20\x6c\x61\x74\x65\x72\x2e"
 
 #include <vlc_plugin.h>
+
+#ifndef VLC_DEMUXER_EOF
+# define VLC_DEMUXER_EOF 0
+#endif
+
+#ifndef VLC_DEMUXER_EGENERIC
+# define VLC_DEMUXER_EGENERIC -1
+#endif
+
+#ifndef VLC_DEMUXER_SUCCESS
+# define VLC_DEMUXER_SUCCESS 1
+#endif
+
+struct demux_sys_t
+{
+  int dummy;
+};
 
 #endif  // SAMPLES_VLCPLUGIN_PLUGIN_H_

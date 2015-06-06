@@ -22,166 +22,196 @@
 
 #include "samples/vlc-plugin/plugin.h"
 
-int AccessOpen(vlc_object_t *p_this);
-void AccessClose(vlc_object_t *p_this);
-int StreamOpen(vlc_object_t *p_this);
-void StreamClose(vlc_object_t *p_this);
+/*****************************************************************************
+ * Module descriptor
+ *****************************************************************************/
+static int Open(vlc_object_t *p_this);
+static void Close(vlc_object_t *p_this);
 
-static int Read(stream_t *s, void *p_read, unsigned int i_read);
-static int Peek(stream_t *s, const uint8_t **pp_peek, unsigned int i_peek);
-static int Control(stream_t *s, int i_query, va_list args);
-
-struct stream_sys_t {
-  char *psz_path;
-  size_t i_len;
-  size_t i_pos;
-};
+static const uint8_t prcl_magic[] = {0x50, 0x52, 0x43, 0x4C};
 
 vlc_module_begin()
   set_shortname("peeracle")
-  set_category(CAT_INPUT)
-
-  set_subcategory(SUBCAT_INPUT_STREAM_FILTER)
-  set_description("peeracle metadata files filter")
-  set_capability("stream_filter", 15)
-  set_callbacks(StreamOpen, StreamClose)
-
-  add_submodule()
-  set_subcategory(SUBCAT_INPUT_ACCESS)
   set_description("peeracle metadata file access")
-  set_capability("access", 0)
-  add_shortcut("peeracle", "prcl")
-  set_callbacks(AccessOpen, AccessClose)
+  set_capability("demux", 10)
+  set_category(CAT_INPUT)
+  set_subcategory(SUBCAT_INPUT_DEMUX)
+  set_callbacks(Open, Close)
 vlc_module_end()
 
-int AccessOpen(vlc_object_t *p_this) {
-  printf("peeracle_plugin AccessOpen\n");
-  return VLC_EGENERIC;
-}
+/*****************************************************************************
+ * Local prototypes
+ *****************************************************************************/
+static int Demux(demux_t *p_demux);
+static int Control(demux_t *p_demux, int i_query, va_list args);
 
-void AccessClose(vlc_object_t *p_this) {
-  printf("peeracle_plugin AccessClose\n");
-}
+/*****************************************************************************
+ * Open:
+ *****************************************************************************/
+static int Open(vlc_object_t *p_obj) {
+  demux_t *p_demux = reinterpret_cast<demux_t*>(p_obj);
+  stream_t *stream = p_demux->s;
+  demux_sys_t *p_sys;
 
-static const uint8_t p_prcl_marker[] = {0x50, 0x52, 0x43, 0x4C};
-static const int i_prcl_marker = 4;
+  const uint8_t *peek;
+  int peek_size;
 
-int StreamOpen(vlc_object_t *p_this) {
-  stream_t *s = reinterpret_cast<stream_t *>(p_this);
-  stream_sys_t *p_sys;
-  const uint8_t *p_peek;
-
-  msg_Info(p_this, "peeracle_plugin StreamOpen\n");
-  if (stream_Peek(s->p_source, &p_peek, i_prcl_marker) < i_prcl_marker) {
-    printf("peeracle_plugin: Couldn't read 4 bytes.\n");
+  msg_Dbg(p_obj, "getting the four first bytes");
+  peek_size = stream_Peek(stream, &peek, sizeof(prcl_magic));
+  if (peek_size != sizeof(prcl_magic)) {
+    msg_Dbg(p_obj, "header mismatch");
     return VLC_EGENERIC;
   }
 
-  if (memcmp(p_peek, p_prcl_marker, i_prcl_marker)) {
-    printf("peeracle_plugin: Header mismatch, %X%X%X%X\n", p_peek[0], p_peek[1],
-           p_peek[2], p_peek[3]);
-    return VLC_EGENERIC;
-  }
-
-  printf("peeracle_plugin: Correct metadata file, %X%X%X%X\n", p_peek[0],
-         p_peek[1], p_peek[2], p_peek[3]);
-  s->p_sys = p_sys = reinterpret_cast<stream_sys_t *>(calloc(1,
-                                                             sizeof(*p_sys)));
-  if (!p_sys) {
+  msg_Dbg(p_obj, "trying to malloc");
+  p_sys = reinterpret_cast<demux_sys_t *>(malloc(sizeof(demux_sys_t)));
+  if (unlikely(p_sys == NULL)) {
+    msg_Dbg(p_obj, "out of memory");
     return VLC_ENOMEM;
   }
 
-  s->pf_read = Read;
-  s->pf_peek = Peek;
-  s->pf_control = Control;
+  p_demux->p_sys = p_sys;
+  p_demux->pf_demux = Demux;
+  p_demux->pf_control = Control;
 
+  msg_Dbg(p_obj, "metadata file loaded successfully");
   return VLC_SUCCESS;
 }
+/*****************************************************************************
+ * Close:
+ *****************************************************************************/
+static void Close(vlc_object_t *p_obj) {
+  demux_t *p_demux = reinterpret_cast<demux_t*>(p_obj);
+  demux_sys_t *p_sys = p_demux->p_sys;
 
-void StreamClose(vlc_object_t *p_this) {
-  printf("peeracle_plugin StreamClose\n");
+  msg_Dbg(p_obj, "Close");
+  free(p_sys);
+}
+/*****************************************************************************
+ * Callbacks:
+ *****************************************************************************/
+static int Demux(demux_t *p_demux) {
+  demux_sys_t *p_sys = p_demux->p_sys;
+
+  // msg_Dbg(p_demux, "Demux");
+  /*Stream::status status =
+    p_sys->p_dashManager->demux(p_sys->i_nzpcr + DEMUX_INCREMENT);
+  switch(status)
+  {
+    case Stream::status_eof:
+      return VLC_DEMUXER_EOF;
+    case Stream::status_buffering:
+      break;
+    case Stream::status_demuxed:
+      p_sys->i_nzpcr += DEMUX_INCREMENT;
+      int group = p_sys->p_dashManager->getGroup();
+      es_out_Control(p_demux->out, ES_OUT_SET_GROUP_PCR, group, VLC_TS_0 + p_sys->i_nzpcr);
+      break;
+  }
+
+  if( !p_sys->p_dashManager->updatePlaylist() )
+    return VLC_DEMUXER_EOF;*/
+
+  return VLC_DEMUXER_SUCCESS;
 }
 
-static int Read(stream_t *s, void *p_read, unsigned int i_read) {
-  stream_sys_t *p_sys = s->p_sys;
-
-  printf("peeracle_plugin Read %u\n", i_read);
-  /* Fill the buffer */
-  /* if (Fill(s))
-    return -1; */
-
-  /* Read the buffer */
-  /* unsigned i_len = __MIN(i_read, p_sys->i_len - p_sys->i_pos);
-  if (p_read)
-    memcpy(p_read, p_sys->psz_xspf + p_sys->i_pos, i_len);
-  p_sys->i_pos += i_len; */
-
-  /* return i_len; */
-  return -1;
-}
-
-/** *************************************************************************
- * Peek
- ****************************************************************************/
-static int Peek(stream_t *s, const uint8_t **pp_peek, unsigned int i_peek) {
-  stream_sys_t *p_sys = s->p_sys;
-
-  printf("peeracle_plugin Peek %u\n", i_peek);
-  /* Fill the buffer */
-  /* if (Fill(s))
-    return -1; */
-
-  /* Point to the buffer */
-  /* int i_len = __MIN(i_peek, p_sys->i_len - p_sys->i_pos); */
-  /* *pp_peek = (uint8_t *) p_sys->psz_xspf + p_sys->i_pos; */
-
-  /* return i_len; */
-  return -1;
-}
-
-/** *************************************************************************
- * Control
- ****************************************************************************/
-
-static int Control(stream_t *s, int i_query, va_list args) {
-  stream_sys_t *p_sys = s->p_sys;
+static int Control(demux_t *p_demux, int i_query, va_list args) {
+  demux_sys_t *p_sys = p_demux->p_sys;
 
   switch (i_query) {
-    case STREAM_SET_POSITION: {
-      uint64_t i_position = va_arg(args, uint64_t);
-      printf("peeracle_plugin STREAM_SET_POSITION %lu\n", i_position);
-      if (i_position >= p_sys->i_len) {
+    case DEMUX_CAN_SEEK:
+      /* *(va_arg (args, bool *)) = p_sys->p_dashManager->seekAble(); */
+      msg_Dbg(p_demux, "Control: DEMUX_CAN_SEEK");
+      break;
+
+    case DEMUX_CAN_CONTROL_PACE:
+      *(va_arg(args, bool *)) = true;
+      msg_Dbg(p_demux, "Control: DEMUX_CAN_CONTROL_PACE");
+      break;
+
+    case DEMUX_CAN_PAUSE:
+      /* *(va_arg (args, bool *)) = p_sys->p_mpd->isLive();*/
+      msg_Dbg(p_demux, "Control: DEMUX_CAN_PAUSE");
+      break;
+
+    case DEMUX_GET_TIME:
+      /* *(va_arg (args, int64_t *)) = p_sys->i_nzpcr;*/
+      msg_Dbg(p_demux, "Control: DEMUX_GET_TIME");
+      break;
+
+    case DEMUX_GET_LENGTH:
+      /* *(va_arg (args, int64_t *)) = p_sys->p_dashManager->getDuration();*/
+      msg_Dbg(p_demux, "Control: DEMUX_GET_LENGTH");
+      break;
+
+    case DEMUX_GET_POSITION:
+      /* if(!p_sys->p_dashManager->getDuration())
         return VLC_EGENERIC;
-      } else {
-        p_sys->i_pos = (size_t) i_position;
-        return VLC_SUCCESS;
-      }
+
+      *(va_arg (args, double *)) = (double) p_sys->i_nzpcr
+                                   / p_sys->p_dashManager->getDuration();*/
+      msg_Dbg(p_demux, "Control: DEMUX_GET_POSITION");
+      break;
+
+    case DEMUX_SET_POSITION:
+    {
+      /* int64_t time = p_sys->p_dashManager->getDuration() * va_arg(args, double);
+      if(p_sys->p_mpd->isLive() ||
+         !p_sys->p_dashManager->getDuration() ||
+         !p_sys->p_dashManager->setPosition(time))
+        return VLC_EGENERIC;
+      p_sys->i_nzpcr = time;*/
+      msg_Dbg(p_demux, "Control: DEMUX_SET_POSITION");
+      break;
     }
 
-    case STREAM_GET_POSITION: {
-      uint64_t *pi_position = va_arg(args, uint64_t*);
-      printf("peeracle_plugin STREAM_GET_POSITION\n");
-      *pi_position = p_sys->i_pos;
-      return VLC_SUCCESS;
+    case DEMUX_SET_TIME:
+    {
+      /* int64_t time = va_arg(args, int64_t);
+      if(p_sys->p_mpd->isLive() ||
+         !p_sys->p_dashManager->setPosition(time))
+        return VLC_EGENERIC;
+      p_sys->i_nzpcr = time;*/
+      msg_Dbg(p_demux, "Control: DEMUX_SET_TIME");
+      break;
     }
 
-    case STREAM_GET_SIZE: {
-      uint64_t *pi_size = va_arg(args, uint64_t*);
-      printf("peeracle_plugin STREAM_GET_SIZE\n");
-      *pi_size = p_sys->i_len;
-      return VLC_SUCCESS;
+    case DEMUX_GET_PTS_DELAY:
+      /* *va_arg (args, int64_t *) = INT64_C(1000) *
+      var_InheritInteger(p_demux, "network-caching");*/
+      msg_Dbg(p_demux, "Control: DEMUX_GET_PTS_DELAY");
+      break;
+
+    case DEMUX_GET_META:
+    {
+      /* if(!p_sys->p_mpd->programInfo.Get())
+        break;
+
+      vlc_meta_t *p_meta = (vlc_meta_t *) va_arg (args, vlc_meta_t*);
+      vlc_meta_t *meta = vlc_meta_New();
+      if (meta == NULL)
+        return VLC_EGENERIC;
+
+      if(!p_sys->p_mpd->programInfo.Get()->getTitle().empty())
+        vlc_meta_SetTitle(meta, p_sys->p_mpd->programInfo.Get()->getTitle().c_str());
+
+      if(!p_sys->p_mpd->programInfo.Get()->getSource().empty())
+        vlc_meta_SetPublisher(meta, p_sys->p_mpd->programInfo.Get()->getSource().c_str());
+
+      if(!p_sys->p_mpd->programInfo.Get()->getCopyright().empty())
+        vlc_meta_SetCopyright(meta, p_sys->p_mpd->programInfo.Get()->getCopyright().c_str());
+
+      if(!p_sys->p_mpd->programInfo.Get()->getMoreInformationUrl().empty())
+        vlc_meta_SetURL(meta, p_sys->p_mpd->programInfo.Get()->getMoreInformationUrl().c_str());
+
+      vlc_meta_Merge(p_meta, meta);
+      vlc_meta_Delete(meta);*/
+      msg_Dbg(p_demux, "Control: DEMUX_GET_META");
+      break;
     }
-
-    case STREAM_GET_CONTENT_TYPE:
-      return VLC_EGENERIC;
-
-    case STREAM_UPDATE_SIZE:
-    case STREAM_CAN_SEEK:
-    case STREAM_CAN_FASTSEEK:
-    case STREAM_SET_RECORD_STATE:
-      return stream_vaControl(s->p_source, i_query, args);
 
     default:
       return VLC_EGENERIC;
   }
+  return VLC_SUCCESS;
 }
