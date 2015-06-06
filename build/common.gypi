@@ -20,6 +20,16 @@
 # SOFTWARE.
 
 {
+  'variables': {
+    'build_java%': 1,         # build Java bindings and samples
+    'build_objc%': 1,         # build Objective-C bindings and samples
+    'build_tests%': 1,        # build unit tests
+    'build_samples%': 1,      # build samples
+    'build_vlcplugin%': 1,    # build VLC plugin
+    'use_cpplint%': 1,        # use cpplint.py before compiling
+    'use_curl%': 1,           # use cURL
+    'use_libwebsockets%': 1,  # use libwebsockets
+  },
   'target_defaults': {
     'defines': [
       'LIBPEERACLE_REVISION="<!(git describe --tag --always)"',
@@ -28,7 +38,7 @@
       '<(DEPTH)',
     ],
     'conditions': [
-      ['GENERATOR != "msvs"', {
+      ['use_cpplint == 1', {
         'rules': [
           {
             'rule_name': 'lint_cc',

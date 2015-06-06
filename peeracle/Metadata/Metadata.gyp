@@ -39,18 +39,24 @@
         'MetadataUnserializer.h',
       ]
     },
-    {
-      'target_name': 'peeracle_metadata_unittest',
-      'type': 'executable',
-      'dependencies': [
-        'peeracle_metadata',
-        '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_metadata_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_metadata',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'Metadata_unittest.cc',
+            'MetadataSerializer_unittest.cc',
+            'MetadataUnserializer_unittest.cc',
+          ],
+        },
       ],
-      'sources': [
-        'Metadata_unittest.cc',
-        'MetadataSerializer_unittest.cc',
-        'MetadataUnserializer_unittest.cc',
-      ],
-    },
+    }],
   ],
 }

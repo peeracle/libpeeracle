@@ -27,8 +27,15 @@
     {
       'target_name': 'peeracle_tracker_server',
       'type': 'static_library',
-      'dependencies': [
-        '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+      'conditions': [
+        ['use_libwebsockets == 1', {
+          'defines': [
+            'USE_LIBWEBSOCKETS',
+          ],
+          'dependencies': [
+            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+          ],
+        }],
       ],
       'sources': [
         'TrackerServer.cc',
@@ -36,16 +43,22 @@
         'TrackerServerInterface.h',
       ]
     },
-    {
-      'target_name': 'peeracle_tracker_server_unittest',
-      'type': 'executable',
-      'dependencies': [
-        'peeracle_tracker_server',
-        '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_tracker_server_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_tracker_server',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'TrackerServer_unittest.cc',
+          ],
+        },
       ],
-      'sources': [
-        'TrackerServer_unittest.cc',
-      ],
-    },
+    }],
   ],
 }

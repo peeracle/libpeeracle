@@ -33,16 +33,22 @@
         'Crc32Hash.h',
       ]
     },
-    {
-      'target_name': 'peeracle_hash_unittest',
-      'type': 'executable',
-      'dependencies': [
-        'peeracle_hash',
-        '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_hash_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_hash',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'Crc32Hash_unittest.cc',
+          ],
+        },
       ],
-      'sources': [
-        'Crc32Hash_unittest.cc',
-      ],
-    },
+    }],
   ],
 }

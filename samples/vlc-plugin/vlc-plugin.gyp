@@ -24,16 +24,10 @@
     '../../build/common.gypi',
   ],
   'variables': {
-    'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'/usr/local/etc/vlc\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/vlc.h\')) else 0")',
+    'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'/usr/local/etc/vlc\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
   },
-  'targets': [
-    {
-      'target_name': 'peeracle_vlc_plugin',
-      'type': 'none'
-    },
-  ],
   'conditions': [
-    ['vlc_path!=0', {
+    ['build_vlcplugin == 1 and vlc_path!=0', {
       'targets': [
         {
           'target_name': 'libpeeracle_plugin',
@@ -48,6 +42,9 @@
             'plugin.cc',
           ],
           'conditions': [
+            ['OS == "win"', {
+
+            }],
             ['OS == "linux" or OS == "mac"', {
               'include_dirs': [
                 '<(vlc_path)/include/vlc/plugins',
@@ -59,12 +56,16 @@
                 ],
               },
             }],
-            ['OS == "win"', {
-
-            }],
           ],
         }
       ]
+    }, {
+      'targets': [
+        {
+          'target_name': 'libpeeracle_plugin',
+          'type': 'none'
+        },
+      ],
     }]
   ]
 }

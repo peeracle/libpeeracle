@@ -37,18 +37,24 @@
         'WebMMedia.h',
       ]
     },
-    {
-      'target_name': 'peeracle_media_unittest',
-      'type': 'executable',
-      'dependencies': [
-        'peeracle_media',
-        '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_media_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_media',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'MP3Media_unittest.cc',
+            'MP4Media_unittest.cc',
+            'WebMMedia_unittest.cc',
+          ],
+        },
       ],
-      'sources': [
-        'MP3Media_unittest.cc',
-        'MP4Media_unittest.cc',
-        'WebMMedia_unittest.cc',
-      ],
-    },
+    }],
   ],
 }
