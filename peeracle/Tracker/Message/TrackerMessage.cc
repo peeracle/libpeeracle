@@ -25,21 +25,19 @@
 namespace peeracle {
 
 void TrackerMessage::set(const std::string &key, int value) {
-  // _key = key;
-  _type = (Type) value;
+  _intData[key] = value;
 }
 
 void TrackerMessage::set(const std::string &key, const std::string &value) {
-  _key = key;
-  _rev = value;
+  _charData[key] = value;
 }
 
 void TrackerMessage::get(const std::string &key, int *value) {
-  *value = _type;
+  *value = _intData[key];
 }
 
 void TrackerMessage::get(const std::string &key, std::string *value) {
-  *value = _rev;
+  *value = _charData[key];
 }
 
 unsigned int TrackerMessage::getByteLength() {

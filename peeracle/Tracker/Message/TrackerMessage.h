@@ -24,15 +24,15 @@
 #define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
 
 #include <string>
+#include <map>
 #include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 
 namespace peeracle {
 
 class TrackerMessage : public TrackerMessageInterface {
  private:
-  Type _type;
-  std::string _key;
-  std::string _rev;
+  std::map <std::string, std::string> _charData;
+  std::map <std::string, int> _intData;
 
  public:
   void set(const std::string &key, int value);
