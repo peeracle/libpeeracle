@@ -21,13 +21,17 @@
  */
 
 #include <string>
+#ifdef USE_CURL
 #include "third_party/curl/include/curl/curl.h"
+#endif
 #include "peeracle/DataSource/HttpDataSource.h"
 
 namespace peeracle {
 
 HttpDataSource::HttpDataSource(const std::string &url) {
+#ifdef USE_CURL
   curl_easy_init();
+#endif
 }
 
 bool HttpDataSource::open() {
