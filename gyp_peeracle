@@ -44,8 +44,6 @@ def GetSupplementalFiles():
 from optparse import OptionParser
 
 if __name__ == '__main__':
-  # args = sys.argv[1:]
-
   # Set the gyp defines
   usage = 'usage: %prog [options]'
   parser = OptionParser(usage=usage)
@@ -98,7 +96,7 @@ if __name__ == '__main__':
                                 'webrtc.gyp_env')
     gyp_helper.apply_gyp_environment_from_file(gyp_env_path)
 
-  sys.argv = args
+  sys.argv = [ sys.argv[0] ]
   update.main()
 
   # This could give false positives since it doesn't actually do real option
@@ -115,9 +113,6 @@ if __name__ == '__main__':
     # work, but chdir'ing and adding the relative path does. Spooky :/
     os.chdir(checkout_root)
     args.append('all.gyp')
-
-  os.chdir(checkout_root)
-  args.append('all.gyp')
 
   # There shouldn't be a circular dependency relationship between .gyp files,
   args.append('--no-circular-check')
