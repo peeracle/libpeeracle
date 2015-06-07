@@ -74,10 +74,6 @@
                 ],
               },
               'action_name': 'create_jar',
-              'inputs': [
-                'scripts/build_jar.sh',
-                '<@(java_files)',
-              ],
               'outputs': [
                 '<(PRODUCT_DIR)/libpeeracle.jar',
               ],
@@ -87,21 +83,40 @@
                     'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
                     'build_classpath': '<(java_src_dir):<(peeracle_root)/third_party/android_tools/sdk/platforms/android-<(android_sdk_version)/android.jar',
                   },
+                }],
+                ['OS=="win"', {
+                  'variables': {
+                    'java_files': ['<@(peeracle_java_files)'],
+                    'build_classpath': '<(java_src_dir)',
+                  },
+                  'inputs': [
+                    'build/build_jar.py',
+                    '<@(java_files)',
+                  ],
+                  'action': [
+                    'python build/build_jar.py "<(java_home)" <@(_outputs) '
+                    '      "<(INTERMEDIATE_DIR)" '
+                    '      "<(build_classpath)" <@(java_files) '
+                  ],
                 }, {
                   'variables': {
                     'java_files': ['<@(peeracle_java_files)'],
                     'build_classpath': '<(java_src_dir)',
                   },
+                  'inputs': [
+                    'build/build_jar.sh',
+                    '<@(java_files)',
+                  ],
+                  'action': [
+                    'bash', '-ec',
+                    'mkdir -p <(INTERMEDIATE_DIR) && '
+                    '{ build/build_jar.sh <(java_home) <@(_outputs) '
+                    '      <(INTERMEDIATE_DIR)/build_jar.tmp '
+                    '      <(build_classpath) <@(java_files) '
+                    '      > <(build_jar_log) 2>&1 || '
+                    '  { cat <(build_jar_log) ; exit 1; } }'
+                  ],
                 }],
-              ],
-              'action': [
-                'bash', '-ec',
-                'mkdir -p <(INTERMEDIATE_DIR) && '
-                '{ scripts/build_jar.sh <(java_home) <@(_outputs) '
-                '      <(INTERMEDIATE_DIR)/build_jar.tmp '
-                '      <(build_classpath) <@(java_files) '
-                '      > <(build_jar_log) 2>&1 || '
-                '  { cat <(build_jar_log) ; exit 1; } }'
               ],
             },
           ],
