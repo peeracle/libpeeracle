@@ -40,7 +40,9 @@
           ],
           'include_dirs': [
             '<(java_home)/include',
+            '<(java_home)/include/darwin',
             '<(java_home)/include/linux',
+            '<(java_home)/include/win32',
           ],
           'sources': [
             'jni/peeracle_jni.cc',
