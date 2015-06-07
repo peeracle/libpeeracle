@@ -44,7 +44,7 @@
             'rule_name': 'lint_cc',
             'extension': 'cc',
             'inputs': [
-              '<(DEPTH)/third_party/cpplint/cpplint.py',
+              'cpplint.py',
             ],
             'outputs': [
               '>(INTERMEDIATE_DIR)/<(RULE_INPUT_NAME).lintstamp',
@@ -65,7 +65,7 @@
             'rule_name': 'lint_h',
             'extension': 'h',
             'inputs': [
-              '<(DEPTH)/third_party/cpplint/cpplint.py',
+              'cpplint.py',
             ],
             'outputs': [
               '>(INTERMEDIATE_DIR)/<(RULE_INPUT_NAME).lintstamp',
