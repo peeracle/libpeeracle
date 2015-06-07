@@ -65,8 +65,4 @@ build:
   verbosity: minimal
 
 after_build:
-  - cmd: FOR /F "tokens=*" %i in ('git describe --tag --always') do SET LIBPEERACLE_REVISION=%i
-  - cmd: "c:\Program Files\7-Zip\7z.exe" a libpeeracle-%LIBPEERACLE_REVISION%-%APPVEYOR_REPO_COMMIT_TIMESTAMP%-win32.zip
-    out\Release\*.dll out\Release\*.exe out\Release\obj\peeracle\*\*.lib
-    out\Release\obj\peeracle\*\*\*.lib out\Release\obj\third_party\*\*.lib
-  - cmd: appveyor PushArtifact libpeeracle-%LIBPEERACLE_REVISION%-%APPVEYOR_REPO_COMMIT_TIMESTAMP%-win32.zip
+  - cmd: appveyor PushArtifact out\Release\*.dll out\Release\*.exe out\Release\*.lib
