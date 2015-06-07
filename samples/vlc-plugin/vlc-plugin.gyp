@@ -24,10 +24,17 @@
     '../../build/common.gypi',
   ],
   'variables': {
-    'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'/usr/local/etc/vlc\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
+    'conditions': [
+      ['OS == "win"', {
+        'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'C:/Program Files (x86)/VideoLAN/VLC/sdk\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
+      }],
+      ['OS == "linux" or OS == "mac"', {
+        'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'/usr/local/etc/vlc\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
+      }],
+    ],
   },
   'conditions': [
-    ['build_vlcplugin == 1 and vlc_path!=0', {
+    ['vlc_path != 0', {
       'targets': [
         {
           'target_name': 'libpeeracle_plugin',
@@ -41,9 +48,31 @@
           'sources': [
             'plugin.cc',
           ],
+          'include_dirs': [
+            'config/<(OS)/<(target_arch)',
+          ],
           'conditions': [
             ['OS == "win"', {
-
+              'defines': [
+                'HAVE_CONFIG_H',
+              ],
+              'include_dirs': [
+                '<(vlc_path)\\include\\vlc\\plugins',
+              ],
+              'msvs_settings': {
+                'VCLinkerTool': {
+                  'AdditionalLibraryDirectories': [
+                    '<(vlc_path)\\lib',
+                  ],
+                  'AdditionalDependencies': [
+                    'libvlccore.lib'
+                  ],
+                  'ImageHasSafeExceptionHandlers': 'false',
+                },
+                'MASM': {
+                  'UseSafeExceptionHandlers': 'false',
+                },
+              },
             }],
             ['OS == "linux" or OS == "mac"', {
               'include_dirs': [
@@ -58,14 +87,14 @@
             }],
           ],
         }
-      ]
-    }, {
-      'targets': [
-        {
-          'target_name': 'libpeeracle_plugin',
-          'type': 'none'
-        },
-      ],
-    }]
-  ]
+      ]}, {
+        'targets': [
+          {
+            'target_name': 'libpeeracle_plugin',
+            'type': 'none'
+          },
+        ],
+      }
+    ],
+  ],
 }

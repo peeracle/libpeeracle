@@ -23,6 +23,10 @@
 #ifndef SAMPLES_VLCPLUGIN_PLUGIN_H_
 #define SAMPLES_VLCPLUGIN_PLUGIN_H_
 
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
 #ifndef MODULE_STRING
 # define MODULE_STRING "peeracle"
 #endif  // MODULE_STRING
