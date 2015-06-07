@@ -27,9 +27,8 @@
     'conditions': [
       ['OS == "win"', {
         'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'C:/Program Files (x86)/VideoLAN/VLC/sdk\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
-      }],
-      ['OS == "linux" or OS == "mac"', {
-        'vlc_path%': '<!(python -c "import os; dir=os.getenv(\'VLC_PATH\', \'/usr/local/etc/vlc\'); print dir if os.path.exists(os.path.join(dir, \'include/vlc/plugins/vlc_plugin.h\')) else 0")',
+      }, {
+        'vlc_path%': '<!(bash -ec "pkg-config vlc-plugin && echo 1 || echo 0")',
       }],
     ],
   },
@@ -39,9 +38,6 @@
         {
           'target_name': 'libpeeracle_plugin',
           'type': 'shared_library',
-          'defines': [
-            '__PLUGIN__',
-          ],
           'dependencies': [
             '<(DEPTH)/peeracle/peeracle.gyp:peeracle',
           ],
@@ -55,6 +51,7 @@
             ['OS == "win"', {
               'defines': [
                 'HAVE_CONFIG_H',
+                '__PLUGIN__',
               ],
               'include_dirs': [
                 '<(vlc_path)\\include\\vlc\\plugins',
@@ -74,16 +71,27 @@
                 },
               },
             }],
-            ['OS == "linux" or OS == "mac"', {
+            ['OS == "linux"', {
               'include_dirs': [
-                '<(vlc_path)/include/vlc/plugins',
+                '<!@(pkg-config vlc-plugin --cflags-only-I | sed s/-I//g)'
               ],
-              'link_settings': {
-                'libraries': [
-                  '-L<(vlc_path)/lib',
-                  '-lvlccore',
-                ],
-              },
+              'libraries': [
+                '<!@(pkg-config vlc-plugin --libs)'
+              ],
+            }],
+            ['OS == "mac"', {
+              'defines': [
+                'HAVE_CONFIG_H',
+                '<!@(pkg-config vlc-plugin --cflags-only-other | sed s/-D//g)',
+              ],
+              'include_dirs': [
+                '<!@(pkg-config vlc-plugin --cflags-only-I | sed s/-I//g)'
+              ],
+              'libraries': [
+                '<!@(pkg-config vlc-plugin --libs)',
+                '-framework Cocoa',
+                '-liconv'
+              ],
             }],
           ],
         }
