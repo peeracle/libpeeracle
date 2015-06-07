@@ -64,5 +64,7 @@ build:
   # MSBuild verbosity level (quiet|minimal|normal|detailed)
   verbosity: minimal
 
-after_build:
-  - cmd: appveyor PushArtifact out\Release\*.dll out\Release\*.exe out\Release\*.lib
+artifacts:
+  - path: out\Release\*.dll
+  - path: out\Release\*.exe
+  - path: out\Release\*.lib
