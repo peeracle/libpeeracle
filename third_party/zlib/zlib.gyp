@@ -7,6 +7,7 @@
     {
       'target_name' : 'zlib_x86_simd',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'conditions': [
         ['OS!="ios" and (target_arch=="ia32" or target_arch=="x64")', {
           'cflags' : ['-msse4.2', '-mpclmul'],
@@ -37,6 +38,7 @@
     {
       'target_name': 'zlib',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'sources': [
         'adler32.c',
         'compress.c',

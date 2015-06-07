@@ -27,6 +27,7 @@
     {
       'target_name': 'peeracle_datasource',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'conditions': [
         ['use_curl == 1', {
           'defines': [

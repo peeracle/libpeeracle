@@ -27,6 +27,7 @@
     {
       'target_name': 'peeracle_media',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'sources': [
         'MediaInterface.h',
         'MP3Media.cc',

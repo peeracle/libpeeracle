@@ -27,6 +27,7 @@
     {
       'target_name': 'peeracle_tracker_message',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'sources': [
         'TrackerMessage.cc',
         'TrackerMessage.h',

@@ -27,6 +27,7 @@
     {
       'target_name': 'peeracle_hash',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'sources': [
         'HashInterface.h',
         'Crc32Hash.cc',

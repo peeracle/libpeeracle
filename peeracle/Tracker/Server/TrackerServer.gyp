@@ -27,6 +27,7 @@
     {
       'target_name': 'peeracle_tracker_server',
       'type': 'static_library',
+      'standalone_static_library': 1,
       'conditions': [
         ['use_libwebsockets == 1', {
           'defines': [
