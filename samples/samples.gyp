@@ -31,7 +31,7 @@
         'seed/seed.gyp:*',
       ],
       'conditions': [
-        ['OS == "win" or OS == "mac" or OS == "linux"', {
+        ['build_vlcplugin == 1', {
           'dependencies': [
             'vlc-plugin/vlc-plugin.gyp:*'
           ],
