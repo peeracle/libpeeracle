@@ -52,7 +52,7 @@
             'conditions': [
               ['OS == "win"', {
                 'action': [
-                  'python', '>(_inputs)', '<!(python <(DEPTH)\\scripts\\get_current_dir.py)\\<(RULE_INPUT_PATH)'
+                  'python', '>(_inputs)', '<!(cd)\\<(RULE_INPUT_PATH)'
                 ],
               }, {
                 'action': [
@@ -73,7 +73,7 @@
             'conditions': [
               ['OS == "win"', {
                 'action': [
-                  'python', '>(_inputs)', '<!(python <(DEPTH)\\scripts\\get_current_dir.py)\\<(RULE_INPUT_PATH)'
+                  'python', '>(_inputs)', '<!(cd)\\<(RULE_INPUT_PATH)'
                 ],
                 }, {
                 'action': [
