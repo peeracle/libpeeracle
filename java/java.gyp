@@ -30,7 +30,7 @@
     ['build_java == 1 and java_home != 0', {
       'targets': [
         {
-          'target_name': 'libpeeracle_so',
+          'target_name': 'libpeeracle',
           'type': 'shared_library',
           'dependencies': [
             '<(peeracle_root)/peeracle/peeracle.gyp:peeracle',
@@ -121,7 +121,7 @@
             },
           ],
           'dependencies': [
-            'libpeeracle_so',
+            'libpeeracle',
           ],
         },
       ],
