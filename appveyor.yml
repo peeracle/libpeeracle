@@ -65,6 +65,6 @@ build:
   verbosity: minimal
 
 artifacts:
-  - path: out\Release\*.dll
-  - path: out\Release\*.exe
-  - path: out\Release\*.lib
+  - path: libpeeracle\out\Release\*.dll
+  - path: libpeeracle\out\Release\*.exe
+  - path: libpeeracle\out\Release\*.lib
