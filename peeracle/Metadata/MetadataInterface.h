@@ -24,6 +24,7 @@
 #define PEERACLE_METADATA_METADATAINTERFACE_H_
 
 #include <ios>
+#include <cstdint>
 #include "peeracle/DataStream/DataStreamInterface.h"
 
 namespace peeracle {

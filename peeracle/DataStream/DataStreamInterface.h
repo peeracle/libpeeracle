@@ -24,6 +24,7 @@
 #define PEERACLE_DATASTREAM_DATASTREAMINTERFACE_H_
 
 #include <ios>
+#include <cstdint>
 
 /**
  * \addtogroup peeracle

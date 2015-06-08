@@ -21,6 +21,7 @@
  */
 
 #include <new>
+#include <cstdint>
 #include "peeracle/Metadata/Metadata.h"
 #include "samples/vlc-plugin/PeeracleManager.h"
 #include "samples/vlc-plugin/plugin.h"
