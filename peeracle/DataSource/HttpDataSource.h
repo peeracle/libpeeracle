@@ -24,7 +24,11 @@
 #define PEERACLE_DATASOURCE_HTTPDATASOURCE_H_
 
 #include <string>
+#include <iostream>
 #include "DataSourceInterface.h"
+#ifdef USE_CURL
+#include "third_party/curl/include/curl/curl.h"
+#endif
 
 /**
  * \addtogroup peeracle
@@ -37,6 +41,15 @@ namespace peeracle {
 /**
  * \addtogroup DataSource
  * @{
+ * @namespace peeracle::DataSource
+ * @brief DataSource namespace
+ */
+struct MemoryStruct {
+    char *memory;
+    size_t size;
+};
+
+/**
  * A class that retrieves data remotely with the HTTP protocol.
  */
 class HttpDataSource
@@ -50,6 +63,13 @@ class HttpDataSource
   std::streamsize length() const;
   std::streamsize read(unsigned char *buffer, std::streamsize length);
   std::streamsize seek(std::streamsize offset);
+ protected:
+  std::streamsize cursor_;
+  const std::string url_;
+#ifdef USE_CURL
+  CURL *curl_handle_;
+#endif
+  struct MemoryStruct chunk_;
 };
 
 /**
