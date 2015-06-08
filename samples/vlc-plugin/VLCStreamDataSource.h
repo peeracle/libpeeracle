@@ -1,0 +1,14 @@
+//
+// Created by axel on 6/8/15.
+//
+
+#ifndef LIBPEERACLE_VLCSTREAMDATASOURCE_H
+#define LIBPEERACLE_VLCSTREAMDATASOURCE_H
+
+
+class VLCStreamDataSource {
+
+};
+
+
+#endif //LIBPEERACLE_VLCSTREAMDATASOURCE_H

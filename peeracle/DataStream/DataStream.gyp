@@ -21,20 +21,47 @@
 
 {
   'includes': [
-    '../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'peeracle',
-      'type': 'none',
-      'dependencies': [
-        'DataSource/DataSource.gyp:*',
-        'DataStream/DataStream.gyp:*',
-        'Hash/Hash.gyp:*',
-        'Media/Media.gyp:*',
-        'Metadata/Metadata.gyp:*',
-        'Tracker/Tracker.gyp:*',
-      ],
+      'target_name': 'peeracle_datastream',
+      'type': 'static_library',
+      'standalone_static_library': 1,
+      # 'conditions': [
+      #   ['use_curl == 1', {
+      #     'defines': [
+      #       'USE_CURL',
+      #     ],
+      #     'dependencies': [
+      #       '<(DEPTH)/third_party/curl/curl.gyp:*',
+      #     ],
+      #   }]
+      # ],
+      'sources': [
+        'DataStreamInterface.h',
+        'FileDataStream.cc',
+        'FileDataStream.h',
+        'MemoryDataStream.cc',
+        'MemoryDataStream.h',
+      ]
     },
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_datastream_unittest',
+          'type': '<(gtest_target_type)',
+          'dependencies': [
+            'peeracle_datastream',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'DataStream_unittest.cc',
+          ],
+        },
+      ],
+    }],
   ],
 }
