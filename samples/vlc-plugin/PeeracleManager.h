@@ -23,6 +23,16 @@
 #ifndef SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
 #define SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
 
+#include "peeracle/DataStream/DataStreamInterface.h"
+#include "samples/vlc-plugin/PeeracleManagerInterface.h"
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_stream.h>
+
 #ifndef VLC_DEMUXER_EOF
 # define VLC_DEMUXER_EOF 0
 #endif
@@ -34,9 +44,6 @@
 #ifndef VLC_DEMUXER_SUCCESS
 # define VLC_DEMUXER_SUCCESS 1
 #endif
-
-#include "peeracle/DataStream/DataStreamInterface.h"
-#include "samples/vlc-plugin/PeeracleManagerInterface.h"
 
 class PeeracleManager : public PeeracleManagerInterface {
  public:
