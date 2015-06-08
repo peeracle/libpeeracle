@@ -23,13 +23,6 @@
 #ifndef SAMPLES_VLCPLUGIN_PEERACLESTREAM_H_
 #define SAMPLES_VLCPLUGIN_PEERACLESTREAM_H_
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_threads.h>
-
 class PeeracleStream {
  public:
   PeeracleStream();

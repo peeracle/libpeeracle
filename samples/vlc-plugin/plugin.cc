@@ -22,9 +22,9 @@
 
 #include <new>
 #include <cstdint>
+#include "samples/vlc-plugin/plugin.h"
 #include "peeracle/Metadata/Metadata.h"
 #include "samples/vlc-plugin/PeeracleManager.h"
-#include "samples/vlc-plugin/plugin.h"
 
 /*****************************************************************************
  * Module descriptor

@@ -25,12 +25,6 @@
 
 #include <string>
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_stream.h>
 #include "peeracle/DataStream/DataStreamInterface.h"
 
 class VLCDataStream

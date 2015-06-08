@@ -23,13 +23,6 @@
 #ifndef SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
 #define SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
 
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_stream.h>
-
 #ifndef VLC_DEMUXER_EOF
 # define VLC_DEMUXER_EOF 0
 #endif

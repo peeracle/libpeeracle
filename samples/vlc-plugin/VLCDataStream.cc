@@ -22,6 +22,14 @@
 
 #include <cstring>
 #include <sstream>
+
+#ifdef HAVE_CONFIG_H
+# include "config.h"
+#endif
+
+#include <vlc_common.h>
+#include <vlc_stream.h>
+
 #include "samples/vlc-plugin/VLCDataStream.h"
 
 VLCDataStream::VLCDataStream(stream_t *stream) : _stream(stream) {
