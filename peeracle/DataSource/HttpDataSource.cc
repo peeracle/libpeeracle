@@ -77,7 +77,7 @@ void HttpDataSource::close() {
 }
 
 std::streamsize HttpDataSource::length() const {
-  return static_cast<__int64_t>(this->chunk_.size);
+  return static_cast<int>(this->chunk_.size);
 }
 
 std::streamsize HttpDataSource::read(unsigned char *buffer,
