@@ -30,10 +30,15 @@ void TrackerMessage::set(const std::string &key, int value) {
 void TrackerMessage::set(const std::string &key, const std::string &value) {
 }
 
-void TrackerMessage::get(const std::string &key, int *value) {
+void TrackerMessage::unset(const std::string &key) {
 }
 
-void TrackerMessage::get(const std::string &key, std::string *value) {
+void TrackerMessage::get(const std::string &key, int *value,
+                         int def) {
+}
+
+void TrackerMessage::get(const std::string &key, std::string *value,
+                         const std::string &def) {
 }
 
 unsigned int TrackerMessage::getByteLength() {

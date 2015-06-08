@@ -48,10 +48,10 @@ TEST_F(TrackerMessageTest, GetNSet) {
   msg->set("hash", "crc32");
   msg->set("iAmEmpty", "");
 
-  msg->get("type", &type);
-  msg->get("version", &version);
-  msg->get("hash", &hash);
-  msg->get("iAmEmpty", &empty);
+  msg->get("type", &type, "undefined");
+  msg->get("version", &version, 0);
+  msg->get("hash", &hash, "undefined");
+  msg->get("iAmEmpty", &empty, "notEmpty");
 
   EXPECT_EQ("hello", type);
   EXPECT_EQ(130, version);
@@ -61,7 +61,7 @@ TEST_F(TrackerMessageTest, GetNSet) {
   delete msg;
 }
 
-TEST_F(TrackerMessageTest, Serialize) {
+TEST_F(TrackerMessageTest, SerializeHello) {
   int type;
   std::string client;
   int protocol;
@@ -94,9 +94,9 @@ TEST_F(TrackerMessageTest, Serialize) {
   msg->set("client", "libpeeracle");
   msg->set("protocol", 1);
 
-  msg->get("type", &type);
-  msg->get("client", &client);
-  msg->get("protocol", &protocol);
+  msg->get("type", &type, TrackerMessage::kNone);
+  msg->get("client", &client, "undefined");
+  msg->get("protocol", &protocol, 0);
 
   EXPECT_EQ(TrackerMessage::kHello, type);
   EXPECT_EQ("libpeeracle", client);
@@ -110,7 +110,7 @@ TEST_F(TrackerMessageTest, Serialize) {
   delete msg;
 }
 
-TEST_F(TrackerMessageTest, Unserialize) {
+TEST_F(TrackerMessageTest, UnserializeHello) {
   int type;
   std::string client;
   int protocol;
@@ -123,9 +123,9 @@ TEST_F(TrackerMessageTest, Unserialize) {
 
   msg->unserialize(buffer, sizeof(buffer));
 
-  msg->get("type", &type);
-  msg->get("client", &client);
-  msg->get("protocol", &protocol);
+  msg->get("type", &type, TrackerMessage::kNone);
+  msg->get("client", &client, "undefined");
+  msg->get("protocol", &protocol, 0);
 
   EXPECT_EQ(TrackerMessage::kHello, type);
   EXPECT_EQ("libpeeracle", client);

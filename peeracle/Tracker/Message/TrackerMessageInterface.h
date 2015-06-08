@@ -44,6 +44,8 @@ class TrackerMessageInterface {
     kNone,
     kHello,
     kWelcome,
+    kEnter,
+    kLeave,
     kAnnounce,
     kOffer,
     kAnswer,
@@ -63,18 +65,25 @@ class TrackerMessageInterface {
   virtual void set(const std::string& key, const std::string& value) = 0;
 
   /*
+   * Unset a parameter \p key, removing it's value completely from the memory.
+   * @param key the parameter's name
+   */
+  virtual void unset(const std::string& key) = 0;
+
+  /*
    * Get the \p value of the parameter named \p key. This method should set
-   * \p value to 0 or NULL if the parameter \p key has never been set before
+   * \p value to \p def if the parameter \p key has never been set before
    * with the #set method.
    * @param key the parameter's name
    * @param value point to write the parameter's value to
    */
-  virtual void get(const std::string& key, int *value) = 0;
+  virtual void get(const std::string& key, int *value, int def) = 0;
 
   /*
    * @copydoc #get(const std::string& key, int *value)
    */
-  virtual void get(const std::string& key, std::string *value) = 0;
+  virtual void get(const std::string& key, std::string *value,
+                   const std::string& def) = 0;
 
   /*
    * Calculate the length of a serialized TrackerMessage in bytes. Calling
