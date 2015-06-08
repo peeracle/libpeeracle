@@ -21,3 +21,18 @@
  */
 
 #include "peeracle/Metadata/Metadata.h"
+
+namespace peeracle {
+
+Metadata::Metadata() {
+}
+
+bool Metadata::serialize(uint8_t *bytes, std::streamsize length) {
+  return false;
+}
+
+bool Metadata::unserialize(DataStreamInterface *dataStream) {
+  return false;
+}
+
+}  // namespace peeracle

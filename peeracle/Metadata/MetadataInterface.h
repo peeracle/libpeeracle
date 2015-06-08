@@ -23,9 +23,17 @@
 #ifndef PEERACLE_METADATA_METADATAINTERFACE_H_
 #define PEERACLE_METADATA_METADATAINTERFACE_H_
 
+#include <ios>
+#include "peeracle/DataStream/DataStreamInterface.h"
+
 namespace peeracle {
 
 class MetadataInterface {
+ public:
+  virtual bool serialize(uint8_t *bytes, std::streamsize length) = 0;
+  virtual bool unserialize(DataStreamInterface *dataSource) = 0;
+
+  virtual ~MetadataInterface() {}
 };
 
 }  // namespace peeracle
