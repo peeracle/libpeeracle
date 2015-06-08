@@ -62,6 +62,11 @@ static int Open(vlc_object_t *p_obj) {
   msg_Dbg(p_obj, "getting the four first bytes");
   peek_size = stream_Peek(stream, &peek, sizeof(prcl_magic));
   if (peek_size != sizeof(prcl_magic)) {
+    msg_Dbg(p_obj, "header size mismatch");
+    return VLC_EGENERIC;
+  }
+
+  if (memcmp(peek, prcl_magic, sizeof(prcl_magic))) {
     msg_Dbg(p_obj, "header mismatch");
     return VLC_EGENERIC;
   }
