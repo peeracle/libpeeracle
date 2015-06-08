@@ -23,8 +23,8 @@
 #ifndef PEERACLE_METADATA_METADATAINTERFACE_H_
 #define PEERACLE_METADATA_METADATAINTERFACE_H_
 
+#include <stdint.h>
 #include <ios>
-#include <cstdint>
 #include "peeracle/DataStream/DataStreamInterface.h"
 
 namespace peeracle {

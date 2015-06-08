@@ -23,8 +23,8 @@
 #ifndef PEERACLE_DATASTREAM_DATASTREAMINTERFACE_H_
 #define PEERACLE_DATASTREAM_DATASTREAMINTERFACE_H_
 
+#include <stdint.h>
 #include <ios>
-#include <cstdint>
 
 /**
  * \addtogroup peeracle

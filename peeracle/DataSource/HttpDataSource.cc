@@ -28,11 +28,10 @@
 
 namespace peeracle {
 
-HttpDataSource::HttpDataSource(const std::string &url) {
+HttpDataSource::HttpDataSource(const std::string &url) : url_(url) {
 #ifdef USE_CURL
   curl_easy_init();
 #endif
-  HttpDataSource::HttpDataSource(const std::string &url) : url_(url) {
   this->cursor_ = 0;
   curl_global_init(CURL_GLOBAL_ALL);
   this->curl_handle_ = curl_easy_init();
@@ -85,7 +84,7 @@ std::streamsize HttpDataSource::read(unsigned char *buffer,
   if (this->cursor_ + length > this->length())
     length = this->length() - this->cursor_;
   strncpy(reinterpret_cast<char*>(buffer),
-this->chunk_.memory+this->cursor_, length);
+  this->chunk_.memory+this->cursor_, length);
   buffer[length] = '\0';
   return length;
 }
