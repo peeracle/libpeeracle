@@ -21,7 +21,7 @@
  */
 
 #include "samples/vlc-plugin/PeeracleManager.h"
-#include "samples/vlc-plugin/VLCStreamDataSource.h"
+#include "VLCDataStream.h"
 
 PeeracleManager::PeeracleManager(stream_t *stream) : _metadataStream(stream) {
 }
@@ -30,7 +30,7 @@ PeeracleManager::~PeeracleManager() {
 }
 
 bool PeeracleManager::Init() {
-  this->_metdataDataSource = new VLCStreamDataSource(this->_metadataStream);
+  this->_metadataDataStream = new VLCDataStream(this->_metadataStream);
   return true;
 }
 

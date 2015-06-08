@@ -38,7 +38,7 @@
 # define VLC_DEMUXER_SUCCESS 1
 #endif
 
-#include "peeracle/DataSource/DataSourceInterface.h"
+#include "peeracle/DataStream/DataStreamInterface.h"
 #include "samples/vlc-plugin/PeeracleManagerInterface.h"
 
 class PeeracleManager : public PeeracleManagerInterface {
@@ -58,7 +58,7 @@ class PeeracleManager : public PeeracleManagerInterface {
 
  private:
   stream_t *_metadataStream;
-  peeracle::DataSourceInterface *_metdataDataSource;
+  peeracle::DataStreamInterface *_metadataDataStream;
 };
 
 #endif  // SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
