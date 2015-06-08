@@ -23,6 +23,8 @@
 #ifndef PEERACLE_DATASOURCE_DATASOURCEINTERFACE_H_
 #define PEERACLE_DATASOURCE_DATASOURCEINTERFACE_H_
 
+#include <ios>
+
 /**
  * \addtogroup peeracle
  * @{
