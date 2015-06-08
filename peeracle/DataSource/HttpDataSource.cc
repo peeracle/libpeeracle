@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <string.h>
 #include <string>
 #ifdef USE_CURL
 #include "third_party/curl/include/curl/curl.h"
