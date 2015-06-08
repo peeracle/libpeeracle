@@ -20,27 +20,30 @@
  * SOFTWARE.
  */
 
-#include "VLCStreamDataSource.h"
+#include <vlc_common.h>
+#include <vlc_stream.h>
+#include "samples/vlc-plugin/VLCStreamDataSource.h"
 
 VLCStreamDataSource::VLCStreamDataSource(stream_t *stream) : _stream(stream) {
 }
 
 bool VLCStreamDataSource::open() {
-  return false;
+  return true;
 }
 
 void VLCStreamDataSource::close() {
+  stream_Delete(this->_stream);
 }
 
 std::streamsize VLCStreamDataSource::length() const {
-  return 0;
+  return static_cast<std::streamsize>(stream_Size(this->_stream));
 }
 
 std::streamsize VLCStreamDataSource::read(unsigned char *buffer,
                      std::streamsize length) {
-  return 0;
+  return stream_Read(this->_stream, buffer, static_cast<int>(length));
 }
 
-std::streamsize VLCStreamDataSource::seek(std::streamsize offset){
-  return 0;
+std::streamsize VLCStreamDataSource::seek(std::streamsize offset) {
+  return stream_Seek(this->_stream, static_cast<uint64_t>(offset));
 }

@@ -48,22 +48,11 @@
     "\x69\x6f\x6e\x20\x32\x20\x6f\x72\x20\x6c\x61\x74\x65\x72\x2e"
 
 #include <vlc_plugin.h>
-
-#ifndef VLC_DEMUXER_EOF
-# define VLC_DEMUXER_EOF 0
-#endif
-
-#ifndef VLC_DEMUXER_EGENERIC
-# define VLC_DEMUXER_EGENERIC -1
-#endif
-
-#ifndef VLC_DEMUXER_SUCCESS
-# define VLC_DEMUXER_SUCCESS 1
-#endif
+#include "PeeracleManagerInterface.h"
 
 struct demux_sys_t
 {
-  int dummy;
+  PeeracleManagerInterface *p_peeracleManager;
 };
 
 #endif  // SAMPLES_VLCPLUGIN_PLUGIN_H_

@@ -43,6 +43,9 @@
           ],
           'sources': [
             'plugin.cc',
+            'PeeracleManager.cc',
+            'PeeracleStream.cc',
+            'VLCStreamDataSource.cc',
           ],
           'include_dirs': [
             'config/<(OS)/<(target_arch)',
