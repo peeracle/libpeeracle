@@ -24,6 +24,7 @@
 #define PEERACLE_DATASTREAM_MEMORYDATASTREAM_H_
 
 #include <string>
+#include <vector>
 #include "peeracle/DataStream/DataStreamInterface.h"
 
 /**
@@ -41,7 +42,7 @@ namespace peeracle {
 class MemoryDataStream : public DataStreamInterface {
  public:
   explicit MemoryDataStream(const DataStreamInit &dsInit);
-  virtual ~MemoryDataStream() {}
+  ~MemoryDataStream();
 
   bool open();
   void close();
@@ -77,12 +78,24 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize write(int32_t value);
   std::streamsize write(uint32_t value);
   std::streamsize write(float value);
-  std::streamsize write(double buffer);
+  std::streamsize write(double value);
+
+ private:
+  template<typename T>
+  std::streamsize _read(T *buffer);
+
+  template<typename T>
+  std::streamsize _peek(T *buffer);
+
+  template<typename T>
+  std::streamsize _write(T *buffer, std::streamsize length);
+
+  template<typename T>
+  std::streamsize _write(T value);
 
  protected:
-  uint8_t *_buffer;
-  uint32_t _length;
-  uint32_t _cursor;
+  std::vector<uint8_t> _buffer;
+  std::streampos _cursor;
 };
 
 /**
