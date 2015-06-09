@@ -149,11 +149,11 @@ std::streamsize MemoryDataStream::write(uint32_t value) {
   return 0;
 }
 
-std::streamsize MemoryDataStream::write(float buffer) {
+std::streamsize MemoryDataStream::write(float value) {
   return 0;
 }
 
-std::streamsize MemoryDataStream::write(double buffer) {
+std::streamsize MemoryDataStream::write(double value) {
   return 0;
 }
 

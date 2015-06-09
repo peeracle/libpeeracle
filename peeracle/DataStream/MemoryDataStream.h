@@ -76,7 +76,7 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize write(uint16_t value);
   std::streamsize write(int32_t value);
   std::streamsize write(uint32_t value);
-  std::streamsize write(float buffer);
+  std::streamsize write(float value);
   std::streamsize write(double buffer);
 
  protected:

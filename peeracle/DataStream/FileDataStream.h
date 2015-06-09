@@ -77,8 +77,8 @@ class FileDataStream : public DataStreamInterface {
   std::streamsize write(uint16_t value);
   std::streamsize write(int32_t value);
   std::streamsize write(uint32_t value);
-  std::streamsize write(float buffer);
-  std::streamsize write(double buffer);
+  std::streamsize write(float value);
+  std::streamsize write(double value);
 
  protected:
   const std::string filename_;

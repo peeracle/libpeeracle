@@ -185,11 +185,11 @@ std::streamsize FileDataStream::write(uint32_t value) {
   return 0;
 }
 
-std::streamsize FileDataStream::write(float buffer) {
+std::streamsize FileDataStream::write(float value) {
   return 0;
 }
 
-std::streamsize FileDataStream::write(double buffer) {
+std::streamsize FileDataStream::write(double value) {
   return 0;
 }
 
