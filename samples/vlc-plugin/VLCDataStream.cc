@@ -21,15 +21,7 @@
  */
 
 #include <cstring>
-
 #include "samples/vlc-plugin/VLCDataStream.h"
-
-#ifdef HAVE_CONFIG_H
-# include "config.h"
-#endif
-
-#include <vlc_common.h>
-#include <vlc_stream.h>
 
 VLCDataStream::VLCDataStream(stream_t *stream) : _stream(stream) {
 }
@@ -119,27 +111,57 @@ std::streamsize VLCDataStream::peek(uint8_t *buffer) {
 }
 
 std::streamsize VLCDataStream::peek(int16_t *buffer) {
-  return 0;
+  int ret;
+  const uint8_t *peek;
+
+  ret = stream_Peek(this->_stream, &peek, sizeof(int16_t));
+  *buffer = *peek;
+  return ret;
 }
 
 std::streamsize VLCDataStream::peek(uint16_t *buffer) {
-  return 0;
+  int ret;
+  const uint8_t *peek;
+
+  ret = stream_Peek(this->_stream, &peek, sizeof(uint16_t));
+  *buffer = *peek;
+  return ret;
 }
 
 std::streamsize VLCDataStream::peek(int32_t *buffer) {
-  return 0;
+  int ret;
+  const uint8_t *peek;
+
+  ret = stream_Peek(this->_stream, &peek, sizeof(int32_t));
+  *buffer = *peek;
+  return ret;
 }
 
 std::streamsize VLCDataStream::peek(uint32_t *buffer) {
-  return 0;
+  int ret;
+  const uint8_t *peek;
+
+  ret = stream_Peek(this->_stream, &peek, sizeof(uint32_t));
+  *buffer = *peek;
+  return ret;
 }
 
 std::streamsize VLCDataStream::peek(float *buffer) {
-  return 0;
+  int ret;
+  const uint8_t *peek;
+
+  ret = stream_Peek(this->_stream, &peek, sizeof(float));
+  *buffer = *peek;
+  return ret;
 }
 
 std::streamsize VLCDataStream::peek(double *buffer) {
-  return 0;
+  int ret;
+  const uint8_t *peek;
+
+  ret = stream_Peek(this->_stream, &peek, sizeof(double));
+  *buffer = *peek;
+  return ret;
 }
 
 std::streamsize VLCDataStream::write(uint8_t **buffer, std::streamsize length) {
