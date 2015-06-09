@@ -24,6 +24,7 @@
 #define SAMPLES_VLCPLUGIN_PEERACLEMANAGERINTERFACE_H_
 
 #include <cstdarg>
+#include "samples/vlc-plugin/plugin.h"
 
 class PeeracleManagerInterface {
  public:
