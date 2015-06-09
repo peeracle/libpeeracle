@@ -25,7 +25,8 @@
 
 namespace peeracle {
 
-MemoryDataStream::MemoryDataStream(const DataStreamInit &dsInit) {
+MemoryDataStream::MemoryDataStream(const DataStreamInit &dsInit) :
+  _bigEndian(dsInit.bigEndian) {
 }
 
 MemoryDataStream::~MemoryDataStream() {
@@ -67,13 +68,27 @@ std::streamsize MemoryDataStream::_read(T *buffer) {
 
 template <typename T>
 std::streamsize MemoryDataStream::_peek(T *buffer) {
+  T value;
+  T finalValue;
+  uint8_t *originalData;
+  uint8_t *finalData;
   std::streamsize size = static_cast<std::streamsize>(sizeof(T));
 
   if (this->_cursor + size > this->_buffer.size()) {
     return -1;
   }
 
-  *buffer = *(reinterpret_cast<T*>(&this->_buffer[this->_cursor]));
+  value = *(reinterpret_cast<T*>(&this->_buffer[this->_cursor]));
+  if (_bigEndian && sizeof(T) > 1) {
+    originalData = reinterpret_cast<uint8_t*>(&value);
+    finalData = reinterpret_cast<uint8_t*>(&finalValue);
+    for (int i = 0; i < sizeof(T); ++i) {
+      finalData[i] = originalData[(sizeof(T) - i) - 1];
+    }
+    value = finalValue;
+  }
+
+  *buffer = value;
   return sizeof(T);
 }
 
@@ -93,7 +108,18 @@ std::streamsize MemoryDataStream::_write(T *buffer, std::streamsize length) {
 
 template <typename T>
 std::streamsize MemoryDataStream::_write(T value) {
-  return this->_write(reinterpret_cast<uint8_t*>(&value), sizeof(T));
+  T finalValue = value;
+  uint8_t *originalData = reinterpret_cast<uint8_t*>(&value);
+  uint8_t *finalData = reinterpret_cast<uint8_t*>(&finalValue);
+
+  if (_bigEndian && sizeof(T) > 1) {
+    for (int i = 0; i < sizeof(T); ++i) {
+      finalData[i] = originalData[(sizeof(T) - i) - 1];
+    }
+    originalData = finalData;
+  }
+
+  return this->_write(originalData, sizeof(T));
 }
 
 std::streamsize MemoryDataStream::read(uint8_t **buffer,

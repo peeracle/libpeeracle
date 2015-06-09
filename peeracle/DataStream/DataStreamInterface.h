@@ -37,11 +37,13 @@ namespace peeracle {
 
 struct DataStreamInit {
   DataStreamInit()
-    : path(""),
+    : bigEndian(true),
       buffer(NULL),
+      path(""),
       bufferLength(0) {
   }
 
+  bool bigEndian;
   std::string path;
   uint8_t *buffer;
   std::streamsize bufferLength;

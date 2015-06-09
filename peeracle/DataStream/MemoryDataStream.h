@@ -96,6 +96,7 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize _write(T value);
 
  protected:
+  bool _bigEndian;
   std::vector<uint8_t> _buffer;
   std::streampos _cursor;
 };
