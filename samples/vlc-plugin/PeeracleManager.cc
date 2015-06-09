@@ -118,7 +118,7 @@ int PeeracleManager::Control(int i_query, va_list args) {
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_GET_PTS_DELAY");
       break;
     case DEMUX_CAN_CONTROL_PACE:
-      *(va_arg (args, bool *)) = true;
+      *(va_arg(args, bool *)) = true;
       return VLC_SUCCESS;
     case DEMUX_CAN_CONTROL_RATE:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_CAN_CONTROL_RATE");
