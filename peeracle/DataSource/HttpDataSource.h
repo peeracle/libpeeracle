@@ -23,12 +23,11 @@
 #ifndef PEERACLE_DATASOURCE_HTTPDATASOURCE_H_
 #define PEERACLE_DATASOURCE_HTTPDATASOURCE_H_
 
-#include <string>
-#include <iostream>
-#include "DataSourceInterface.h"
 #ifdef USE_CURL
+#include <string>
+#include <ios>
+#include "DataSourceInterface.h"
 #include "third_party/curl/include/curl/curl.h"
-#endif
 
 /**
  * \addtogroup peeracle
@@ -66,9 +65,7 @@ class HttpDataSource
  protected:
   std::streamsize cursor_;
   const std::string url_;
-#ifdef USE_CURL
   CURL *curl_handle_;
-#endif
   struct MemoryStruct chunk_;
 };
 
@@ -81,4 +78,5 @@ class HttpDataSource
  * @}
  */
 
+#endif  // USE_CURL
 #endif  // PEERACLE_DATASOURCE_HTTPDATASOURCE_H_

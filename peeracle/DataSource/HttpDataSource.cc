@@ -20,19 +20,18 @@
  * SOFTWARE.
  */
 
-#include <string.h>
-#include <string>
 #ifdef USE_CURL
+
+#include <iostream>
+#include <cstring>
+#include <string>
 #include "third_party/curl/include/curl/curl.h"
-#endif
 #include "peeracle/DataSource/HttpDataSource.h"
 
 namespace peeracle {
 
 HttpDataSource::HttpDataSource(const std::string &url) : url_(url) {
-#ifdef USE_CURL
   curl_easy_init();
-#endif
   this->cursor_ = 0;
   curl_global_init(CURL_GLOBAL_ALL);
   this->curl_handle_ = curl_easy_init();
@@ -63,7 +62,7 @@ bool HttpDataSource::open() {
   curl_easy_setopt(this->curl_handle_, CURLOPT_URL, this->url_.c_str());
   curl_easy_setopt(curl_handle_, CURLOPT_WRITEFUNCTION, WriteMemoryCallback);
   curl_easy_setopt(this->curl_handle_, CURLOPT_WRITEDATA,
-reinterpret_cast<void *>(&this->chunk_));
+                   reinterpret_cast<void *>(&this->chunk_));
   curl_easy_setopt(this->curl_handle_, CURLOPT_USERAGENT, "libcurl-agent/1.0");
   res = curl_easy_perform(this->curl_handle_);
   if (res != CURLE_OK)
@@ -99,3 +98,5 @@ std::streamsize HttpDataSource::seek(std::streamsize offset) {
 }
 
 }  // namespace peeracle
+
+#endif

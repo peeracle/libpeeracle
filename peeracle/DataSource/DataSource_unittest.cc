@@ -21,10 +21,11 @@
  */
 
 #include <fstream>
-#include <cstdlib>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/DataSource/FileDataSource.h"
+#ifdef USE_CURL
 #include "peeracle/DataSource/HttpDataSource.h"
+#endif
 
 namespace peeracle {
 
@@ -35,7 +36,11 @@ int rand_r(unsigned int *seed) {
 }
 #endif
 
+#ifdef USE_CURL
 typedef ::testing::Types<FileDataSource, HttpDataSource> DataSourceTypes;
+#else
+typedef ::testing::Types<FileDataSource> DataSourceTypes;
+#endif
 TYPED_TEST_CASE(DataSourceTest, DataSourceTypes);
 
 template <typename T>
