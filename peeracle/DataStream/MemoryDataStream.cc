@@ -218,4 +218,14 @@ std::streamsize MemoryDataStream::write(double value) {
   return this->_write(value);
 }
 
+std::streamsize MemoryDataStream::getBytes(uint8_t *buffer,
+                                           std::streamsize length) {
+  std::streamsize i;
+
+  for (i = 0; i < length; ++i) {
+    buffer[i] = this->_buffer[i];
+  }
+  return i;
+}
+
 }  // namespace peeracle
