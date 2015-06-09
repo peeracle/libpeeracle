@@ -33,6 +33,8 @@
 
 #include <vlc_common.h>
 #include <vlc_demux.h>
+#include <vlc_meta.h>
+#include <vlc_stream.h>
 
 #define VLC_MODULE_COPYRIGHT \
     "\x43\x6f\x70\x79\x72\x69\x67\x68\x74\x20\x28\x43\x29\x20\x74\x68" \

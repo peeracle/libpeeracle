@@ -80,7 +80,7 @@ static int Open(vlc_object_t *p_obj) {
   }
 
   msg_Dbg(p_obj, "trying to instantiate PeeracleManager");
-  p_sys->p_peeracleManager = new(std::nothrow) PeeracleManager(stream);
+  p_sys->p_peeracleManager = new(std::nothrow) PeeracleManager(p_demux);
   if (unlikely(p_sys->p_peeracleManager == NULL) ||
     !p_sys->p_peeracleManager->Init()) {
     msg_Dbg(p_obj, "out of memory");

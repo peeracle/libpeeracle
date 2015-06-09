@@ -29,7 +29,7 @@
 
 class PeeracleManager : public PeeracleManagerInterface {
  public:
-  explicit PeeracleManager(stream_t *stream);
+  explicit PeeracleManager(demux_t *demux);
   ~PeeracleManager();
 
   enum Status {
@@ -43,7 +43,7 @@ class PeeracleManager : public PeeracleManagerInterface {
   int Demux();
 
  private:
-  stream_t *_metadataStream;
+  demux_t *_vlc;
   peeracle::DataStreamInterface *_metadataDataStream;
 };
 
