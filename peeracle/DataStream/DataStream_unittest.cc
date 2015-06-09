@@ -21,7 +21,7 @@
  */
 
 #include <fstream>
-#include <cstdlib>
+#include <random>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/DataStream/FileDataStream.h"
 #include "peeracle/DataStream/MemoryDataStream.h"
@@ -35,6 +35,150 @@ int rand_r(unsigned int *seed) {
 }
 #endif
 
+class FileDataStreamTest : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+    uint32_t seed;
+    const ::testing::TestInfo* const test_info =
+      ::testing::UnitTest::GetInstance()->current_test_info();
+
+    std::stringstream strm;
+    strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
+    this->_dsInit.path = strm.str();
+
+    std::ofstream tmpfile(this->_dsInit.path.c_str(),
+                          std::ofstream::out | std::ofstream::binary);
+
+    seed = (uint32_t)(time(NULL));
+    for (size_t i = 0; i < sizeof(_data); i++) {
+      _data[i] = (uint8_t)(rand_r(&seed) % (255));
+    }
+
+    tmpfile.write(reinterpret_cast<char*>(_data), sizeof(_data));
+    tmpfile.close();
+  }
+
+  virtual void TearDown() {
+    remove(this->_dsInit.path.c_str());
+  }
+
+  peeracle::FileDataStream *_ds;
+  peeracle::DataStreamInit _dsInit;
+  unsigned char _data[64];
+};
+
+TEST_F(FileDataStreamTest, OpenShouldFail) {
+}
+
+typedef ::testing::Types<int8_t, uint8_t, int16_t, uint16_t, int32_t,
+  uint32_t, float, double> MemoryDataStreamTypes;
+TYPED_TEST_CASE(MemoryDataStreamTest, MemoryDataStreamTypes);
+
+template <typename T>
+class MemoryDataStreamTest : public ::testing::Test {
+ protected:
+  virtual void SetUp() {
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    std::uniform_real_distribution<double> dist(0.0, powf(255, sizeof(T)));
+
+    _seed = static_cast<unsigned int>(time(NULL));
+    srand(_seed);
+    _randValueA = static_cast<T>(dist(engine));
+    _randValueB = static_cast<T>(dist(engine));
+
+    _ds = new peeracle::MemoryDataStream(_dsInit);
+  }
+
+  void TEST_WRITEVALUE(T value) {
+    std::streamsize len = 800;
+
+    len = this->_ds->write(value);
+    EXPECT_EQ(sizeof(T), len);
+  }
+
+  void TEST_READVALUE(T *value) {
+    std::streamsize len = 800;
+
+    len = this->_ds->read(value);
+    EXPECT_EQ(sizeof(T), len);
+  }
+
+  void TEST_READVALUE_FAIL(T *value) {
+    T original = *value;
+    std::streamsize len = 800;
+
+    len = this->_ds->read(value);
+    EXPECT_EQ(-1, len);
+    EXPECT_EQ(original, *value);
+  }
+
+  void TEST_SEEK(std::streamsize position) {
+    std::streamsize result = this->_ds->seek(-1);
+    EXPECT_EQ(-1, result);
+    result = this->_ds->seek(position);
+    EXPECT_EQ(position, result);
+  }
+
+  void TEST_GETBYTES(uint8_t *buffer, std::streamsize length) {
+    std::streamsize result = this->_ds->getBytes(buffer, length);
+    EXPECT_EQ(this->_ds->length(), result);
+  }
+
+  virtual void TearDown() {
+    delete _ds;
+  }
+
+  unsigned int _seed;
+
+  T _randValueA;
+  T _randValueB;
+
+  peeracle::MemoryDataStream *_ds;
+  peeracle::DataStreamInit _dsInit;
+};
+
+TYPED_TEST(MemoryDataStreamTest, Write) {
+  TypeParam valueA = this->_randValueA;
+
+  this->TEST_READVALUE_FAIL(&valueA);
+  this->TEST_WRITEVALUE(valueA);
+  this->TEST_SEEK(0);
+
+  valueA = this->_randValueA - 1;
+  this->TEST_READVALUE(&valueA);
+  EXPECT_EQ(this->_randValueA, valueA);
+}
+
+TYPED_TEST(MemoryDataStreamTest, DoubleWrite) {
+  TypeParam valueA = this->_randValueA;
+  TypeParam valueB = this->_randValueB;
+
+  this->TEST_READVALUE_FAIL(&valueA);
+  this->TEST_WRITEVALUE(valueA);
+  this->TEST_WRITEVALUE(valueB);
+  this->TEST_SEEK(0);
+
+  valueA = this->_randValueA - 1;
+  valueB = this->_randValueB - 1;
+
+  this->TEST_READVALUE(&valueA);
+  EXPECT_EQ(this->_randValueA, valueA);
+
+  this->TEST_READVALUE(&valueB);
+  EXPECT_EQ(this->_randValueB, valueB);
+
+  this->TEST_SEEK(0);
+
+  this->TEST_READVALUE(&valueA);
+  EXPECT_EQ(this->_randValueA, valueA);
+
+  this->TEST_SEEK(0);
+
+  this->TEST_READVALUE(&valueA);
+  EXPECT_EQ(this->_randValueA, valueA);
+}
+
 typedef ::testing::Types<FileDataStream, MemoryDataStream> DataStreamTypes;
 TYPED_TEST_CASE(DataStreamTest, DataStreamTypes);
 
@@ -42,36 +186,16 @@ template <typename T>
 class DataStreamTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    unsigned int seed;
-    const ::testing::TestInfo* const test_info =
-      ::testing::UnitTest::GetInstance()->current_test_info();
-
-    std::stringstream strm;
-    strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
-    this->dsInit_.path = strm.str();
-
-    std::ofstream tmpfile(this->dsInit_.path.c_str(),
-                          std::ofstream::out | std::ofstream::binary);
-
-    seed = (unsigned int)(time(NULL));
-    for (size_t i = 0; i < sizeof(data_); i++) {
-      data_[i] = (unsigned char)(rand_r(&seed) % (255));
-    }
-
-    tmpfile.write(reinterpret_cast<char*>(data_), sizeof(data_));
-    tmpfile.close();
   }
 
   virtual void TearDown() {
-    remove(this->dsInit_.path.c_str());
   }
 
-  peeracle::DataStreamInit dsInit_;
-  unsigned char data_[64];
+  peeracle::DataStreamInit _dsInit;
 };
 
 TYPED_TEST(DataStreamTest, OpenShouldFail) {
-  TypeParam *dataStream = new TypeParam(this->dsInit_);
+  // TypeParam *dataStream = new TypeParam(this->_dsInit);
 }
 
 }  // namespace peeracle
