@@ -24,7 +24,7 @@
 
 namespace peeracle {
 
-MemoryDataStream::MemoryDataStream(const uint8_t *buffer, uint32_t length) {
+MemoryDataStream::MemoryDataStream(const DataStreamInit &dsInit) {
 }
 
 bool MemoryDataStream::open() {

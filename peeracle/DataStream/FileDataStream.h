@@ -41,7 +41,7 @@ namespace peeracle {
  */
 class FileDataStream : public DataStreamInterface {
  public:
-  explicit FileDataStream(const std::string &filename);
+  explicit FileDataStream(const DataStreamInit &dsInit);
   virtual ~FileDataStream() {}
 
   bool open();

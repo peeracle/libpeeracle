@@ -40,7 +40,7 @@ namespace peeracle {
  */
 class MemoryDataStream : public DataStreamInterface {
  public:
-  explicit MemoryDataStream(const uint8_t *buffer, uint32_t length);
+  explicit MemoryDataStream(const DataStreamInit &dsInit);
   virtual ~MemoryDataStream() {}
 
   bool open();

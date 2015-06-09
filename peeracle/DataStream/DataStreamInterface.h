@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <ios>
+#include <string>
 
 /**
  * \addtogroup peeracle
@@ -33,6 +34,18 @@
  * @brief peeracle namespace
  */
 namespace peeracle {
+
+struct DataStreamInit {
+  DataStreamInit()
+    : path(""),
+      buffer(NULL),
+      bufferLength(0) {
+  }
+
+  std::string path;
+  uint8_t *buffer;
+  std::streamsize bufferLength;
+};
 
 /**
  * \addtogroup DataStream
@@ -228,7 +241,7 @@ class DataStreamInterface {
    * \return The number of bytes read.
    */
   virtual std::streamsize write(uint8_t **buffer,
-                               std::streamsize length) = 0;
+                                std::streamsize length) = 0;
 
   /**
    * Write a signed char at the cursor and store the value into the \p buffer.

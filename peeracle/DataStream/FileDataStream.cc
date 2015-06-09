@@ -24,8 +24,8 @@
 
 namespace peeracle {
 
-FileDataStream::FileDataStream(const std::string &filename)
-  : filename_(filename) { }
+FileDataStream::FileDataStream(const DataStreamInit &dsInit)
+  : filename_(dsInit.path) { }
 
 bool FileDataStream::open() {
   this->file_.open(this->filename_.c_str(), std::ifstream::binary);

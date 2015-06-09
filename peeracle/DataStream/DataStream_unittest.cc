@@ -24,6 +24,7 @@
 #include <cstdlib>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/DataStream/FileDataStream.h"
+#include "peeracle/DataStream/MemoryDataStream.h"
 
 namespace peeracle {
 
@@ -34,7 +35,7 @@ int rand_r(unsigned int *seed) {
 }
 #endif
 
-typedef ::testing::Types<FileDataStream> DataStreamTypes;
+typedef ::testing::Types<FileDataStream, MemoryDataStream> DataStreamTypes;
 TYPED_TEST_CASE(DataStreamTest, DataStreamTypes);
 
 template <typename T>
@@ -47,9 +48,9 @@ class DataStreamTest : public ::testing::Test {
 
     std::stringstream strm;
     strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
-    filename_ = strm.str();
+    this->dsInit_.path = strm.str();
 
-    std::ofstream tmpfile(filename_.c_str(),
+    std::ofstream tmpfile(this->dsInit_.path.c_str(),
                           std::ofstream::out | std::ofstream::binary);
 
     seed = (unsigned int)(time(NULL));
@@ -62,15 +63,15 @@ class DataStreamTest : public ::testing::Test {
   }
 
   virtual void TearDown() {
-    remove(filename_.c_str());
+    remove(this->dsInit_.path.c_str());
   }
 
-  std::string filename_;
+  peeracle::DataStreamInit dsInit_;
   unsigned char data_[64];
 };
 
 TYPED_TEST(DataStreamTest, OpenShouldFail) {
-  TypeParam *dataStream = new TypeParam("d");
+  TypeParam *dataStream = new TypeParam(this->dsInit_);
 }
 
 }  // namespace peeracle
