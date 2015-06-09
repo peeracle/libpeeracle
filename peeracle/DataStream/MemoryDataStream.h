@@ -47,7 +47,7 @@ class MemoryDataStream : public DataStreamInterface {
   bool open();
   void close();
   std::streamsize length() const;
-  std::streamsize seek(std::streamsize offset);
+  std::streamsize seek(std::streamsize position);
   std::streamsize tell() const;
 
   std::streamsize getBytes(uint8_t *buffer, std::streamsize length);

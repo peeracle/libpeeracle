@@ -43,11 +43,11 @@ std::streamsize MemoryDataStream::length() const {
   return this->_buffer.size();
 }
 
-std::streamsize MemoryDataStream::seek(std::streamsize offset) {
-  if (this->_cursor + offset > this->_buffer.size()) {
+std::streamsize MemoryDataStream::seek(std::streamsize position) {
+  if (position < 0 || this->_cursor + position > this->_buffer.size()) {
     return -1;
   }
-  this->_cursor = offset;
+  this->_cursor = position;
   return this->_cursor;
 }
 
@@ -59,7 +59,9 @@ template <typename T>
 std::streamsize MemoryDataStream::_read(T *buffer) {
   std::streamsize result = this->_peek(buffer);
 
-  this->_cursor += result;
+  if (result > 0) {
+    this->_cursor += result;
+  }
   return result;
 }
 
@@ -68,7 +70,7 @@ std::streamsize MemoryDataStream::_peek(T *buffer) {
   std::streamsize size = static_cast<std::streamsize>(sizeof(T));
 
   if (this->_cursor + size > this->_buffer.size()) {
-    return 0;
+    return -1;
   }
 
   *buffer = *(reinterpret_cast<T*>(&this->_buffer[this->_cursor]));
@@ -222,7 +224,7 @@ std::streamsize MemoryDataStream::getBytes(uint8_t *buffer,
                                            std::streamsize length) {
   std::streamsize i;
 
-  for (i = 0; i < length; ++i) {
+  for (i = 0; i < this->_buffer.size(); ++i) {
     buffer[i] = this->_buffer[i];
   }
   return i;
