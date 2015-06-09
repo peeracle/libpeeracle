@@ -75,6 +75,9 @@
               },
             }],
             ['OS == "linux"', {
+              'defines': [
+                '<!@(pkg-config vlc-plugin --cflags-only-other | sed s/-D//g)',
+              ],
               'include_dirs': [
                 '<!@(pkg-config vlc-plugin --cflags-only-I | sed s/-I//g)'
               ],
