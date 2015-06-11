@@ -28,17 +28,9 @@
 
 namespace peeracle {
 
-#ifdef _MSC_VER
-int rand_r(unsigned int *seed) {
-  srand(*seed);
-  return rand();
-}
-#endif
-
 class FileDataStreamTest : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    uint32_t seed;
     const ::testing::TestInfo* const test_info =
       ::testing::UnitTest::GetInstance()->current_test_info();
 
@@ -46,12 +38,15 @@ class FileDataStreamTest : public ::testing::Test {
     strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
     this->_dsInit.path = strm.str();
 
+    std::random_device rd;
+    std::mt19937 engine(rd());
+    std::uniform_real_distribution<double> dist(0.0, 255.0);
+
     std::ofstream tmpfile(this->_dsInit.path.c_str(),
                           std::ofstream::out | std::ofstream::binary);
 
-    seed = (uint32_t)(time(NULL));
     for (size_t i = 0; i < sizeof(_data); i++) {
-      _data[i] = (uint8_t)(rand_r(&seed) % (255));
+      _data[i] = static_cast<uint8_t>(dist(engine));
     }
 
     tmpfile.write(reinterpret_cast<char*>(_data), sizeof(_data));
@@ -64,7 +59,7 @@ class FileDataStreamTest : public ::testing::Test {
 
   peeracle::FileDataStream *_ds;
   peeracle::DataStreamInit _dsInit;
-  unsigned char _data[64];
+  uint8_t _data[64];
 };
 
 TEST_F(FileDataStreamTest, OpenShouldFail) {
@@ -82,8 +77,6 @@ class MemoryDataStreamTest : public ::testing::Test {
     std::mt19937 engine(rd());
     std::uniform_real_distribution<double> dist(0.0, powf(255, sizeof(T)));
 
-    _seed = static_cast<unsigned int>(time(NULL));
-    srand(_seed);
     _randValueA = static_cast<T>(dist(engine));
     _randValueB = static_cast<T>(dist(engine));
 
@@ -91,33 +84,59 @@ class MemoryDataStreamTest : public ::testing::Test {
   }
 
   void TEST_WRITEVALUE(T value) {
+    std::streamsize oldpos;
+    std::streamsize newpos;
     std::streamsize len = 800;
 
+    oldpos = this->_ds->tell();
     len = this->_ds->write(value);
+    newpos = this->_ds->tell();
     EXPECT_EQ(sizeof(T), len);
+    EXPECT_EQ(oldpos + sizeof(T), newpos);
   }
 
   void TEST_READVALUE(T *value) {
+    std::streamsize oldpos;
+    std::streamsize newpos;
     std::streamsize len = 800;
 
+    oldpos = this->_ds->tell();
     len = this->_ds->read(value);
+    newpos = this->_ds->tell();
     EXPECT_EQ(sizeof(T), len);
+    EXPECT_EQ(oldpos + sizeof(T), newpos);
   }
 
   void TEST_READVALUE_FAIL(T *value) {
     T original = *value;
+    std::streamsize oldpos;
+    std::streamsize newpos;
     std::streamsize len = 800;
 
+    oldpos = this->_ds->tell();
     len = this->_ds->read(value);
+    newpos = this->_ds->tell();
     EXPECT_EQ(-1, len);
     EXPECT_EQ(original, *value);
+    EXPECT_EQ(oldpos, newpos);
   }
 
   void TEST_SEEK(std::streamsize position) {
-    std::streamsize result = this->_ds->seek(-1);
+    std::streamsize oldpos;
+    std::streamsize newpos;
+    std::streamsize result;
+
+    oldpos = this->_ds->tell();
+    result = this->_ds->seek(-1);
+    newpos = this->_ds->tell();
     EXPECT_EQ(-1, result);
+    EXPECT_EQ(oldpos, newpos);
+
+    oldpos = this->_ds->tell();
     result = this->_ds->seek(position);
+    newpos = this->_ds->tell();
     EXPECT_EQ(position, result);
+    EXPECT_EQ(newpos, result);
   }
 
   void TEST_GETBYTES(uint8_t *buffer, std::streamsize length) {
