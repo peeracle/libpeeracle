@@ -129,9 +129,11 @@ int PeeracleManager::Control(int i_query, va_list args) {
     case DEMUX_CAN_SEEK:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_CAN_SEEK");
       break;
+#ifdef DEMUX_IS_PLAYLIST
     case DEMUX_IS_PLAYLIST:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_IS_PLAYLIST");
       break;
+#endif
     case DEMUX_NAV_ACTIVATE:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_NAV_ACTIVATE");
       break;

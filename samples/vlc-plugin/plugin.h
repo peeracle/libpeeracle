@@ -52,6 +52,18 @@
 #include <vlc_plugin.h>
 #include "samples/vlc-plugin/PeeracleManagerInterface.h"
 
+#ifndef VLC_DEMUXER_EOF
+# define VLC_DEMUXER_EOF 0
+#endif
+
+#ifndef VLC_DEMUXER_EGENERIC
+# define VLC_DEMUXER_EGENERIC -1
+#endif
+
+#ifndef VLC_DEMUXER_SUCCESS
+# define VLC_DEMUXER_SUCCESS 1
+#endif
+
 struct demux_sys_t
 {
   PeeracleManagerInterface *p_peeracleManager;
