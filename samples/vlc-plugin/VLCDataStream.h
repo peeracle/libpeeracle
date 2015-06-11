@@ -40,7 +40,7 @@ class VLCDataStream
   std::streamsize seek(std::streamsize offset);
   std::streamsize tell() const;
 
-  std::streamsize read(uint8_t **buffer, std::streamsize length);
+  std::streamsize read(uint8_t *buffer, std::streamsize length);
   std::streamsize read(int8_t *buffer);
   std::streamsize read(uint8_t *buffer);
   std::streamsize read(int16_t *buffer);
@@ -49,8 +49,9 @@ class VLCDataStream
   std::streamsize read(uint32_t *buffer);
   std::streamsize read(float *buffer);
   std::streamsize read(double *buffer);
+  std::streamsize read(std::string *buffer);
 
-  std::streamsize peek(uint8_t **buffer, std::streamsize length);
+  std::streamsize peek(uint8_t *buffer, std::streamsize length);
   std::streamsize peek(int8_t *buffer);
   std::streamsize peek(uint8_t *buffer);
   std::streamsize peek(int16_t *buffer);
@@ -59,8 +60,9 @@ class VLCDataStream
   std::streamsize peek(uint32_t *buffer);
   std::streamsize peek(float *buffer);
   std::streamsize peek(double *buffer);
+  std::streamsize peek(std::string *buffer);
 
-  std::streamsize write(uint8_t **buffer, std::streamsize length);
+  std::streamsize write(uint8_t *buffer, std::streamsize length);
   std::streamsize write(int8_t value);
   std::streamsize write(uint8_t value);
   std::streamsize write(int16_t value);
@@ -69,6 +71,7 @@ class VLCDataStream
   std::streamsize write(uint32_t value);
   std::streamsize write(float value);
   std::streamsize write(double value);
+  std::streamsize write(const std::string &value);
 
   ~VLCDataStream() {}
 

@@ -22,6 +22,7 @@
 
 #include <cstring>
 #include "samples/vlc-plugin/VLCDataStream.h"
+#include "samples/vlc-plugin/plugin.h"
 
 VLCDataStream::VLCDataStream(stream_t *stream) : _stream(stream) {
 }
@@ -46,9 +47,9 @@ std::streamsize VLCDataStream::tell() const {
   return static_cast<std::streamsize>(stream_Tell(this->_stream));
 }
 
-std::streamsize VLCDataStream::read(uint8_t **buffer,
-                                          std::streamsize length) {
-  return stream_Read(this->_stream, *buffer, static_cast<int>(length));
+std::streamsize VLCDataStream::read(uint8_t *buffer,
+                                    std::streamsize length) {
+  return stream_Read(this->_stream, buffer, static_cast<int>(length));
 }
 
 std::streamsize VLCDataStream::read(int8_t *buffer) {
@@ -83,12 +84,16 @@ std::streamsize VLCDataStream::read(double *buffer) {
   return stream_Read(this->_stream, buffer, sizeof(double));
 }
 
-std::streamsize VLCDataStream::peek(uint8_t **buffer, std::streamsize length) {
+std::streamsize VLCDataStream::read(std::string *buffer) {
+  return 0;
+}
+
+std::streamsize VLCDataStream::peek(uint8_t *buffer, std::streamsize length) {
   int ret;
   const uint8_t *peek;
 
   ret = stream_Peek(this->_stream, &peek, static_cast<int>(length));
-  memcpy(*buffer, peek, static_cast<size_t>(length));
+  memcpy(buffer, peek, static_cast<size_t>(length));
   return ret;
 }
 
@@ -164,7 +169,11 @@ std::streamsize VLCDataStream::peek(double *buffer) {
   return ret;
 }
 
-std::streamsize VLCDataStream::write(uint8_t **buffer, std::streamsize length) {
+std::streamsize VLCDataStream::peek(std::string *buffer) {
+  return 0;
+}
+
+std::streamsize VLCDataStream::write(uint8_t *buffer, std::streamsize length) {
   return 0;
 }
 
@@ -197,5 +206,9 @@ std::streamsize VLCDataStream::write(float value) {
 }
 
 std::streamsize VLCDataStream::write(double value) {
+  return 0;
+}
+
+std::streamsize VLCDataStream::write(const std::string &value) {
   return 0;
 }
