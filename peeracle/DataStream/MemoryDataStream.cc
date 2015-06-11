@@ -46,7 +46,9 @@ std::streamsize MemoryDataStream::length() const {
 }
 
 std::streamsize MemoryDataStream::seek(std::streamsize position) {
-  if (position < 0 || this->_cursor + position > this->_buffer.size()) {
+  if (position < 0 ||
+      static_cast<std::streamsize>(this->_cursor) +
+      position > this->_buffer.size()) {
     return -1;
   }
   this->_cursor = position;
@@ -189,7 +191,8 @@ std::streamsize MemoryDataStream::_peek(T *buffer) {
   uint8_t *finalData;
   std::streamsize size = static_cast<std::streamsize>(sizeof(T));
 
-  if (this->_cursor + size > this->_buffer.size()) {
+  if (static_cast<std::streamsize>(this->_cursor) +
+      size > this->_buffer.size()) {
     return -1;
   }
 
