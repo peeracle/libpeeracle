@@ -133,6 +133,12 @@ class MemoryDataStreamTest : public ::testing::Test {
     EXPECT_EQ(oldpos, newpos);
 
     oldpos = this->_ds->tell();
+    result = this->_ds->seek(this->_ds->length() * 2);
+    newpos = this->_ds->tell();
+    EXPECT_EQ(-1, result);
+    EXPECT_EQ(oldpos, newpos);
+
+    oldpos = this->_ds->tell();
     result = this->_ds->seek(position);
     newpos = this->_ds->tell();
     EXPECT_EQ(position, result);
