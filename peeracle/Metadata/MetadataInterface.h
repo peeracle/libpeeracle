@@ -31,8 +31,8 @@ namespace peeracle {
 
 class MetadataInterface {
  public:
-  virtual bool serialize(uint8_t *bytes, std::streamsize length) = 0;
-  virtual bool unserialize(DataStreamInterface *dataSource) = 0;
+  virtual bool serialize(DataStreamInterface *dataStream) = 0;
+  virtual bool unserialize(DataStreamInterface *dataStream) = 0;
 
   virtual ~MetadataInterface() {}
 };

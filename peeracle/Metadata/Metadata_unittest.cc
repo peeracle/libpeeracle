@@ -22,22 +22,29 @@
 
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/Metadata/Metadata.h"
+#include "peeracle/DataStream/MemoryDataStream.h"
 
 namespace peeracle {
 
 class MetadataTest : public testing::Test {
  protected:
-  MetadataTest() : metadata_(NULL) {
+  MetadataTest() : _metadata(NULL) {
   }
 
   virtual void SetUp() {
-    metadata_ = new Metadata();
+    DataStreamInit dsInit;
+
+    _metadata = new Metadata();
+    _ds = new MemoryDataStream(dsInit);
   }
 
   virtual void TearDown() {
+    delete _ds;
+    delete _metadata;
   }
 
-  Metadata *metadata_;
+  Metadata *_metadata;
+  MemoryDataStream *_ds;
 };
 
 }  // namespace peeracle

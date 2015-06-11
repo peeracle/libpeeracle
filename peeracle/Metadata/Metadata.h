@@ -31,7 +31,7 @@ class Metadata : public MetadataInterface {
  public:
   Metadata();
 
-  bool serialize(uint8_t *bytes, std::streamsize length);
+  bool serialize(DataStreamInterface *dataStream);
   bool unserialize(DataStreamInterface *dataStream);
 };
 

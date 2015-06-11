@@ -27,7 +27,7 @@ namespace peeracle {
 Metadata::Metadata() {
 }
 
-bool Metadata::serialize(uint8_t *bytes, std::streamsize length) {
+bool Metadata::serialize(DataStreamInterface *dataStream) {
   return false;
 }
 
