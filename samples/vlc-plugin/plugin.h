@@ -50,7 +50,7 @@
     "\x69\x6f\x6e\x20\x32\x20\x6f\x72\x20\x6c\x61\x74\x65\x72\x2e"
 
 #include <vlc_plugin.h>
-#include "PeeracleManagerInterface.h"
+#include "samples/vlc-plugin/PeeracleManagerInterface.h"
 
 struct demux_sys_t
 {

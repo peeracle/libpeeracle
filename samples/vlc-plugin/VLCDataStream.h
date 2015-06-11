@@ -25,8 +25,8 @@
 
 #include <string>
 
-#include "samples/vlc-plugin/plugin.h"
 #include "peeracle/DataStream/DataStreamInterface.h"
+#include "samples/vlc-plugin/plugin.h"
 
 class VLCDataStream
   : public peeracle::DataStreamInterface {

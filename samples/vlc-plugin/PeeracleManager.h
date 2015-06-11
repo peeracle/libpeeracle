@@ -23,9 +23,10 @@
 #ifndef SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
 #define SAMPLES_VLCPLUGIN_PEERACLEMANAGER_H_
 
-#include "samples/vlc-plugin/plugin.h"
 #include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/Metadata/Metadata.h"
 #include "samples/vlc-plugin/PeeracleManagerInterface.h"
+#include "samples/vlc-plugin/plugin.h"
 
 class PeeracleManager : public PeeracleManagerInterface {
  public:
@@ -44,6 +45,7 @@ class PeeracleManager : public PeeracleManagerInterface {
 
  private:
   demux_t *_vlc;
+  peeracle::MetadataInterface *_metadata;
   peeracle::DataStreamInterface *_metadataDataStream;
 };
 

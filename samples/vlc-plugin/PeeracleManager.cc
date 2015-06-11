@@ -33,7 +33,8 @@ bool PeeracleManager::Init() {
   stream_t *metadataStream = this->_vlc->s;
 
   this->_metadataDataStream = new VLCDataStream(metadataStream);
-  return true;
+  this->_metadata = new peeracle::Metadata();
+  return this->_metadata->unserialize(this->_metadataDataStream);
 }
 
 int PeeracleManager::Control(int i_query, va_list args) {
@@ -76,8 +77,7 @@ int PeeracleManager::Control(int i_query, va_list args) {
       break;
     case DEMUX_GET_META:
     {
-      vlc_meta_t *p_meta =
-        reinterpret_cast<vlc_meta_t*>(va_arg(args, vlc_meta_t*));
+      vlc_meta_t *p_meta = va_arg(args, vlc_meta_t*);
       vlc_meta_t *meta = vlc_meta_New();
 
       if (meta == NULL)
