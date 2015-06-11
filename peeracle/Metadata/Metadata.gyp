@@ -32,12 +32,6 @@
         'MetadataInterface.h',
         'Metadata.cc',
         'Metadata.h',
-        'MetadataSerializerInterface.h',
-        'MetadataSerializer.cc',
-        'MetadataSerializer.h',
-        'MetadataUnserializerInterface.h',
-        'MetadataUnserializer.cc',
-        'MetadataUnserializer.h',
       ]
     },
   ],
@@ -53,8 +47,6 @@
           ],
           'sources': [
             'Metadata_unittest.cc',
-            'MetadataSerializer_unittest.cc',
-            'MetadataUnserializer_unittest.cc',
           ],
         },
       ],
