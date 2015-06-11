@@ -25,12 +25,28 @@
 
 #include <stdint.h>
 #include <ios>
+#include <string>
+#include <vector>
 #include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/Metadata/MetadataStreamInterface.h"
 
 namespace peeracle {
 
 class MetadataInterface {
  public:
+  virtual uint32_t getMagic() = 0;
+  virtual uint32_t getVersion() = 0;
+  virtual const std::string& getHashAlgorithm() = 0;
+  virtual uint32_t getTimecodeScale() = 0;
+  virtual double getDuration() = 0;
+  virtual std::vector<std::string> &getTrackers() = 0;
+  virtual std::vector<MetadataStreamInterface *> &getStreams() = 0;
+
+  virtual void setHashAlgorithm(const std::string &hashAlgorithm) = 0;
+  virtual void setTimecodeScale(uint32_t timecodeScale) = 0;
+  virtual void setDuration(double duration) = 0;
+  virtual void addTracker(const std::string &tracker) = 0;
+
   virtual bool serialize(DataStreamInterface *dataStream) = 0;
   virtual bool unserialize(DataStreamInterface *dataStream) = 0;
 

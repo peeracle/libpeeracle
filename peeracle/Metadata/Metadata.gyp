@@ -28,6 +28,9 @@
       'target_name': 'peeracle_metadata',
       'type': 'static_library',
       'standalone_static_library': 1,
+      'dependencies': [
+        '../DataStream/DataStream.gyp:peeracle_datastream',
+      ],
       'sources': [
         'MetadataInterface.h',
         'Metadata.cc',

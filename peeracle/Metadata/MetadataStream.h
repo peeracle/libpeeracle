@@ -20,59 +20,18 @@
  * SOFTWARE.
  */
 
-#include "peeracle/Metadata/Metadata.h"
+#ifndef PEERACLE_METADATA_METADATASTREAM_H_
+#define PEERACLE_METADATA_METADATASTREAM_H_
+
+#include "peeracle/Metadata/MetadataStreamInterface.h"
 
 namespace peeracle {
 
-Metadata::Metadata() {
-}
-
-bool Metadata::serialize(DataStreamInterface *dataStream) {
-  return false;
-}
-
-bool Metadata::unserialize(DataStreamInterface *dataStream) {
-  return false;
-}
-
-uint32_t Metadata::getMagic() {
-  return 0;
-}
-
-uint32_t Metadata::getVersion() {
-  return 0;
-}
-
-const std::string &Metadata::getHashAlgorithm() {
-  return _empty;
-}
-
-uint32_t Metadata::getTimecodeScale() {
-  return 0;
-}
-
-double Metadata::getDuration() {
-  return 0;
-}
-
-std::vector<std::string> &Metadata::getTrackers() {
-  return _trackers;
-}
-
-std::vector<MetadataStreamInterface *> &Metadata::getStreams() {
-  return _streams;
-}
-
-void Metadata::setHashAlgorithm(const std::string &hashAlgorithm) {
-}
-
-void Metadata::setTimecodeScale(uint32_t timecodeScale) {
-}
-
-void Metadata::setDuration(double duration) {
-}
-
-void Metadata::addTracker(const std::string &tracker) {
-}
+class MetadataStream: public MetadataStreamInterface {
+ public:
+  MetadataStream();
+};
 
 }  // namespace peeracle
+
+#endif  // PEERACLE_METADATA_METADATASTREAM_H_
