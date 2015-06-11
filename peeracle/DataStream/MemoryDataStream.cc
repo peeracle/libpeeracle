@@ -21,6 +21,7 @@
  */
 
 #include <cstring>
+#include <sstream>
 #include "peeracle/DataStream/MemoryDataStream.h"
 
 namespace peeracle {
@@ -56,79 +57,12 @@ std::streamsize MemoryDataStream::tell() const {
   return this->_cursor;
 }
 
-template <typename T>
-std::streamsize MemoryDataStream::_read(T *buffer) {
-  std::streamsize result = this->_peek(buffer);
-
-  if (result > 0) {
-    this->_cursor += result;
-  }
-  return result;
-}
-
-template <typename T>
-std::streamsize MemoryDataStream::_peek(T *buffer) {
-  T value;
-  T finalValue;
-  uint8_t *originalData;
-  uint8_t *finalData;
-  std::streamsize size = static_cast<std::streamsize>(sizeof(T));
-
-  if (this->_cursor + size > this->_buffer.size()) {
-    return -1;
-  }
-
-  value = *(reinterpret_cast<T*>(&this->_buffer[this->_cursor]));
-  if (_bigEndian && sizeof(T) > 1) {
-    originalData = reinterpret_cast<uint8_t*>(&value);
-    finalData = reinterpret_cast<uint8_t*>(&finalValue);
-    for (int i = 0; i < sizeof(T); ++i) {
-      finalData[i] = originalData[(sizeof(T) - i) - 1];
-    }
-    value = finalValue;
-  }
-
-  *buffer = value;
-  return sizeof(T);
-}
-
-std::streamsize MemoryDataStream::_write(uint8_t *buffer,
-                                         std::streamsize length) {
-  size_t pos = static_cast<size_t>(this->_cursor);
-  size_t size = static_cast<size_t>(length);
-
-  if (pos + size > this->_buffer.size()) {
-    this->_buffer.resize(pos + size);
-  }
-
-  memcpy(&this->_buffer[pos], static_cast<uint8_t*>(buffer), size);
-  this->_cursor += size;
-  return size;
-}
-
-template <typename T>
-std::streamsize MemoryDataStream::_write(T value) {
-  T finalValue = value;
-  uint8_t *originalData = reinterpret_cast<uint8_t*>(&value);
-  uint8_t *finalData = reinterpret_cast<uint8_t*>(&finalValue);
-
-  if (_bigEndian && sizeof(T) > 1) {
-    for (int i = 0; i < sizeof(T); ++i) {
-      finalData[i] = originalData[(sizeof(T) - i) - 1];
-    }
-    originalData = finalData;
-  }
-
-  return this->_write(originalData, sizeof(T));
-}
-
-std::streamsize MemoryDataStream::read(uint8_t **buffer,
+std::streamsize MemoryDataStream::read(uint8_t *buffer,
                                        std::streamsize length) {
-  uint8_t *ptr = *buffer;
   std::streamsize result = 0;
 
   for (int i = 0; i < length; i++) {
-    result += this->_read(ptr++);
+    result += this->_read(buffer++);
   }
 
   return result;
@@ -166,13 +100,35 @@ std::streamsize MemoryDataStream::read(double *buffer) {
   return this->_read(buffer);
 }
 
-std::streamsize MemoryDataStream::peek(uint8_t **buffer,
+std::streamsize MemoryDataStream::read(std::string *buffer) {
+  std::streamsize i;
+  std::string result;
+
+  i = this->peek(&result);
+  if (i < 1) {
+    return i;
+  }
+
+  this->_cursor += i;
+  return i;
+}
+
+template <typename T>
+std::streamsize MemoryDataStream::_read(T *buffer) {
+  std::streamsize result = this->_peek(buffer);
+
+  if (result > 0) {
+    this->_cursor += result;
+  }
+  return result;
+}
+
+std::streamsize MemoryDataStream::peek(uint8_t *buffer,
                                        std::streamsize length) {
-  uint8_t *ptr = *buffer;
   std::streamsize result = 0;
 
   for (int i = 0; i < length; i++) {
-    result += this->_peek(ptr++);
+    result += this->_peek(buffer++);
   }
   return result;
 }
@@ -209,9 +165,51 @@ std::streamsize MemoryDataStream::peek(double *buffer) {
   return this->_peek(buffer);
 }
 
-std::streamsize MemoryDataStream::write(uint8_t **buffer,
+std::streamsize MemoryDataStream::peek(std::string *value) {
+  int8_t c;
+  std::streamsize i;
+  std::stringstream strm;
+
+  for (i = 0; i < 32768; ++i) {
+    if (this->_peek(&c) < 1 || c == '\0') {
+      break;
+    }
+    strm << c;
+  }
+
+  *value = strm.str();
+  return i;
+}
+
+template <typename T>
+std::streamsize MemoryDataStream::_peek(T *buffer) {
+  T value;
+  T finalValue;
+  uint8_t *originalData;
+  uint8_t *finalData;
+  std::streamsize size = static_cast<std::streamsize>(sizeof(T));
+
+  if (this->_cursor + size > this->_buffer.size()) {
+    return -1;
+  }
+
+  value = *(reinterpret_cast<T*>(&this->_buffer[this->_cursor]));
+  if (_bigEndian && sizeof(T) > 1) {
+    originalData = reinterpret_cast<uint8_t*>(&value);
+    finalData = reinterpret_cast<uint8_t*>(&finalValue);
+    for (int i = 0; i < sizeof(T); ++i) {
+      finalData[i] = originalData[(sizeof(T) - i) - 1];
+    }
+    value = finalValue;
+  }
+
+  *buffer = value;
+  return sizeof(T);
+}
+
+std::streamsize MemoryDataStream::write(uint8_t *buffer,
                                         std::streamsize length) {
-  return this->_write(*buffer, length);
+  return this->_write(buffer, length);
 }
 
 std::streamsize MemoryDataStream::write(int8_t value) {
@@ -244,6 +242,41 @@ std::streamsize MemoryDataStream::write(float value) {
 
 std::streamsize MemoryDataStream::write(double value) {
   return this->_write(value);
+}
+
+std::streamsize MemoryDataStream::write(const std::string &value) {
+  return this->_write(value.c_str(), strlen(value.c_str()));
+}
+
+template <typename T>
+std::streamsize MemoryDataStream::_write(T buffer,
+                                         std::streamsize length) {
+  size_t pos = static_cast<size_t>(this->_cursor);
+  size_t size = static_cast<size_t>(length);
+
+  if (pos + size > this->_buffer.size()) {
+    this->_buffer.resize(pos + size);
+  }
+
+  memcpy(&this->_buffer[pos], static_cast<T>(buffer), size);
+  this->_cursor += size;
+  return size;
+}
+
+template <typename T>
+std::streamsize MemoryDataStream::_write(T value) {
+  T finalValue = value;
+  uint8_t *originalData = reinterpret_cast<uint8_t*>(&value);
+  uint8_t *finalData = reinterpret_cast<uint8_t*>(&finalValue);
+
+  if (_bigEndian && sizeof(T) > 1) {
+    for (int i = 0; i < sizeof(T); ++i) {
+      finalData[i] = originalData[(sizeof(T) - i) - 1];
+    }
+    originalData = finalData;
+  }
+
+  return this->_write(originalData, sizeof(T));
 }
 
 std::streamsize MemoryDataStream::getBytes(uint8_t *buffer,

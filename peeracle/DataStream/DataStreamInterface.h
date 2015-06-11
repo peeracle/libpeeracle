@@ -94,7 +94,7 @@ class DataStreamInterface {
    * @param length the number of bytes to read.
    * \return The number of bytes read.
    */
-  virtual std::streamsize read(uint8_t **buffer,
+  virtual std::streamsize read(uint8_t *buffer,
                                std::streamsize length) = 0;
 
   /**
@@ -155,11 +155,19 @@ class DataStreamInterface {
 
   /**
    * Read a double at the cursor and store the value into the \p buffer.
-   * The cursor will be increased to 4 bytes.
+   * The cursor will be increased to 8 bytes.
    * @param buffer a pointer to store the read data.
    * \return The number of bytes read.
    */
   virtual std::streamsize read(double *buffer) = 0;
+
+  /**
+   * Read a string at the cursor and store the value into the \p buffer.
+   * The cursor will be increased to 4 bytes.
+   * @param buffer a pointer to store the read data.
+   * \return The number of bytes read.
+   */
+  virtual std::streamsize read(std::string *buffer) = 0;
 
   /**
    * Read up to \p length bytes of data at the cursor and store these into
@@ -168,7 +176,7 @@ class DataStreamInterface {
    * @param length the number of bytes to read.
    * \return The number of bytes read.
    */
-  virtual std::streamsize peek(uint8_t **buffer,
+  virtual std::streamsize peek(uint8_t *buffer,
                                std::streamsize length) = 0;
 
   /**
@@ -236,13 +244,21 @@ class DataStreamInterface {
   virtual std::streamsize peek(double *buffer) = 0;
 
   /**
+   * Read a string at the cursor and store the value into the \p buffer.
+   * The cursor won't move.
+   * @param buffer a pointer to store the read data.
+   * \return The number of bytes read.
+   */
+  virtual std::streamsize peek(std::string *buffer) = 0;
+
+  /**
    * Write up to \p length bytes of data at the cursor and store these into
    * the \p buffer. The cursor will be increased to \p length bytes.
    * @param buffer a pointer to the buffer which will receive the data.
    * @param length the number of bytes to read.
    * \return The number of bytes read.
    */
-  virtual std::streamsize write(uint8_t **buffer,
+  virtual std::streamsize write(uint8_t *buffer,
                                 std::streamsize length) = 0;
 
   /**
@@ -308,6 +324,14 @@ class DataStreamInterface {
    * \return The number of bytes read.
    */
   virtual std::streamsize write(double value) = 0;
+
+  /**
+   * Write a string at the cursor and store the value into the \p buffer.
+   * The cursor will be increased to 4 bytes.
+   * @param buffer a pointer to store the read data.
+   * \return The number of bytes read.
+   */
+  virtual std::streamsize write(const std::string &value) = 0;
 
  protected:
   virtual ~DataStreamInterface() { }

@@ -72,7 +72,7 @@ std::streamsize FileDataStream::tell() const {
   return 0;
 }
 
-std::streamsize FileDataStream::read(uint8_t **buffer,
+std::streamsize FileDataStream::read(uint8_t *buffer,
                                      std::streamsize length) {
   if (!this->file_.is_open() || length < 1) {
     return 0;
@@ -120,7 +120,11 @@ std::streamsize FileDataStream::read(double *buffer) {
   return 0;
 }
 
-std::streamsize FileDataStream::peek(uint8_t **buffer, std::streamsize length) {
+std::streamsize FileDataStream::read(std::string *buffer) {
+  return 0;
+}
+
+std::streamsize FileDataStream::peek(uint8_t *buffer, std::streamsize length) {
   return 0;
 }
 
@@ -156,7 +160,11 @@ std::streamsize FileDataStream::peek(double *buffer) {
   return 0;
 }
 
-std::streamsize FileDataStream::write(uint8_t **buffer,
+std::streamsize FileDataStream::peek(std::string *buffer) {
+  return 0;
+}
+
+std::streamsize FileDataStream::write(uint8_t *buffer,
                                       std::streamsize length) {
   return 0;
 }
@@ -190,6 +198,10 @@ std::streamsize FileDataStream::write(float value) {
 }
 
 std::streamsize FileDataStream::write(double value) {
+  return 0;
+}
+
+std::streamsize FileDataStream::write(const std::string &value) {
   return 0;
 }
 
