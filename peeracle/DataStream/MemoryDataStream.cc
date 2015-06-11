@@ -92,8 +92,8 @@ std::streamsize MemoryDataStream::_peek(T *buffer) {
   return sizeof(T);
 }
 
-template <typename T>
-std::streamsize MemoryDataStream::_write(T *buffer, std::streamsize length) {
+std::streamsize MemoryDataStream::_write(uint8_t *buffer,
+                                         std::streamsize length) {
   size_t pos = static_cast<size_t>(this->_cursor);
   size_t size = static_cast<size_t>(length);
 

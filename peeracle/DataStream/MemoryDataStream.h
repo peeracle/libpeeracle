@@ -89,8 +89,7 @@ class MemoryDataStream : public DataStreamInterface {
   template<typename T>
   std::streamsize _peek(T *buffer);
 
-  template<typename T>
-  std::streamsize _write(T *buffer, std::streamsize length);
+  std::streamsize _write(uint8_t *buffer, std::streamsize length);
 
   template<typename T>
   std::streamsize _write(T value);
