@@ -28,7 +28,6 @@
       'target_name': 'peeracle',
       'type': 'none',
       'dependencies': [
-        'DataSource/DataSource.gyp:*',
         'DataStream/DataStream.gyp:*',
         'Hash/Hash.gyp:*',
         'Media/Media.gyp:*',
