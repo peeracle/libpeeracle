@@ -145,8 +145,6 @@ TEST_F(MetadataTest, CorrectHeader) {
   uint32_t version;
   uint32_t timecodeScale;
   double duration;
-  uint32_t numTrackers;
-  uint32_t numStreams;
 
   bool res;
   std::streamsize s;
