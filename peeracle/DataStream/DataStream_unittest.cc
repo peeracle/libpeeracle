@@ -28,49 +28,13 @@
 
 namespace peeracle {
 
-class FileDataStreamTest : public ::testing::Test {
- protected:
-  virtual void SetUp() {
-    const ::testing::TestInfo* const test_info =
-      ::testing::UnitTest::GetInstance()->current_test_info();
-
-    std::stringstream strm;
-    strm << test_info->test_case_name() << "_" << test_info->name() << ".bin";
-    this->_dsInit.path = strm.str();
-
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    std::uniform_real_distribution<double> dist(0.0, 255.0);
-
-    std::ofstream tmpfile(this->_dsInit.path.c_str(),
-                          std::ofstream::out | std::ofstream::binary);
-
-    for (size_t i = 0; i < sizeof(_data); i++) {
-      _data[i] = static_cast<uint8_t>(dist(engine));
-    }
-
-    tmpfile.write(reinterpret_cast<char*>(_data), sizeof(_data));
-    tmpfile.close();
-  }
-
-  virtual void TearDown() {
-    remove(this->_dsInit.path.c_str());
-  }
-
-  peeracle::FileDataStream *_ds;
-  peeracle::DataStreamInit _dsInit;
-  uint8_t _data[64];
-};
-
-TEST_F(FileDataStreamTest, OpenShouldFail) {
-}
-
 typedef ::testing::Types<int8_t, uint8_t, int16_t, uint16_t, int32_t,
-  uint32_t, float, double> MemoryDataStreamTypes;
-TYPED_TEST_CASE(MemoryDataStreamTest, MemoryDataStreamTypes);
+  uint32_t, float, double> DataStreamTypes;
+TYPED_TEST_CASE(DataStreamTest, DataStreamTypes);
 
 template <typename T>
-class MemoryDataStreamTest : public ::testing::Test {
+class DataStreamTest
+  : public ::testing::Test {
  protected:
   virtual void SetUp() {
     std::random_device rd;
@@ -163,7 +127,7 @@ class MemoryDataStreamTest : public ::testing::Test {
   peeracle::DataStreamInit _dsInit;
 };
 
-TYPED_TEST(MemoryDataStreamTest, Write) {
+TYPED_TEST(DataStreamTest, Write) {
   TypeParam valueA = this->_randValueA;
 
   this->TEST_READVALUE_FAIL(&valueA);
@@ -175,7 +139,7 @@ TYPED_TEST(MemoryDataStreamTest, Write) {
   EXPECT_EQ(this->_randValueA, valueA);
 }
 
-TYPED_TEST(MemoryDataStreamTest, DoubleWrite) {
+TYPED_TEST(DataStreamTest, DoubleWrite) {
   TypeParam valueA = this->_randValueA;
   TypeParam valueB = this->_randValueB;
 
@@ -202,25 +166,6 @@ TYPED_TEST(MemoryDataStreamTest, DoubleWrite) {
 
   this->TEST_READVALUE(&valueA);
   EXPECT_EQ(this->_randValueA, valueA);
-}
-
-typedef ::testing::Types<FileDataStream, MemoryDataStream> DataStreamTypes;
-TYPED_TEST_CASE(DataStreamTest, DataStreamTypes);
-
-template <typename T>
-class DataStreamTest : public ::testing::Test {
- protected:
-  virtual void SetUp() {
-  }
-
-  virtual void TearDown() {
-  }
-
-  peeracle::DataStreamInit _dsInit;
-};
-
-TYPED_TEST(DataStreamTest, OpenShouldFail) {
-  // TypeParam *dataStream = new TypeParam(this->_dsInit);
 }
 
 }  // namespace peeracle
