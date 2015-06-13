@@ -36,11 +36,13 @@
       ],
       'conditions': [
         ['OS == "win"', {
-          'link_settings': {
-            'libraries': [
-              'Advapi32.lib'
-            ],
-          }
+          'direct_dependent_settings': {
+            'link_settings': {
+              'libraries': [
+                '-lAdvapi32.lib',
+              ],
+            },
+          },
         }],
       ],
       'sources': [
