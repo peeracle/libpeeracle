@@ -21,20 +21,35 @@
 
 {
   'includes': [
-    '../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'peeracle',
-      'type': 'none',
-      'dependencies': [
-        'DataStream/DataStream.gyp:*',
-        'Hash/Hash.gyp:*',
-        'Media/Media.gyp:*',
-        'Metadata/Metadata.gyp:*',
-        'Tracker/Tracker.gyp:*',
-        'Utils/Utils.gyp:*',
+      'target_name': 'peeracle_utils',
+      'type': 'static_library',
+      'standalone_static_library': 1,
+      'sources': [
+        'RandomGenerator.cc',
+        'RandomGenerator.h',
+        'RandomGeneratorInterface.h',
       ],
     },
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_utils_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_utils',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'RandomGenerator_unittest.cc',
+          ],
+        },
+      ],
+    }],
   ],
 }
