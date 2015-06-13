@@ -26,8 +26,10 @@
 namespace peeracle {
 
 class RandomGeneratorInterface {
- protected:
+ public:
   virtual ~RandomGeneratorInterface() {}
+  virtual bool Init(unsigned int seed) = 0;
+  virtual bool Generate(void* buf, size_t len) = 0;
 };
 
 }  // namespace peeracle

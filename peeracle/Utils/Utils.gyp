@@ -25,9 +25,24 @@
   ],
   'targets': [
     {
-      'target_name': 'peeracle_utils',
+      'target_name': 'peeracle_randomgenerator',
       'type': 'static_library',
       'standalone_static_library': 1,
+      'defines': [
+        'SSL_USE_OPENSSL',
+      ],
+      'dependencies': [
+        '<(peeracle_webrtc_root)/chromium/src/third_party/boringssl/boringssl.gyp:boringssl'
+      ],
+      'conditions': [
+        ['OS == "win"', {
+          'link_settings': {
+            'libraries': [
+              'Advapi32.lib'
+            ],
+          }
+        }],
+      ],
       'sources': [
         'RandomGenerator.cc',
         'RandomGenerator.h',
@@ -42,7 +57,7 @@
           'target_name': 'peeracle_utils_unittest',
           'type': 'executable',
           'dependencies': [
-            'peeracle_utils',
+            'peeracle_randomgenerator',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'sources': [

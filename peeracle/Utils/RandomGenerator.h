@@ -32,6 +32,14 @@ namespace peeracle {
 class RandomGenerator : public RandomGeneratorInterface {
  public:
   RandomGenerator();
+  ~RandomGenerator();
+  bool Init(unsigned int seed);
+  bool Generate(void *buf, size_t len);
+ private:
+#if defined(WEBRTC_WIN)
+  HCRYPTPROV _provider;
+#endif
+  unsigned int _seed;
 };
 
 }  // namespace peeracle
