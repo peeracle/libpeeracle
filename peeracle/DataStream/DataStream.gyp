@@ -55,6 +55,7 @@
           'type': '<(gtest_target_type)',
           'dependencies': [
             'peeracle_datastream',
+            '../Utils/Utils.gyp:peeracle_randomgenerator',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'sources': [

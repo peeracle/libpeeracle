@@ -21,10 +21,10 @@
  */
 
 #include <fstream>
-#include <random>
 #include "third_party/googletest/gtest/include/gtest/gtest.h"
 #include "peeracle/DataStream/FileDataStream.h"
 #include "peeracle/DataStream/MemoryDataStream.h"
+#include "peeracle/Utils/RandomGenerator.h"
 
 namespace peeracle {
 
@@ -37,12 +37,11 @@ class DataStreamTest
   : public ::testing::Test {
  protected:
   virtual void SetUp() {
-    std::random_device rd;
-    std::mt19937 engine(rd());
-    std::uniform_real_distribution<double> dist(0.0, powf(255, sizeof(T)));
+    RandomGenerator rng;
 
-    _randValueA = static_cast<T>(dist(engine));
-    _randValueB = static_cast<T>(dist(engine));
+    EXPECT_TRUE(rng.Init(time(NULL)));
+    rng.Generate(&_randValueA, sizeof(_randValueA));
+    rng.Generate(&_randValueB, sizeof(_randValueB));
 
     _ds = new peeracle::MemoryDataStream(_dsInit);
   }
