@@ -38,12 +38,6 @@
       '<(DEPTH)',
     ],
     'conditions': [
-      ['OS == "mac"', {
-        'xcode_settings': {
-	  'CLANG_CXX_LANGUAGE_STANDARD': 'c++11',
-	  'CLANG_CXX_LIBRARY': 'libc++',
-	},
-      }],
       ['use_cpplint == 1', {
         'rules': [
           {
