@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
+#include <stdint.h>
 #include <new>
-#include <cstdint>
 
 #include "peeracle/Metadata/Metadata.h"
 #include "samples/vlc-plugin/PeeracleManager.h"
