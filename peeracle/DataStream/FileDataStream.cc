@@ -164,7 +164,7 @@ std::streamsize FileDataStream::peek(std::string *buffer) {
   return 0;
 }
 
-std::streamsize FileDataStream::write(uint8_t *buffer,
+std::streamsize FileDataStream::write(const char *buffer,
                                       std::streamsize length) {
   return 0;
 }

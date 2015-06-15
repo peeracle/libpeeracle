@@ -74,7 +74,7 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize peek(double *buffer);
   std::streamsize peek(std::string *buffer);
 
-  std::streamsize write(uint8_t *buffer, std::streamsize length);
+  std::streamsize write(const char *buffer, std::streamsize length);
   std::streamsize write(int8_t value);
   std::streamsize write(uint8_t value);
   std::streamsize write(int16_t value);

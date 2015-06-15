@@ -210,7 +210,7 @@ std::streamsize MemoryDataStream::_peek(T *buffer) {
   return sizeof(T);
 }
 
-std::streamsize MemoryDataStream::write(uint8_t *buffer,
+std::streamsize MemoryDataStream::write(const char *buffer,
                                         std::streamsize length) {
   return this->_write(buffer, length);
 }

@@ -258,7 +258,7 @@ class DataStreamInterface {
    * @param length the number of bytes to read.
    * \return The number of bytes read.
    */
-  virtual std::streamsize write(uint8_t *buffer,
+  virtual std::streamsize write(const char *buffer,
                                 std::streamsize length) = 0;
 
   /**

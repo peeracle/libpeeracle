@@ -173,7 +173,8 @@ std::streamsize VLCDataStream::peek(std::string *buffer) {
   return 0;
 }
 
-std::streamsize VLCDataStream::write(uint8_t *buffer, std::streamsize length) {
+std::streamsize VLCDataStream::write(const char *buffer,
+                                     std::streamsize length) {
   return 0;
 }
 
