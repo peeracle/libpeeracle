@@ -21,21 +21,38 @@
 
 {
   'includes': [
-    '../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'peeracle',
-      'type': 'none',
+      'target_name': 'peeracle_peer',
+      'type': 'static_library',
+      'standalone_static_library': 1,
       'dependencies': [
-        'DataStream/DataStream.gyp:*',
-        'Hash/Hash.gyp:*',
-        'Media/Media.gyp:*',
-        'Metadata/Metadata.gyp:*',
-        'Peer/Peer.gyp:*',
-        'Tracker/Tracker.gyp:*',
-        'Utils/Utils.gyp:*',
+        '<(DEPTH)/third_party/webrtc/talk/libjingle.gyp:*',
       ],
+      'sources': [
+        'PeerInterface.h',
+        'Peer.cc',
+        'Peer.h',
+      ]
     },
+  ],
+  'conditions': [
+    ['build_tests == 1', {
+      'targets': [
+        {
+          'target_name': 'peeracle_peer_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_peer',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'Peer_unittest.cc',
+          ],
+        },
+      ],
+    }],
   ],
 }
