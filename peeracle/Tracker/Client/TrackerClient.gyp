@@ -54,6 +54,7 @@
           'dependencies': [
             'peeracle_tracker_client',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
           'sources': [
             'TrackerClient_unittest.cc',

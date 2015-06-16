@@ -23,9 +23,15 @@
 #ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
 #define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
 
+#include <string>
+
 namespace peeracle {
 
 class TrackerClientInterface {
+ public:
+  virtual bool Init() = 0;
+  virtual bool Connect(const std::string &address, uint16_t port) = 0;
+  virtual bool Update() = 0;
  protected:
   virtual ~TrackerClientInterface() {}
 };

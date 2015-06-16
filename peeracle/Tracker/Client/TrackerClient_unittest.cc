@@ -28,10 +28,30 @@ namespace peeracle {
 class TrackerClientTest : public testing::Test {
  protected:
   virtual void SetUp() {
+    _client = new TrackerClient();
   }
 
   virtual void TearDown() {
+    delete _client;
   }
+
+  TrackerClient *_client;
 };
+
+TEST_F(TrackerClientTest, Connect) {
+  bool ret;
+
+  std::cout << "init" << std::endl;
+  ret = _client->Init();
+  EXPECT_TRUE(ret);
+
+  std::cout << "conn" << std::endl;
+  ret = _client->Connect("127.0.0.1", 9900);
+  EXPECT_TRUE(ret);
+
+  std::cout << "update" << std::endl;
+  ret = _client->Update();
+  EXPECT_TRUE(ret);
+}
 
 }  // namespace peeracle

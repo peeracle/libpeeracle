@@ -23,6 +23,9 @@
 #ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
 #define PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
 
+#include <stdint.h>
+#include <string>
+#include "third_party/libwebsockets/lib/libwebsockets.h"
 #include "peeracle/Tracker/Client/TrackerClientInterface.h"
 
 namespace peeracle {
@@ -30,7 +33,16 @@ namespace peeracle {
 class TrackerClient
   : public TrackerClientInterface {
  public:
-  virtual ~TrackerClient() {}
+  TrackerClient();
+  ~TrackerClient();
+
+  bool Init();
+  bool Connect(const std::string &address, uint16_t port);
+  bool Update();
+
+ private:
+  struct libwebsocket_context *_context;
+  struct libwebsocket *_wsi;
 };
 
 }  // namespace peeracle
