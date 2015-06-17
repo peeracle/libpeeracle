@@ -20,4 +20,25 @@
  * SOFTWARE.
  */
 
+#include "third_party/webrtc/talk/app/webrtc/test/fakeconstraints.h"
+#include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
 #include "peeracle/Peer/Peer.h"
+
+namespace peeracle {
+
+Peer::Peer() {
+  webrtc::PeerConnectionInterface::IceServers iceServers;
+  webrtc::PeerConnectionInterface::IceServer iceServer;
+  iceServer.uri = "stun:stun.l.google.com:19302";
+  iceServers.push_back(iceServer);
+
+  webrtc::FakeConstraints constr;
+  constr.AddOptional(webrtc::MediaConstraintsInterface::kEnableDtlsSrtp,
+                     webrtc::MediaConstraintsInterface::kValueTrue);
+  constr.AddMandatory(webrtc::MediaConstraintsInterface::kOfferToReceiveAudio,
+                      webrtc::MediaConstraintsInterface::kValueFalse);
+  constr.AddMandatory(webrtc::MediaConstraintsInterface::kOfferToReceiveVideo,
+                      webrtc::MediaConstraintsInterface::kValueFalse);
+}
+
+}  // namespace peeracle

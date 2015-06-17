@@ -29,8 +29,10 @@ namespace peeracle {
 
 class Peer
   : public PeerInterface {
+ public:
+  Peer();
  protected:
-  ~Peer();
+  virtual ~Peer() {}
 };
 
 }  // namespace peeracle

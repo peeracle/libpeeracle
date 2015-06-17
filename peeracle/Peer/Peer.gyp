@@ -21,7 +21,8 @@
 
 {
   'includes': [
-    '../../build/common.gypi'
+    '../../build/common.gypi',
+    '../../third_party/webrtc/webrtc/build/common.gypi'
   ],
   'targets': [
     {
@@ -29,7 +30,7 @@
       'type': 'static_library',
       'standalone_static_library': 1,
       'dependencies': [
-        '<(DEPTH)/third_party/webrtc/talk/libjingle.gyp:*',
+        '<(peeracle_webrtc_root)/talk/libjingle.gyp:libjingle_peerconnection',
       ],
       'sources': [
         'PeerInterface.h',
