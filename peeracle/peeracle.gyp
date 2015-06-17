@@ -26,15 +26,20 @@
   'targets': [
     {
       'target_name': 'peeracle',
-      'type': 'none',
+      'type': 'static_library',
+      'standalone_static_library': 1,
       'dependencies': [
         'DataStream/DataStream.gyp:*',
         'Hash/Hash.gyp:*',
         'Media/Media.gyp:*',
         'Metadata/Metadata.gyp:*',
         'Peer/Peer.gyp:*',
+        'Session/Session.gyp:*',
         'Tracker/Tracker.gyp:*',
         'Utils/Utils.gyp:*',
+      ],
+      'sources': [
+        'peeracle.cc',
       ],
     },
   ],
