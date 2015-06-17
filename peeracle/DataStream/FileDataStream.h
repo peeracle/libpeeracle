@@ -88,6 +88,16 @@ class FileDataStream : public DataStreamInterface {
   std::fstream file_;
   std::streamsize fileSize_;
   bool readOnly_;
+
+ private:
+  template<typename T>
+  std::streamsize _read(T *buffer);
+
+  template<typename T>
+  std::streamsize _peek(T *buffer);
+
+  template<typename T>
+  std::streamsize _write(T buffer);
 };
 
 /**
