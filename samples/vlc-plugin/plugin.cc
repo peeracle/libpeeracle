@@ -23,6 +23,7 @@
 #include <stdint.h>
 #include <new>
 
+#include "peeracle/peeracle.h"
 #include "peeracle/Metadata/Metadata.h"
 #include "samples/vlc-plugin/PeeracleManager.h"
 #include "samples/vlc-plugin/plugin.h"
@@ -59,6 +60,11 @@ static int Open(vlc_object_t *p_obj) {
   demux_sys_t *p_sys;
   const uint8_t *peek;
   int peek_size;
+
+  msg_Dbg(p_obj, "initializing peeracle");
+  if (peeracle::Init()) {
+    return VLC_EGENERIC;
+  }
 
   msg_Dbg(p_obj, "getting the four first bytes");
   peek_size = stream_Peek(stream, &peek, sizeof(prcl_magic));
