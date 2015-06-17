@@ -36,6 +36,7 @@
     ],
     'include_dirs': [
       '<(DEPTH)',
+      '<(peeracle_webrtc_root)',
     ],
     'conditions': [
       ['use_cpplint == 1', {
