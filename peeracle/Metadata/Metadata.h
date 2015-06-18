@@ -50,6 +50,15 @@ class Metadata : public MetadataInterface {
   bool unserialize(DataStreamInterface *dataStream);
 
  private:
+  uint32_t _magic;
+  uint32_t _version;
+  std::string _hashAlgorithm;
+  uint32_t _timeCodeScale;
+  double _duration;
+  uint32_t _trackersNumber;
+  std::string _trackersAddress;
+  uint32_t _streamsNumber;
+
   std::string _empty;
   std::vector<std::string> _trackers;
   std::vector<MetadataStreamInterface *> _streams;

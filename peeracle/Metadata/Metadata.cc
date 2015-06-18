@@ -28,31 +28,63 @@ Metadata::Metadata() {
 }
 
 bool Metadata::serialize(DataStreamInterface *dataStream) {
+  uint32_t trackersSize = _trackers.size();
+  dataStream->write(this->_magic);
+  dataStream->write(this->_version);
+  dataStream->write(_hashAlgorithm);
+  dataStream->write(_timeCodeScale);
+  dataStream->write(trackersSize);
+  for (int i=0; i < _trackers.size(); i++) {
+    dataStream->write(_trackers[i]);
+  }
   return false;
 }
 
 bool Metadata::unserialize(DataStreamInterface *dataStream) {
-  return false;
+  uint32_t trackersSize;
+  std::string tracker;
+
+  if (dataStream->read(&this->_magic) == -1)
+    return false;
+  if (dataStream->read(&this->_version) == -1)
+    return false;
+  if (dataStream->read(&this->_hashAlgorithm) == -1)
+    return false;
+  if (dataStream->read(&this->_timeCodeScale) == -1)
+    return false;
+  if (dataStream->read(&this->_duration) == -1)
+    return false;
+  if (dataStream->read(&trackersSize) == -1)
+    return false;
+  this->_trackers.reserve(trackersSize);
+  for (int i=0; i < trackersSize; i++) {
+    if (dataStream->read(&tracker) == -1)
+      return false;
+    this->_trackers.push_back(tracker);
+  }
+  if (dataStream->read(&this->_streamsNumber) == -1)
+    return false;
+  return true;
 }
 
 uint32_t Metadata::getMagic() {
-  return 0;
+  return this->_magic;
 }
 
 uint32_t Metadata::getVersion() {
-  return 0;
+  return this->_version;
 }
 
 const std::string &Metadata::getHashAlgorithm() {
-  return _empty;
+  return this->_hashAlgorithm;
 }
 
 uint32_t Metadata::getTimecodeScale() {
-  return 0;
+  return this->_timeCodeScale;
 }
 
 double Metadata::getDuration() {
-  return 0;
+  return this->_duration;
 }
 
 std::vector<std::string> &Metadata::getTrackers() {
@@ -64,15 +96,18 @@ std::vector<MetadataStreamInterface *> &Metadata::getStreams() {
 }
 
 void Metadata::setHashAlgorithm(const std::string &hashAlgorithm) {
+  this->_hashAlgorithm = hashAlgorithm;
 }
 
 void Metadata::setTimecodeScale(uint32_t timecodeScale) {
+  this->_timeCodeScale = timecodeScale;
 }
 
 void Metadata::setDuration(double duration) {
+  this->_duration = duration;
 }
 
 void Metadata::addTracker(const std::string &tracker) {
+  this->_trackers.push_back(tracker);
 }
-
 }  // namespace peeracle
