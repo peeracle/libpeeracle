@@ -175,8 +175,8 @@ TEST_F(MetadataTest, CorrectHeader) {
   s = _ds->write(1);
   EXPECT_EQ(sizeof(uint32_t), s);
 
-  s = _ds->write("ws://127.0.0.1:8080");
-  EXPECT_EQ(19, s);
+  s = _ds->write("ws://127.0.0.1:8080", 20);
+  EXPECT_EQ(20, s);
 
   s = _ds->write(0);
   EXPECT_EQ(sizeof(uint32_t), s);
