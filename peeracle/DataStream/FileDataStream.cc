@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <string.h>
 #include "peeracle/DataStream/FileDataStream.h"
 
 namespace peeracle {
@@ -122,6 +123,10 @@ std::streamsize FileDataStream::read(double *buffer) {
   return this->_read(buffer);
 }
 
+std::streamsize FileDataStream::read(std::string *buffer) {
+  return 0;
+}
+
 template<typename T>
 std::streamsize FileDataStream::_read(T *buffer) {
   if (!this->file_.is_open()) {
@@ -185,7 +190,7 @@ std::streamsize FileDataStream::peek(double *buffer) {
 }
 
 std::streamsize FileDataStream::peek(std::string *buffer) {
-  return this->_peek(buffer);
+  return 0;
 }
 
 template<typename T>
@@ -248,7 +253,7 @@ std::streamsize FileDataStream::write(double value) {
 }
 
 std::streamsize FileDataStream::write(const std::string &value) {
-  return this->_write(value.c_str());
+  return this->write(value.c_str(), strlen(value.c_str()) + 1);
 }
 
 template<typename T>
