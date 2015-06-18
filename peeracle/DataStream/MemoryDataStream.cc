@@ -254,7 +254,7 @@ std::streamsize MemoryDataStream::write(double value) {
 }
 
 std::streamsize MemoryDataStream::write(const std::string &value) {
-   return this->_write(value.c_str(), strlen(value.c_str()) + 1);
+  return this->_write(value.c_str(), strlen(value.c_str()) + 1);
 }
 
 template <typename T>

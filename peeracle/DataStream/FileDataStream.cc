@@ -211,7 +211,7 @@ std::streamsize FileDataStream::write(const char *buffer,
 
   std::streamsize cursor = this->file_.tellg();
   this->file_.seekp(cursor);
-  this->file_.write(reinterpret_cast<char*>(buffer), length);
+  this->file_.write(buffer, length);
   return length;
 }
 
