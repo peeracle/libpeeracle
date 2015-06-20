@@ -34,7 +34,7 @@ bool Metadata::serialize(DataStreamInterface *dataStream) {
   dataStream->write(_hashAlgorithm);
   dataStream->write(_timeCodeScale);
   dataStream->write(trackersSize);
-  for (int i=0; i < _trackers.size(); i++) {
+  for (size_t i = 0; i < _trackers.size(); i++) {
     dataStream->write(_trackers[i]);
   }
   return false;
@@ -57,7 +57,7 @@ bool Metadata::unserialize(DataStreamInterface *dataStream) {
   if (dataStream->read(&trackersSize) == -1)
     return false;
   this->_trackers.reserve(trackersSize);
-  for (int i=0; i < trackersSize; i++) {
+  for (size_t i = 0; i < trackersSize; i++) {
     if (dataStream->read(&tracker) == -1)
       return false;
     this->_trackers.push_back(tracker);

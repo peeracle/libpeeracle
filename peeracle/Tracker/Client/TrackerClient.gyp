@@ -38,6 +38,9 @@
           ],
         }],
       ],
+	  'include_dirs': [
+        '<(peeracle_webrtc_root)/chromium/src/third_party/boringssl/src/include'
+	  ],
       'sources': [
         'TrackerClient.cc',
         'TrackerClient.h',
@@ -56,6 +59,9 @@
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
+	      'include_dirs': [
+            '<(peeracle_webrtc_root)/chromium/src/third_party/boringssl/src/include'
+	      ],
           'sources': [
             'TrackerClient_unittest.cc',
           ],
