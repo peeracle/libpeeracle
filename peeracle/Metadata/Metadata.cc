@@ -40,7 +40,7 @@ bool Metadata::serialize(DataStreamInterface *dataStream) {
   dataStream->write(_duration);
   dataStream->write(trackersSize);
   if (!this->_trackers.empty() && this->_trackers.size() > 0) {
-    for (int i = 0; i < this->_trackers.size(); i++) {
+    for (size_t i = 0; i < this->_trackers.size(); i++) {
       dataStream->write(this->_trackers[i]);
     }
   } else {
@@ -66,7 +66,7 @@ bool Metadata::unserialize(DataStreamInterface *dataStream) {
     return false;
   if (dataStream->read(&trackersSize) == -1)
     return false;
-  for (int i=0; i < trackersSize; i++) {
+  for (size_t i = 0; i < trackersSize; i++) {
     if (dataStream->read(&tracker) == -1)
       return false;
     this->_trackers.push_back(tracker);
