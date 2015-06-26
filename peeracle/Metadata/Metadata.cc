@@ -28,7 +28,7 @@ Metadata::Metadata() {
 }
 
 bool Metadata::serialize(DataStreamInterface *dataStream) {
-  size_t trackersSize;
+  uint32_t trackersSize;
   if (!this->_trackers.empty() && this->_trackers.size())
     trackersSize = this->_trackers.size();
   else
