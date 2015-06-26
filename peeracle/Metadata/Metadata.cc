@@ -28,15 +28,25 @@ Metadata::Metadata() {
 }
 
 bool Metadata::serialize(DataStreamInterface *dataStream) {
-  uint32_t trackersSize = _trackers.size();
-  dataStream->write(this->_magic);
-  dataStream->write(this->_version);
+  size_t trackersSize;
+  if (!this->_trackers.empty() && this->_trackers.size())
+    trackersSize = this->_trackers.size();
+  else
+    trackersSize = 1;
+  dataStream->write("PRCL", 4);
+  dataStream->write(static_cast<int32_t>(2));
   dataStream->write(_hashAlgorithm);
   dataStream->write(_timeCodeScale);
+  dataStream->write(_duration);
   dataStream->write(trackersSize);
-  for (int i=0; i < _trackers.size(); i++) {
-    dataStream->write(_trackers[i]);
+  if (!this->_trackers.empty() && this->_trackers.size() > 0) {
+    for (int i = 0; i < this->_trackers.size(); i++) {
+      dataStream->write(this->_trackers[i]);
+    }
+  } else {
+    dataStream->write("ws://127.0.0.1:8080", 20);
   }
+  dataStream->write(0);
   return false;
 }
 
@@ -56,7 +66,6 @@ bool Metadata::unserialize(DataStreamInterface *dataStream) {
     return false;
   if (dataStream->read(&trackersSize) == -1)
     return false;
-  this->_trackers.reserve(trackersSize);
   for (int i=0; i < trackersSize; i++) {
     if (dataStream->read(&tracker) == -1)
       return false;
