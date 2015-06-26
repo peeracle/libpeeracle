@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <cstring>
 #include <string>
 #include <sstream>
 #include "third_party/libwebsockets/lib/libwebsockets.h"

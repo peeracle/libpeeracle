@@ -66,6 +66,11 @@ int PeeracleManager::Control(int i_query, va_list args) {
     case DEMUX_SET_GROUP:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_SET_GROUP");
       break;
+#ifdef DEMUX_SET_ES
+    case DEMUX_SET_ES:
+      msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_SET_ES");
+      break;
+#endif
     case DEMUX_SET_NEXT_DEMUX_TIME:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_SET_NEXT_DEMUX_TIME");
       break;
@@ -102,6 +107,11 @@ int PeeracleManager::Control(int i_query, va_list args) {
     case DEMUX_SET_RECORD_STATE:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_SET_RECORD_STATE");
       break;
+#ifdef DEMUX_GET_SIGNAL
+    case DEMUX_GET_SIGNAL:
+      msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_GET_SIGNAL");
+      break;
+#endif
     case DEMUX_CAN_PAUSE:
       msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_CAN_PAUSE = 0x1000");
       break;

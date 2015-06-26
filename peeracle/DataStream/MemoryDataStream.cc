@@ -45,14 +45,15 @@ std::streamsize MemoryDataStream::length() const {
   return this->_buffer.size();
 }
 
-    std::streamsize MemoryDataStream::seek(std::streamsize position) {
-      if (position < 0 ||
-          position > this->_buffer.size()) {
-        return -1;
-      }
-      this->_cursor = position;
-      return this->_cursor;
-    }
+std::streamsize MemoryDataStream::seek(std::streamsize position) {
+  if (position < 0 ||
+      static_cast<std::streamsize>(this->_cursor) +
+      position > this->_buffer.size()) {
+    return -1;
+  }
+  this->_cursor = position;
+  return this->_cursor;
+}
 
 std::streamsize MemoryDataStream::tell() const {
   return this->_cursor;
@@ -252,9 +253,9 @@ std::streamsize MemoryDataStream::write(double value) {
   return this->_write(value);
 }
 
-    std::streamsize MemoryDataStream::write(const std::string &value) {
-      return this->_write(value.c_str(), strlen(value.c_str()) + 1);
-    }
+std::streamsize MemoryDataStream::write(const std::string &value) {
+  return this->_write(value.c_str(), strlen(value.c_str()) + 1);
+}
 
 template <typename T>
 std::streamsize MemoryDataStream::_write(T buffer,

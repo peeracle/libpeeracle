@@ -32,7 +32,7 @@
         'SSL_USE_OPENSSL',
       ],
       'dependencies': [
-        '<(peeracle_webrtc_root)/chromium/src/third_party/boringssl/boringssl.gyp:boringssl'
+        '<(peeracle_webrtc_root)/third_party/boringssl/boringssl.gyp:boringssl'
       ],
       'conditions': [
         ['OS == "win"', {
