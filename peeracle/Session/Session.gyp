@@ -30,7 +30,7 @@
       'type': 'static_library',
       'standalone_static_library': 1,
       'dependencies': [
-        '<(peeracle_webrtc_root)/talk/libjingle.gyp:libjingle_peerconnection',
+        '<(webrtc_depot_dir)/talk/libjingle.gyp:libjingle_peerconnection',
       ],
       'sources': [
         'SessionInterface.h',
