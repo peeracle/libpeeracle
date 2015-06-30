@@ -44,6 +44,7 @@ class PeeracleManager : public PeeracleManagerInterface {
   int Demux();
 
  private:
+  bool _initiated;
   demux_t *_vlc;
   peeracle::MetadataInterface *_metadata;
   peeracle::DataStreamInterface *_metadataDataStream;
