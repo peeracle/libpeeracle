@@ -31,7 +31,7 @@
         '<(DEPTH)/peeracle/peeracle.gyp:peeracle'
       ],
       'sources': [
-        'src/main.cc',
+        'main.cc',
       ],
     }
   ]
