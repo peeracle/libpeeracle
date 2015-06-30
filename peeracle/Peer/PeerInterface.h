@@ -23,10 +23,45 @@
 #ifndef PEERACLE_PEER_PEERINTERFACE_H_
 #define PEERACLE_PEER_PEERINTERFACE_H_
 
+#include <string>
+
 namespace peeracle {
 
 class PeerInterface {
  public:
+  class Observer {
+   public:
+    virtual void onIceCandidate(const std::string &sdpMid,
+                                int sdpMLineIndex,
+                                const std::string &candidate) = 0;
+    virtual void onSignalingChange(int state) = 0;
+    virtual void onStateChange(int state) = 0;
+    virtual void onIceConnectionChange(int state) = 0;
+    virtual void onIceGatheringChange(int state) = 0;
+
+   protected:
+    ~Observer() {}
+  };
+
+  class CreateSDPObserver {
+   public:
+    virtual void onSuccess(const std::string &sdp,
+                           const std::string &type) = 0;
+    virtual void onFailure(const std::string &error) = 0;
+
+   protected:
+    ~CreateSDPObserver() {}
+  };
+
+  class SetSDPObserver {
+   public:
+    virtual void onSuccess() = 0;
+    virtual void onFailure(const std::string &error) = 0;
+
+   protected:
+    ~SetSDPObserver() {}
+  };
+
   virtual ~PeerInterface() {}
 };
 

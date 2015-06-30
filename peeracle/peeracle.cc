@@ -20,17 +20,72 @@
  * SOFTWARE.
  */
 
+#include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
+#include "third_party/webrtc/webrtc/base/checks.h"
+#include "third_party/webrtc/webrtc/base/thread.h"
 #include "third_party/webrtc/webrtc/base/ssladapter.h"
 #include "peeracle/peeracle.h"
 
 namespace peeracle {
 
-bool Init() {
-  return rtc::InitializeSSL();
+static webrtc::PeerConnectionFactoryInterface *_peerConnectionFactory = NULL;
+static rtc::Thread *_signalingThread = NULL;
+static rtc::Thread *_workerThread = NULL;
+
+bool init() {
+  bool result = rtc::InitializeSSL();
+
+  rtc::ThreadManager::Instance()->WrapCurrentThread();
+  _signalingThread = new rtc::Thread();
+  _workerThread = new rtc::Thread();
+
+  _signalingThread->SetName("signaling_thread", NULL);
+  _workerThread->SetName("worker_thread", NULL);
+  CHECK(_workerThread->Start() &&
+        _signalingThread->Start()) << "Failed to start threads";
+
+  rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> factory(
+    webrtc::CreatePeerConnectionFactory(_workerThread,
+                                        _signalingThread,
+                                        NULL,
+                                        NULL,
+                                        NULL));
+
+  _peerConnectionFactory = factory.release();
+  return result;
 }
 
-bool Cleanup() {
+bool update() {
+  rtc::Thread *thread = rtc::Thread::Current();
+
+  return thread->ProcessMessages(0);
+}
+
+bool cleanup() {
+  _peerConnectionFactory->Release();
+
+  _signalingThread->Stop();
+  _workerThread->Stop();
+
+  delete _signalingThread;
+  delete _workerThread;
+
+  _signalingThread = NULL;
+  _workerThread = NULL;
+
   return rtc::CleanupSSL();
+}
+
+webrtc::PeerConnectionFactoryInterface *getPeerConnectionFactory() {
+  return _peerConnectionFactory;
+}
+
+rtc::Thread *getSignalingThread() {
+  return _signalingThread;
+}
+
+rtc::Thread *getWorkerThread() {
+  return _workerThread;
 }
 
 }  // namespace peeracle

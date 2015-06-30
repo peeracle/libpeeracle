@@ -38,6 +38,9 @@
         'Tracker/Tracker.gyp:*',
         'Utils/Utils.gyp:*',
       ],
+      'defines': [
+        'BUILD_LIBPEERACLE',
+      ],
       'sources': [
         'peeracle.cc',
       ],

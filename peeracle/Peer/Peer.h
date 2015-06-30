@@ -23,6 +23,7 @@
 #ifndef PEERACLE_PEER_PEER_H_
 #define PEERACLE_PEER_PEER_H_
 
+#include <string>
 #include "peeracle/Peer/PeerInterface.h"
 
 namespace peeracle {
@@ -30,9 +31,20 @@ namespace peeracle {
 class Peer
   : public PeerInterface {
  public:
-  Peer();
- protected:
-  virtual ~Peer() {}
+  explicit Peer(PeerInterface::Observer *observer);
+  ~Peer();
+
+  void CreateOffer(PeerInterface::CreateSDPObserver *createSDPObserver);
+  void CreateAnswer(const std::string &sdp,
+                    PeerInterface::CreateSDPObserver *createSDPObserver);
+  void SetAnswer(const std::string &sdp,
+                 PeerInterface::SetSDPObserver *setSDPObserver);
+  void AddICECandidate(const std::string &sdpMid,
+                       int sdpMLineIndex,
+                       const std::string &candidate);
+ private:
+  class PeerImpl;
+  PeerImpl *_peer;
 };
 
 }  // namespace peeracle

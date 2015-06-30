@@ -32,10 +32,14 @@
       'dependencies': [
         '<(webrtc_depot_dir)/talk/libjingle.gyp:libjingle_peerconnection',
       ],
+      'defines': [
+        'BUILD_LIBPEERACLE',
+      ],
       'sources': [
         'PeerInterface.h',
         'Peer.cc',
         'Peer.h',
+        'PeerImpl.h',
       ]
     },
   ],
@@ -48,6 +52,9 @@
           'dependencies': [
             'peeracle_peer',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'defines': [
+            'BUILD_LIBPEERACLE',
           ],
           'sources': [
             'Peer_unittest.cc',
