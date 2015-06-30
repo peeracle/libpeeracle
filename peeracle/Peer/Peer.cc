@@ -88,14 +88,18 @@ Peer::Peer(PeerInterface::Observer *observer) :
   iceServers.push_back(voipstuntIceServer);
   iceServers.push_back(voipgratiaIceServer);
 
-  rtc::scoped_refptr<webrtc::PeerConnectionInterface> pc
-    (peeracle::getPeerConnectionFactory()->CreatePeerConnection(
-      iceServers, &this->_peer->_mediaConstraints, NULL, NULL, _peer));
-
-  _peer->_peerConnection = pc.release();
+  _peer->_peerConnection = peeracle::getPeerConnectionFactory()->
+    CreatePeerConnection(iceServers, &this->_peer->_mediaConstraints,
+                         NULL, NULL, _peer);
 }
 
 Peer::~Peer() {
+  _peer->_peerConnection = NULL;
+  _peer->_dataChannel = NULL;
+  if (_peer->_dataChannelObserver) {
+    delete _peer->_dataChannelObserver;
+  }
+  delete _peer;
 }
 
 void Peer::CreateOffer(PeerInterface::CreateSDPObserver

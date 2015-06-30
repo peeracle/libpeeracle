@@ -115,7 +115,7 @@ class Peer::PeerImpl :
   void OnIceComplete();
 
   PeerInterface::Observer *_observer;
-  webrtc::PeerConnectionInterface *_peerConnection;
+  rtc::scoped_refptr<webrtc::PeerConnectionInterface> _peerConnection;
   webrtc::FakeConstraints _mediaConstraints;
   rtc::scoped_refptr<webrtc::DataChannelInterface> _dataChannel;
   DataChannelObserver *_dataChannelObserver;
