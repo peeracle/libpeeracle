@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include "peeracle/peeracle.h"
 #include "samples/vlc-plugin/PeeracleManager.h"
 #include "VLCDataStream.h"
 
@@ -82,6 +83,7 @@ int PeeracleManager::Control(int i_query, va_list args) {
       vlc_meta_t *p_meta = va_arg(args, vlc_meta_t*);
       vlc_meta_t *meta = vlc_meta_New();
 
+      msg_Dbg(this->_vlc, "[Peeracle::Control] DEMUX_GET_META");
       if (meta == NULL)
         return VLC_EGENERIC;
 
@@ -160,5 +162,6 @@ int PeeracleManager::Control(int i_query, va_list args) {
 }
 
 int PeeracleManager::Demux() {
+  peeracle::update();
   return VLC_DEMUXER_SUCCESS;
 }

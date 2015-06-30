@@ -62,7 +62,7 @@ static int Open(vlc_object_t *p_obj) {
   int peek_size;
 
   msg_Dbg(p_obj, "initializing peeracle");
-  if (peeracle::Init()) {
+  if (!peeracle::init()) {
     return VLC_EGENERIC;
   }
 
@@ -112,6 +112,8 @@ static void Close(vlc_object_t *p_obj) {
   msg_Dbg(p_obj, "Close");
   delete p_sys->p_peeracleManager;
   free(p_sys);
+
+  peeracle::cleanup();
 }
 
 /*****************************************************************************
