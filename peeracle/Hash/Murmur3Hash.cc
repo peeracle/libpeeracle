@@ -28,21 +28,39 @@ namespace peeracle {
 namespace Hash {
 
 Murmur3Hash::Murmur3Hash() {
+  DataStreamInit init;
+
+  this->_dataStream = new MemoryDataStream(init);
 }
 
 Murmur3Hash::~Murmur3Hash() {
+  delete this->_dataStream;
 }
 
 void Murmur3Hash::init() {
 }
 
 void Murmur3Hash::update(DataStreamInterface *dataStream) {
+  char *buffer = new char[dataStream->length()];
+
+  dataStream->read(buffer, dataStream->length());
+  this->_dataStream->write(buffer, dataStream->length());
+  delete buffer;
 }
 
 void Murmur3Hash::final(uint8_t *result) {
+  const std::streamsize length = this->_dataStream->length();
+  char *buffer = new char[length];
+
+  this->_dataStream->seek(0);
+  this->_dataStream->read(buffer, length);
+  MurmurHash3_x64_128(buffer, static_cast<int>(length), 0x5052434C, result);
+  delete buffer;
 }
 
 void Murmur3Hash::checksum(DataStreamInterface *dataStream, uint8_t *result) {
+  this->update(dataStream);
+  this->final(result);
 }
 
 }  // namespace Hash

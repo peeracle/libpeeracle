@@ -40,6 +40,16 @@ class Murmur3HashTest : public testing::Test {
   Murmur3Hash *hash_;
 };
 
+TEST_F(Murmur3HashTest, SimpleHash) {
+  DataStreamInit init;
+  MemoryDataStream *ds = new MemoryDataStream(init);
+  uint8_t result[16];
+
+  ds->write("hello everyone");
+  ds->seek(0);
+  hash_->checksum(ds, result);
+}
+
 }  // namespace Hash
 
 }  // namespace peeracle

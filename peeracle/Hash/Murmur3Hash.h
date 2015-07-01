@@ -23,6 +23,7 @@
 #ifndef PEERACLE_HASH_MURMUR3HASH_H_
 #define PEERACLE_HASH_MURMUR3HASH_H_
 
+#include "peeracle/DataStream/MemoryDataStream.h"
 #include "HashInterface.h"
 
 /**
@@ -57,6 +58,9 @@ class Murmur3Hash
   void update(DataStreamInterface *dataStream);
   void final(uint8_t *result);
   void checksum(DataStreamInterface *dataStream, uint8_t *result);
+
+ private:
+  MemoryDataStream *_dataStream;
 };
 
 /**
