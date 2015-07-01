@@ -36,10 +36,15 @@
         'BUILD_LIBPEERACLE',
       ],
       'sources': [
+        'CreateSDPObserver.cc',
+        'DataChannelObserver.cc',
+        'Observer.cc',
         'PeerInterface.h',
         'Peer.cc',
         'Peer.h',
         'PeerImpl.h',
+        'SetLocalSDPObserver.cc',
+        'SetRemoteSDPObserver.cc',
       ]
     },
   ],
