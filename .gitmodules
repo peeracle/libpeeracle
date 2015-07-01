@@ -15,4 +15,4 @@
 	url = https://github.com/peeracle/libwebsockets.git
 [submodule "third_party/murmur3"]
 	path = third_party/murmur3
-	url = git@github.com:peeracle/murmur3.git
+	url = https://github.com/peeracle/murmur3.git
