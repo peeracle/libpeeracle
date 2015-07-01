@@ -54,10 +54,9 @@ class Crc32Hash
    * Initialize the Crc32 hash algorithm module.
    */
   void init();
-  void update(unsigned char const *buffer, unsigned int length);
-  void final(unsigned char *result);
-  void checksum(unsigned char const *buffer, unsigned int length,
-                unsigned char *result);
+  void update(DataStreamInterface *dataStream);
+  void final(uint8_t *result);
+  void checksum(DataStreamInterface *dataStream, uint8_t *result);
 };
 
 /**

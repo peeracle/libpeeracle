@@ -35,14 +35,13 @@ Crc32Hash::~Crc32Hash() {
 void Crc32Hash::init() {
 }
 
-void Crc32Hash::update(unsigned char const *buffer, unsigned int length) {
+void Crc32Hash::update(DataStreamInterface *dataStream) {
 }
 
-void Crc32Hash::final(unsigned char *result) {
+void Crc32Hash::final(uint8_t *result) {
 }
 
-void Crc32Hash::checksum(unsigned char const *buffer, unsigned int length,
-                         unsigned char *result) {
+void Crc32Hash::checksum(DataStreamInterface *dataStream, uint8_t *result) {
 }
 
 }  // namespace Hash

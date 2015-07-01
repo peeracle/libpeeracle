@@ -24,6 +24,7 @@
 #define PEERACLE_HASH_HASHINTERFACE_H_
 
 #include <cstdlib>
+#include "peeracle/DataStream/DataStreamInterface.h"
 
 /**
  * \addtogroup peeracle
@@ -57,14 +58,14 @@ class HashInterface {
    * @param buffer a pointer to a buffer containing the bytes to hash.
    * @param length the number of bytes to hash inside the buffer.
    */
-  virtual void update(unsigned char const *buffer, unsigned int length) = 0;
+  virtual void update(DataStreamInterface *dataStream) = 0;
 
   /**
    * Execute the hash operation from the bytes provided by the #update calls,
    * and store the \p result.
    * @param result a pointer to the buffer which will receive the checksum.
    */
-  virtual void final(unsigned char *result) = 0;
+  virtual void final(uint8_t *result) = 0;
 
   /**
    * Execute #init, #update and #final methods at once.
@@ -72,8 +73,7 @@ class HashInterface {
    * @param length the number of bytes to hash inside the buffer.
    * @param result a pointer to the buffer which will receive the checksum.
    */
-  virtual void checksum(unsigned char const *buffer, unsigned int length,
-                        unsigned char *result) = 0;
+  virtual void checksum(DataStreamInterface *dataStream, uint8_t *result) = 0;
 
  protected:
   virtual ~HashInterface() {}
