@@ -59,7 +59,7 @@ std::streamsize MemoryDataStream::tell() const {
   return this->_cursor;
 }
 
-std::streamsize MemoryDataStream::read(uint8_t *buffer,
+std::streamsize MemoryDataStream::read(char *buffer,
                                        std::streamsize length) {
   std::streamsize result = 0;
 

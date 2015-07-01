@@ -74,7 +74,7 @@ std::streamsize FileDataStream::tell() const {
   return 0;
 }
 
-std::streamsize FileDataStream::read(uint8_t *buffer,
+std::streamsize FileDataStream::read(char *buffer,
                                      std::streamsize length) {
   if (!this->file_.is_open() || length < 1) {
     return 0;

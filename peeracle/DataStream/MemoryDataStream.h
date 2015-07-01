@@ -52,7 +52,7 @@ class MemoryDataStream : public DataStreamInterface {
 
   std::streamsize getBytes(uint8_t *buffer, std::streamsize length);
 
-  std::streamsize read(uint8_t *buffer, std::streamsize length);
+  std::streamsize read(char *buffer, std::streamsize length);
   std::streamsize read(int8_t *buffer);
   std::streamsize read(uint8_t *buffer);
   std::streamsize read(int16_t *buffer);

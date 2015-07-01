@@ -47,7 +47,7 @@ std::streamsize VLCDataStream::tell() const {
   return static_cast<std::streamsize>(stream_Tell(this->_stream));
 }
 
-std::streamsize VLCDataStream::read(uint8_t *buffer,
+std::streamsize VLCDataStream::read(char *buffer,
                                     std::streamsize length) {
   return stream_Read(this->_stream, buffer, static_cast<int>(length));
 }

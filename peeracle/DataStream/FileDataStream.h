@@ -50,7 +50,7 @@ class FileDataStream : public DataStreamInterface {
   std::streamsize seek(std::streamsize offset);
   std::streamsize tell() const;
 
-  std::streamsize read(uint8_t *buffer, std::streamsize length);
+  std::streamsize read(char *buffer, std::streamsize length);
   std::streamsize read(int8_t *buffer);
   std::streamsize read(uint8_t *buffer);
   std::streamsize read(int16_t *buffer);
