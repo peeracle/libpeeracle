@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <iostream>
 #include "peeracle/Hash/Murmur3Hash.h"
 #include "third_party/murmur3/murmur3.h"
 
@@ -51,10 +52,20 @@ void Murmur3Hash::update(DataStreamInterface *dataStream) {
 void Murmur3Hash::final(uint8_t *result) {
   const std::streamsize length = this->_dataStream->length();
   char *buffer = new char[length];
+  uint8_t output[16];
 
   this->_dataStream->seek(0);
   this->_dataStream->read(buffer, length);
-  MurmurHash3_x64_128(buffer, static_cast<int>(length), 0x5052434C, result);
+
+  MurmurHash3_x86_128(buffer, static_cast<int>(length), 0x5052434C, output);
+
+  for (int i = 0; i < 16; i += 4) {
+    result[i + 0] = output[i + 3];
+    result[i + 1] = output[i + 2];
+    result[i + 2] = output[i + 1];
+    result[i + 3] = output[i + 0];
+  }
+
   delete buffer;
 }
 

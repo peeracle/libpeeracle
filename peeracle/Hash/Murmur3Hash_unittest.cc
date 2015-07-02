@@ -48,6 +48,12 @@ TEST_F(Murmur3HashTest, SimpleHash) {
   ds->write("hello everyone");
   ds->seek(0);
   hash_->checksum(ds, result);
+
+  for (int i = 0; i < 16; ++i) {
+    std::cout << std::hex << +result[i];
+  }
+
+  std::cout << std::endl;
 }
 
 }  // namespace Hash
