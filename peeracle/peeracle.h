@@ -20,21 +20,9 @@
  * SOFTWARE.
  */
 
-#ifdef BUILD_LIBPEERACLE
-#include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
-#include "third_party/webrtc/webrtc/base/thread.h"
-#endif
-
 namespace peeracle {
 
 bool init();
-bool update();
 bool cleanup();
-
-#ifdef BUILD_LIBPEERACLE
-webrtc::PeerConnectionFactoryInterface *getPeerConnectionFactory();
-rtc::Thread *getSignalingThread();
-rtc::Thread *getWorkerThread();
-#endif
 
 }  // namespace peeracle
