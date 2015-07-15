@@ -20,41 +20,20 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
-#include "third_party/webrtc/webrtc/base/thread.h"
 #include "peeracle/Session/Session.h"
+#include "peeracle/Session/SessionImpl.h"
 
 namespace peeracle {
 
-Session::Session() : _signalingThread(new rtc::Thread()),
-                     _workerThread(new rtc::Thread()),
-                     _pcfi(NULL) {
-  rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> pcfi;
+Session::Session() : _impl(new Session::SessionImpl()) {
+}
 
-  rtc::ThreadManager::Instance()->WrapCurrentThread();
-
-  _signalingThread.get()->SetName("signaling_thread", NULL);
-  _workerThread.get()->SetName("worker_thread", NULL);
-
-  ASSERT(_signalingThread.get()->Start() && _workerThread.get()->Start());
-
-  _pcfi = webrtc::CreatePeerConnectionFactory(_signalingThread.get(),
-                                              _workerThread.get(),
-                                              NULL, NULL, NULL);
+Session::~Session() {
+  delete _impl;
 }
 
 bool Session::Update() {
-  rtc::Thread *thread = rtc::Thread::Current();
-
-  return thread->ProcessMessages(0);
-}
-
-void *Session::getSignalingThread() {
-  return _signalingThread.get();
-}
-
-void *Session::getWorkerThread() {
-  return _workerThread.get();
+  return _impl->Update();
 }
 
 }  // namespace peeracle

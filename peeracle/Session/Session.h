@@ -23,8 +23,6 @@
 #ifndef PEERACLE_SESSION_SESSION_H_
 #define PEERACLE_SESSION_SESSION_H_
 
-#include "third_party/webrtc/webrtc/base/thread.h"
-#include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
 #include "peeracle/Session/SessionInterface.h"
 
 namespace peeracle {
@@ -33,17 +31,12 @@ class Session
   : public SessionInterface {
  public:
   Session();
+  ~Session();
 
   bool Update();
-
-  void *getSignalingThread();
-  void *getWorkerThread();
  private:
-  const rtc::scoped_ptr<rtc::Thread> _signalingThread;
-  const rtc::scoped_ptr<rtc::Thread> _workerThread;
-  rtc::scoped_refptr<webrtc::PeerConnectionFactoryInterface> _pcfi;
- protected:
-  virtual ~Session() {}
+  class SessionImpl;
+  SessionImpl *_impl;
 };
 
 }  // namespace peeracle

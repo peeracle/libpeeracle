@@ -36,6 +36,8 @@
         'SessionInterface.h',
         'Session.cc',
         'Session.h',
+        'SessionImpl.cc',
+        'SessionImpl.h',
       ]
     },
   ],
