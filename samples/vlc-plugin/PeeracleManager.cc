@@ -339,25 +339,5 @@ int PeeracleManager::Control(int i_query, va_list args) {
 }
 
 int PeeracleManager::Demux() {
-  if (!_initiated) {
-    _initiated = true;
-
-    peeracle::init();
-    MyPeerObserverA *peerObserverA;
-    peerObserverA = new MyPeerObserverA();
-
-    MyCreateSDPObserverA *createOfferObserverA;
-    createOfferObserverA = new MyCreateSDPObserverA();
-
-    peerA = new peeracle::Peer(peerObserverA);
-
-    MyPeerObserverB *peerObserverB;
-    peerObserverB = new MyPeerObserverB();
-
-    peerB = new peeracle::Peer(peerObserverB);
-    peerA->CreateOffer(createOfferObserverA);
-  }
-
-  peeracle::update();
   return VLC_DEMUXER_SUCCESS;
 }
