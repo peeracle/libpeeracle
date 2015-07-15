@@ -88,9 +88,9 @@ Peer::Peer(PeerInterface::Observer *observer) :
   iceServers.push_back(voipstuntIceServer);
   iceServers.push_back(voipgratiaIceServer);
 
-  _peer->_peerConnection = peeracle::getPeerConnectionFactory()->
+  /*_peer->_peerConnection = peeracle::getPeerConnectionFactory()->
     CreatePeerConnection(iceServers, &this->_peer->_mediaConstraints,
-                         NULL, NULL, _peer);
+                         NULL, NULL, _peer);*/
 }
 
 Peer::~Peer() {
@@ -167,46 +167,6 @@ void Peer::AddICECandidate(const std::string &sdpMid,
   }
 
   _peer->_peerConnection->AddIceCandidate(iceCandidate.get());
-}
-
-Peer::PeerImpl::PeerImpl(PeerInterface::Observer *observer) :
-  _observer(observer) {
-  this->_mediaConstraints.AddOptional(
-    webrtc::MediaConstraintsInterface::kEnableDtlsSrtp,
-    webrtc::MediaConstraintsInterface::kValueTrue);
-  this->_mediaConstraints.AddMandatory(
-    webrtc::MediaConstraintsInterface::kOfferToReceiveAudio,
-    webrtc::MediaConstraintsInterface::kValueFalse);
-  this->_mediaConstraints.AddMandatory(
-    webrtc::MediaConstraintsInterface::kOfferToReceiveVideo,
-    webrtc::MediaConstraintsInterface::kValueFalse);
-}
-
-Peer::PeerImpl::~PeerImpl() {
-}
-
-Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver::
-  SetRemoteSDPAndCreateAnswerObserver(
-  webrtc::PeerConnectionInterface *peerConnection,
-  webrtc::MediaConstraintsInterface *mediaConstraints,
-  PeerInterface::CreateSDPObserver *createSDPObserver) :
-  _peerConnection(peerConnection),
-  _mediaConstraints(mediaConstraints),
-  _createSDPObserver(createSDPObserver) {
-}
-
-void Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver::OnSuccess() {
-  rtc::scoped_refptr<Peer::PeerImpl::CreateSDPObserver>
-    createOfferObserver =
-    new rtc::RefCountedObject<Peer::PeerImpl::CreateSDPObserver>
-      (_peerConnection, _createSDPObserver);
-
-  _peerConnection->CreateAnswer(createOfferObserver, _mediaConstraints);
-}
-
-void Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver::OnFailure(
-  const std::string &error) {
-  _createSDPObserver->onFailure(error);
 }
 
 }  // namespace peeracle

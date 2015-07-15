@@ -1,0 +1,8 @@
+//
+// Created by axel on 7/15/15.
+//
+
+#ifndef LIBPEERACLE_SESSIONIMPL_H
+#define LIBPEERACLE_SESSIONIMPL_H
+
+#endif //LIBPEERACLE_SESSIONIMPL_H

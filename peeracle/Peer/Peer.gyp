@@ -42,6 +42,7 @@
         'PeerInterface.h',
         'Peer.cc',
         'Peer.h',
+        'PeerImpl.cc',
         'PeerImpl.h',
         'SetLocalSDPObserver.cc',
         'SetRemoteSDPObserver.cc',
