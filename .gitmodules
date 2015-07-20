@@ -16,3 +16,6 @@
 [submodule "third_party/murmur3"]
 	path = third_party/murmur3
 	url = https://github.com/peeracle/murmur3.git
+[submodule "third_party/lzstringpp"]
+	path = third_party/lzstringpp
+	url = https://github.com/peeracle/lzstringpp
