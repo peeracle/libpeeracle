@@ -109,7 +109,8 @@ class DataStreamTest
   }
 
   void TEST_GETBYTES(uint8_t *buffer, std::streamsize length) {
-    std::streamsize result = this->_ds->getBytes(buffer, length);
+    std::streamsize result = this->_ds->read(reinterpret_cast<char*>(buffer),
+                                             length);
     EXPECT_EQ(this->_ds->length(), result);
   }
 
