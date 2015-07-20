@@ -40,7 +40,7 @@ class PeerInterface {
     virtual void onIceGatheringChange(int state) = 0;
 
    protected:
-    ~Observer() {}
+    virtual ~Observer() {}
   };
 
   class CreateSDPObserver {
@@ -61,6 +61,8 @@ class PeerInterface {
    protected:
     ~SetSDPObserver() {}
   };
+
+  virtual const std::string &getId() const = 0;
 
   virtual ~PeerInterface() {}
 };

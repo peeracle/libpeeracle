@@ -25,13 +25,15 @@
 
 #include <string>
 #include "peeracle/Peer/PeerInterface.h"
+#include "peeracle/Tracker/Client/TrackerClientInterface.h"
 
 namespace peeracle {
 
 class Peer
   : public PeerInterface {
  public:
-  explicit Peer(PeerInterface::Observer *observer);
+  explicit Peer(const std::string &id, TrackerClientInterface *tracker,
+                PeerInterface::Observer *observer);
   ~Peer();
 
   void CreateOffer(PeerInterface::CreateSDPObserver *createSDPObserver);
@@ -42,9 +44,16 @@ class Peer
   void AddICECandidate(const std::string &sdpMid,
                        int sdpMLineIndex,
                        const std::string &candidate);
+
+  const std::string &getId() const;
+
  private:
   class PeerImpl;
   PeerImpl *_peer;
+
+  const std::string _id;
+  TrackerClientInterface *_tracker;
+  PeerInterface::Observer *_observer;
 };
 
 }  // namespace peeracle

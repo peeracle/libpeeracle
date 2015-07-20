@@ -27,14 +27,17 @@
 #include "third_party/webrtc/webrtc/base/thread.h"
 #include "third_party/webrtc/talk/app/webrtc/test/fakeconstraints.h"
 #include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
+
 #include "peeracle/Peer/Peer.h"
 #include "peeracle/Peer/PeerImpl.h"
 #include "peeracle/peeracle.h"
 
 namespace peeracle {
 
-Peer::Peer(PeerInterface::Observer *observer) :
-  _peer(new Peer::PeerImpl(observer)) {
+Peer::Peer(const std::string &id, TrackerClientInterface *tracker,
+           PeerInterface::Observer *observer) :
+  _peer(new Peer::PeerImpl(observer)), _id(id), _tracker(tracker),
+  _observer(observer) {
   webrtc::PeerConnectionInterface::IceServers iceServers;
   webrtc::PeerConnectionInterface::IceServer amazonIceServer;
   webrtc::PeerConnectionInterface::IceServer googleIceServer;
@@ -88,9 +91,9 @@ Peer::Peer(PeerInterface::Observer *observer) :
   iceServers.push_back(voipstuntIceServer);
   iceServers.push_back(voipgratiaIceServer);
 
-  /*_peer->_peerConnection = peeracle::getPeerConnectionFactory()->
+  _peer->_peerConnection = peeracle::getPeerConnectionFactory()->
     CreatePeerConnection(iceServers, &this->_peer->_mediaConstraints,
-                         NULL, NULL, _peer);*/
+                         NULL, NULL, _peer);
 }
 
 Peer::~Peer() {
@@ -123,6 +126,7 @@ void Peer::CreateOffer(PeerInterface::CreateSDPObserver
 
 void Peer::CreateAnswer(const std::string &sdp,
                         PeerInterface::CreateSDPObserver *createSDPObserver) {
+  webrtc::SdpParseError error;
   webrtc::SessionDescriptionInterface *desc;
   rtc::scoped_refptr<Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver>
     setOfferObserver =
@@ -130,7 +134,7 @@ void Peer::CreateAnswer(const std::string &sdp,
       <Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver>
       (_peer->_peerConnection, &_peer->_mediaConstraints, createSDPObserver);
 
-  desc = webrtc::CreateSessionDescription("offer", sdp);
+  desc = webrtc::CreateSessionDescription("offer", sdp, &error);
   if (!desc) {
     return;
   }
@@ -140,8 +144,9 @@ void Peer::CreateAnswer(const std::string &sdp,
 
 void Peer::SetAnswer(const std::string &sdp,
                      PeerInterface::SetSDPObserver *setSDPObserver) {
+  webrtc::SdpParseError error;
   webrtc::SessionDescriptionInterface *desc =
-    webrtc::CreateSessionDescription("answer", sdp);
+    webrtc::CreateSessionDescription("answer", sdp, &error);
 
   if (!desc) {
     return;
@@ -158,15 +163,20 @@ void Peer::SetAnswer(const std::string &sdp,
 void Peer::AddICECandidate(const std::string &sdpMid,
                            int sdpMLineIndex,
                            const std::string &candidate) {
+  webrtc::SdpParseError error;
   rtc::scoped_ptr<webrtc::IceCandidateInterface> iceCandidate(
     webrtc::CreateIceCandidate(sdpMid, sdpMLineIndex, candidate,
-                               NULL));
+                               &error));
 
   if (!iceCandidate) {
     return;
   }
 
   _peer->_peerConnection->AddIceCandidate(iceCandidate.get());
+}
+
+const std::string &Peer::getId() const {
+  return _id;
 }
 
 }  // namespace peeracle
