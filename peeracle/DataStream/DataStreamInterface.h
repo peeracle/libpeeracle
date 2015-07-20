@@ -38,8 +38,8 @@ namespace peeracle {
 struct DataStreamInit {
   DataStreamInit()
     : bigEndian(true),
-      buffer(NULL),
       path(""),
+      buffer(NULL),
       bufferLength(0) {
   }
 
