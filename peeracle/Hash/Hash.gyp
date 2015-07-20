@@ -34,8 +34,6 @@
       ],
       'sources': [
         'HashInterface.h',
-        'Crc32Hash.cc',
-        'Crc32Hash.h',
         'Murmur3Hash.cc',
         'Murmur3Hash.h',
       ]
@@ -52,7 +50,6 @@
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'sources': [
-            'Crc32Hash_unittest.cc',
             'Murmur3Hash_unittest.cc',
           ],
         },
