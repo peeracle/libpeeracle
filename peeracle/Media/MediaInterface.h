@@ -23,8 +23,10 @@
 #ifndef PEERACLE_MEDIA_MEDIAINTERFACE_H_
 #define PEERACLE_MEDIA_MEDIAINTERFACE_H_
 
-#include <cstdlib>
-#include <ios>
+#include <stdint.h>
+#include <vector>
+
+#include "peeracle/DataStream/DataStreamInterface.h"
 
 /**
  * \addtogroup peeracle
@@ -35,43 +37,33 @@
 namespace peeracle {
 
 /**
- * \addtogroup Media
- * @{
- * @namespace peeracle::Media
- * @brief Media namespace
- */
-namespace Media {
-
-/**
  * Media module interface.
+ * \addtogroup Media
  */
 class MediaInterface {
  public:
   /**
    * Retrieve the initialization segment.
-   * @param buffer
-   * @param length
+   * @param out
    */
-  virtual void getInitSegment(unsigned char *buffer,
-                              std::streamsize length) = 0;
+  virtual void getInitSegment(DataStreamInterface *out) = 0;
 
   /**
    * Retrieve a media segment by the specified \p timecode.
    * @param timecode
-   * @param buffer
-   * @param length
+   * @param out
    */
-  virtual void getMediaSegment(std::streampos timecode, unsigned char *buffer,
-                               std::streamsize length) = 0;
+  virtual void getMediaSegment(std::streampos timecode,
+                               DataStreamInterface *out) = 0;
+
+  /**
+   * Get a list of timecodes.
+   */
+  virtual const std::vector<uint32_t> &getTimecodes() const = 0;
 
  protected:
   virtual ~MediaInterface() {}
 };
-
-/**
- * @}
- */
-}  // namespace Media
 
 /**
  * @}

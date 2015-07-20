@@ -23,24 +23,26 @@
 #ifndef PEERACLE_MEDIA_WEBMMEDIA_H_
 #define PEERACLE_MEDIA_WEBMMEDIA_H_
 
-#include "MediaInterface.h"
+#include <stdint.h>
+#include <vector>
+
+#include "peeracle/Media/MediaInterface.h"
 
 namespace peeracle {
-
-namespace Media {
 
 class WebMMedia
   : public MediaInterface {
  public:
-  void getInitSegment(unsigned char *buffer, std::streamsize length);
-  void getMediaSegment(std::streampos timecode, unsigned char *buffer,
-                       std::streamsize length);
+  WebMMedia();
+  ~WebMMedia();
 
- protected:
-  virtual ~WebMMedia() {}
+  void getInitSegment(DataStreamInterface *out);
+  void getMediaSegment(std::streampos timecode, DataStreamInterface *out);
+  const std::vector<uint32_t> &getTimecodes() const;
+
+ private:
+  std::vector<uint32_t> _timecodes;
 };
-
-}  // namespace Media
 
 }  // namespace peeracle
 
