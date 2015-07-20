@@ -428,6 +428,14 @@ class WebMMediaTest : public testing::Test {
 
   const unsigned int _expectedInitLength = 4557;
 
+  const std::vector<int> _expectedTimecodes = {0, 2000, 4000, 6000, 8000, 10000,
+                                               12000, 14000, 16000, 18000,
+                                               20000, 22000, 24000, 26000,
+                                               28000, 30000, 32000, 34000,
+                                               36000, 38000, 40000, 42000,
+                                               44000, 46000, 48000, 50000,
+                                               52000, 54000, 56000, 58000};
+
   WebMMedia *_media;
   DataStreamInterface *_webmToTest;
 };
@@ -440,7 +448,7 @@ TEST_F(WebMMediaTest, getInitSegment) {
 
   _media->getInitSegment(actualDS);
 
-  EXPECT_EQ(_expectedInitLength, actualDS->length());
+  ASSERT_EQ(_expectedInitLength, actualDS->length());
 
   actualBytes = new uint8_t[actualDS->length()];
   actualDS->read(reinterpret_cast<char*>(actualBytes), actualDS->length());
@@ -454,7 +462,13 @@ TEST_F(WebMMediaTest, getInitSegment) {
 }
 
 TEST_F(WebMMediaTest, getMediaSegment) {
-  EXPECT_FALSE(true);
+  std::stringstream filestrm;
+  const std::vector<uint32_t> &actualTimecodes = _media->getTimecodes();
+
+  ASSERT_EQ(_expectedTimecodes.size(), actualTimecodes.size());
+  for (size_t i = 0; i < _expectedTimecodes.size(); ++i) {
+    EXPECT_EQ(_expectedTimecodes[i], actualTimecodes[i]);
+  }
 }
 
 }  // namespace Media
