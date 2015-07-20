@@ -25,12 +25,33 @@
 
 #include <stdint.h>
 #include <ios>
+#include <string>
+#include <vector>
+
 #include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/Hash/HashInterface.h"
+#include "peeracle/Metadata/MetadataMediaSegmentInterface.h"
 
 namespace peeracle {
 
 class MetadataStreamInterface {
  public:
+  virtual uint8_t getType() = 0;
+  virtual const std::string &getMimeType() = 0;
+  virtual uint32_t getBandwidth() = 0;
+  virtual int32_t getWidth() = 0;
+  virtual int32_t getHeight() = 0;
+  virtual int32_t getNumChannels() = 0;
+  virtual int32_t getSamplingFrequency() = 0;
+  virtual uint32_t getChunkSize() = 0;
+  virtual uint8_t *getInitSegment() = 0;
+  virtual uint32_t getInitSegmentLength() = 0;
+  virtual std::vector<MetadataMediaSegmentInterface *> &getMediaSegments() = 0;
+
+  virtual bool unserialize(DataStreamInterface *dataStream,
+                           const std::string &hashName,
+                           HashInterface *hash) = 0;
+
   virtual ~MetadataStreamInterface() {}
 };
 

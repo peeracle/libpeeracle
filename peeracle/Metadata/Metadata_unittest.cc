@@ -195,7 +195,7 @@ TEST_F(MetadataTest, CorrectHeader) {
   duration = _metadata->getDuration();
 
   const std::vector<std::string> &trackers =
-    _metadata->getTrackers();
+    _metadata->getTrackerUrls();
   const std::vector<MetadataStreamInterface *> &streams =
     _metadata->getStreams();
 

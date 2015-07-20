@@ -20,7 +20,12 @@
  * SOFTWARE.
  */
 
+#include <iostream>
+#include <iomanip>
+#include <sstream>
+#include "peeracle/Hash/Murmur3Hash.h"
 #include "peeracle/Metadata/Metadata.h"
+#include "peeracle/Metadata/MetadataStream.h"
 
 namespace peeracle {
 
@@ -29,74 +34,106 @@ Metadata::Metadata() {
 
 bool Metadata::serialize(DataStreamInterface *dataStream) {
   uint32_t trackersSize;
-  if (!this->_trackers.empty() && this->_trackers.size())
-    trackersSize = this->_trackers.size();
-  else
-    trackersSize = 1;
+
+  if (_trackers.size() > 0) {
+    trackersSize = static_cast<uint32_t>(_trackers.size());
+  } else {
+    trackersSize = 0;
+  }
+
   dataStream->write("PRCL", 4);
   dataStream->write(static_cast<int32_t>(2));
   dataStream->write(_hashAlgorithm);
   dataStream->write(_timeCodeScale);
   dataStream->write(_duration);
   dataStream->write(trackersSize);
-  if (!this->_trackers.empty() && this->_trackers.size() > 0) {
-    for (size_t i = 0; i < this->_trackers.size(); i++) {
-      dataStream->write(this->_trackers[i]);
-    }
-  } else {
-    dataStream->write("ws://127.0.0.1:8080", 20);
+
+  for (size_t i = 0; i < _trackers.size(); i++) {
+    dataStream->write(_trackers[i]);
   }
+
   dataStream->write(0);
   return false;
 }
 
 bool Metadata::unserialize(DataStreamInterface *dataStream) {
-  uint32_t trackersSize;
+  HashInterface *hash;
+  uint8_t id[16];
+  uint32_t trackerCount;
+  uint32_t streamCount;
   std::string tracker;
+  std::stringstream buffer;
+  MetadataStreamInterface *stream;
 
-  if (dataStream->read(&this->_magic) == -1)
+  if (dataStream->read(&_magic) == -1 ||
+    dataStream->read(&_version) == -1 ||
+    dataStream->read(&_hashAlgorithm) == -1 ||
+    dataStream->read(&_timeCodeScale) == -1 ||
+    dataStream->read(&_duration) == -1 ||
+    dataStream->read(&trackerCount) == -1) {
     return false;
-  if (dataStream->read(&this->_version) == -1)
-    return false;
-  if (dataStream->read(&this->_hashAlgorithm) == -1)
-    return false;
-  if (dataStream->read(&this->_timeCodeScale) == -1)
-    return false;
-  if (dataStream->read(&this->_duration) == -1)
-    return false;
-  if (dataStream->read(&trackersSize) == -1)
-    return false;
-  for (size_t i = 0; i < trackersSize; i++) {
-    if (dataStream->read(&tracker) == -1)
-      return false;
-    this->_trackers.push_back(tracker);
   }
-  if (dataStream->read(&this->_streamsNumber) == -1)
+
+  if (_hashAlgorithm != "murmur3_x86_128") {
     return false;
+  }
+
+  hash = new Murmur3Hash();
+
+  for (size_t i = 0; i < trackerCount; ++i) {
+    if (dataStream->read(&tracker) == -1) {
+      return false;
+    }
+    _trackers.push_back(tracker);
+  }
+
+  if (dataStream->read(&streamCount) == -1) {
+    return false;
+  }
+
+  for (size_t i = 0; i < streamCount; ++i) {
+    stream = new MetadataStream();
+    if (!stream->unserialize(dataStream, _hashAlgorithm, hash)) {
+      return false;
+    }
+    _streams.push_back(stream);
+  }
+
+  hash->final(id);
+  for (int i = 0; i < 16; ++i) {
+    buffer << std::hex << std::setfill('0');
+    buffer << std::setw(2)  << static_cast<unsigned>(id[i]);
+  }
+
+  _id = buffer.str();
   return true;
 }
 
+const std::string &Metadata::getId() {
+  return _id;
+}
+
 uint32_t Metadata::getMagic() {
-  return this->_magic;
+  return _magic;
 }
 
 uint32_t Metadata::getVersion() {
-  return this->_version;
+  return _version;
 }
 
 const std::string &Metadata::getHashAlgorithm() {
-  return this->_hashAlgorithm;
+  return _hashAlgorithm;
 }
 
 uint32_t Metadata::getTimecodeScale() {
-  return this->_timeCodeScale;
+  return _timeCodeScale;
 }
 
 double Metadata::getDuration() {
-  return this->_duration;
+  return _duration;
 }
 
-std::vector<std::string> &Metadata::getTrackers() {
+std::vector<std::string> &Metadata::getTrackerUrls() {
   return _trackers;
 }
 
@@ -105,18 +142,18 @@ std::vector<MetadataStreamInterface *> &Metadata::getStreams() {
 }
 
 void Metadata::setHashAlgorithm(const std::string &hashAlgorithm) {
-  this->_hashAlgorithm = hashAlgorithm;
+  _hashAlgorithm = hashAlgorithm;
 }
 
 void Metadata::setTimecodeScale(uint32_t timecodeScale) {
-  this->_timeCodeScale = timecodeScale;
+  _timeCodeScale = timecodeScale;
 }
 
 void Metadata::setDuration(double duration) {
-  this->_duration = duration;
+  _duration = duration;
 }
 
 void Metadata::addTracker(const std::string &tracker) {
-  this->_trackers.push_back(tracker);
+  _trackers.push_back(tracker);
 }
 }  // namespace peeracle

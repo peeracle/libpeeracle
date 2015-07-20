@@ -23,13 +23,45 @@
 #ifndef PEERACLE_METADATA_METADATASTREAM_H_
 #define PEERACLE_METADATA_METADATASTREAM_H_
 
+#include <string>
+#include <vector>
+#include "peeracle/Hash/HashInterface.h"
 #include "peeracle/Metadata/MetadataStreamInterface.h"
 
 namespace peeracle {
 
-class MetadataStream: public MetadataStreamInterface {
+class MetadataStream
+  : public MetadataStreamInterface {
  public:
   MetadataStream();
+
+  uint8_t getType();
+  const std::string &getMimeType();
+  uint32_t getBandwidth();
+  int32_t getWidth();
+  int32_t getHeight();
+  int32_t getNumChannels();
+  int32_t getSamplingFrequency();
+  uint32_t getChunkSize();
+  uint8_t *getInitSegment();
+  uint32_t getInitSegmentLength();
+  std::vector<MetadataMediaSegmentInterface *> &getMediaSegments();
+
+  bool unserialize(DataStreamInterface *dataStream,
+                   const std::string &hashName, HashInterface *hash);
+
+ private:
+  uint8_t _type;
+  std::string _mimeType;
+  uint32_t _bandwidth;
+  int32_t _width;
+  int32_t _height;
+  int32_t _numChannels;
+  int32_t _samplingFrequency;
+  uint32_t _chunkSize;
+  uint8_t *_initSegment;
+  uint32_t _initSegmentLength;
+  std::vector<MetadataMediaSegmentInterface *> _mediaSegments;
 };
 
 }  // namespace peeracle

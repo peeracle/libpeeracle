@@ -20,52 +20,55 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_METADATA_METADATA_H_
-#define PEERACLE_METADATA_METADATA_H_
-
+#include <iomanip>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-#include "peeracle/Metadata/MetadataInterface.h"
+
+#include "peeracle/Hash/Murmur3Hash.h"
+#include "peeracle/Metadata/MetadataMediaSegment.h"
 
 namespace peeracle {
 
-class Metadata : public MetadataInterface {
- public:
-  Metadata();
+MetadataMediaSegment::MetadataMediaSegment() {
+}
 
-  const std::string &getId();
-  uint32_t getMagic();
-  uint32_t getVersion();
-  const std::string &getHashAlgorithm();
-  uint32_t getTimecodeScale();
-  double getDuration();
-  std::vector<std::string> &getTrackerUrls();
-  std::vector<MetadataStreamInterface *> &getStreams();
+uint32_t MetadataMediaSegment::getTimecode() {
+  return _timecode;
+}
 
-  void setHashAlgorithm(const std::string &hashAlgorithm);
-  void setTimecodeScale(uint32_t timecodeScale);
-  void setDuration(double duration);
-  void addTracker(const std::string &tracker);
+uint32_t MetadataMediaSegment::getLength() {
+  return _length;
+}
 
-  bool serialize(DataStreamInterface *dataStream);
-  bool unserialize(DataStreamInterface *dataStream);
+const std::vector<uint8_t *> &MetadataMediaSegment::getChunks() {
+  return _chunks;
+}
 
- private:
-  std::string _id;
-  uint32_t _magic;
-  uint32_t _version;
-  std::string _hashAlgorithm;
-  uint32_t _timeCodeScale;
-  double _duration;
-  uint32_t _trackersNumber;
-  std::string _trackersAddress;
-  uint32_t _streamsNumber;
+bool MetadataMediaSegment::unserialize(DataStreamInterface *dataStream,
+                                       const std::string &hashAlgorithm,
+                                       HashInterface *hash) {
+  uint32_t chunkCount;
 
-  std::string _empty;
-  std::vector<std::string> _trackers;
-  std::vector<MetadataStreamInterface *> _streams;
-};
+  if (dataStream->read(&_timecode) == -1 ||
+    dataStream->read(&_length) == -1 || dataStream->read(&chunkCount) == -1) {
+    return false;
+  }
+
+  if (hashAlgorithm != "murmur3_x86_128") {
+    return false;
+  }
+
+  for (int c = 0; c < chunkCount; ++c) {
+    uint8_t *chunk = new uint8_t[16];
+
+    Murmur3Hash::unserialize(dataStream, chunk);
+    _chunks.push_back(chunk);
+    hash->update(chunk, 16);
+  }
+
+  return true;
+}
 
 }  // namespace peeracle
-
-#endif  // PEERACLE_METADATA_METADATA_H_

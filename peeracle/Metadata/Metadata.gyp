@@ -30,11 +30,18 @@
       'standalone_static_library': 1,
       'dependencies': [
         '../DataStream/DataStream.gyp:peeracle_datastream',
+        '../Hash/Hash.gyp:peeracle_hash',
       ],
       'sources': [
         'MetadataInterface.h',
         'Metadata.cc',
         'Metadata.h',
+        'MetadataStream.cc',
+        'MetadataStream.h',
+        'MetadataStreamInterface.h',
+        'MetadataMediaSegment.cc',
+        'MetadataMediaSegment.h',
+        'MetadataMediaSegmentInterface.h',
       ]
     },
   ],

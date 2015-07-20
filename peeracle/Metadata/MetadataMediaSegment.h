@@ -20,52 +20,34 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_METADATA_METADATA_H_
-#define PEERACLE_METADATA_METADATA_H_
+#ifndef PEERACLE_METADATA_METADATAMEDIASEGMENT_H_
+#define PEERACLE_METADATA_METADATAMEDIASEGMENT_H_
 
 #include <string>
 #include <vector>
-#include "peeracle/Metadata/MetadataInterface.h"
+#include "peeracle/Metadata/MetadataMediaSegmentInterface.h"
+#include "peeracle/Hash/HashInterface.h"
 
 namespace peeracle {
 
-class Metadata : public MetadataInterface {
+class MetadataMediaSegment
+  : public MetadataMediaSegmentInterface {
  public:
-  Metadata();
+  MetadataMediaSegment();
 
-  const std::string &getId();
-  uint32_t getMagic();
-  uint32_t getVersion();
-  const std::string &getHashAlgorithm();
-  uint32_t getTimecodeScale();
-  double getDuration();
-  std::vector<std::string> &getTrackerUrls();
-  std::vector<MetadataStreamInterface *> &getStreams();
+  uint32_t getTimecode();
+  uint32_t getLength();
+  const std::vector<uint8_t *> &getChunks();
 
-  void setHashAlgorithm(const std::string &hashAlgorithm);
-  void setTimecodeScale(uint32_t timecodeScale);
-  void setDuration(double duration);
-  void addTracker(const std::string &tracker);
-
-  bool serialize(DataStreamInterface *dataStream);
-  bool unserialize(DataStreamInterface *dataStream);
+  bool unserialize(DataStreamInterface *dataStream,
+                   const std::string &hashName, HashInterface *hash);
 
  private:
-  std::string _id;
-  uint32_t _magic;
-  uint32_t _version;
-  std::string _hashAlgorithm;
-  uint32_t _timeCodeScale;
-  double _duration;
-  uint32_t _trackersNumber;
-  std::string _trackersAddress;
-  uint32_t _streamsNumber;
-
-  std::string _empty;
-  std::vector<std::string> _trackers;
-  std::vector<MetadataStreamInterface *> _streams;
+  uint32_t _timecode;
+  uint32_t _length;
+  std::vector<uint8_t *> _chunks;
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_METADATA_METADATA_H_
+#endif  // PEERACLE_METADATA_METADATAMEDIASEGMENT_H_
