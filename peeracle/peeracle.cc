@@ -25,11 +25,58 @@
 
 namespace peeracle {
 
+static rtc::Thread *_signalingThread = NULL;
+static rtc::Thread *_workerThread = NULL;
+static webrtc::PeerConnectionFactoryInterface *_peerConnectionFactory = NULL;
+
+rtc::Thread *getSignalingThread() {
+  return _signalingThread;
+}
+
+rtc::Thread *getWorkerThread() {
+  return _workerThread;
+}
+
+webrtc::PeerConnectionFactoryInterface *getPeerConnectionFactory() {
+  return _peerConnectionFactory;
+}
+
 bool init() {
-  return rtc::InitializeSSL();
+  rtc::InitializeSSL();
+  rtc::ThreadManager::Instance()->WrapCurrentThread();
+
+  _signalingThread = new rtc::Thread();
+  _workerThread = new rtc::Thread();
+
+  _signalingThread->SetName("signaling_thread", NULL);
+  _workerThread->SetName("worker_thread", NULL);
+
+  ASSERT(_signalingThread->Start() && _workerThread->Start());
+
+  _peerConnectionFactory =
+    webrtc::CreatePeerConnectionFactory(_signalingThread,
+                                        _workerThread,
+                                        NULL, NULL, NULL).release();
+  return true;
+}
+
+bool update() {
+  return rtc::Thread::Current()->ProcessMessages(0);
 }
 
 bool cleanup() {
+  _peerConnectionFactory->Release();
+  _peerConnectionFactory = NULL;
+
+  _signalingThread->Stop();
+  _workerThread->Stop();
+
+  delete _signalingThread;
+  delete _workerThread;
+
+  _signalingThread = NULL;
+  _workerThread = NULL;
+
   return rtc::CleanupSSL();
 }
 
