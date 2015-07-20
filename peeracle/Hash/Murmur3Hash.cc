@@ -47,6 +47,10 @@ void Murmur3Hash::update(DataStreamInterface *dataStream) {
   delete buffer;
 }
 
+void Murmur3Hash::update(const uint8_t *buffer, size_t length) {
+  this->_dataStream->write(reinterpret_cast<const char *>(buffer), length);
+}
+
 void Murmur3Hash::final(uint8_t *result) {
   const std::streamsize length = this->_dataStream->length();
   char *buffer = new char[length];

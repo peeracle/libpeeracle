@@ -53,6 +53,8 @@ class HashInterface {
    */
   virtual void update(DataStreamInterface *dataStream) = 0;
 
+  virtual void update(const uint8_t *buffer, size_t length) = 0;
+
   /**
    * Execute the hash operation from the bytes provided by the #update calls,
    * and store the \p result.

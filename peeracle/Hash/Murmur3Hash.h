@@ -35,6 +35,7 @@
 namespace peeracle {
 
 /**
+ * Murmur3Hash hash algorithm module.
  * \addtogroup Hash
  */
 class Murmur3Hash
@@ -48,6 +49,7 @@ class Murmur3Hash
    */
   void init();
   void update(DataStreamInterface *dataStream);
+  void update(const uint8_t *buffer, size_t length);
   void final(uint8_t *result);
   void checksum(DataStreamInterface *dataStream, uint8_t *result);
 
