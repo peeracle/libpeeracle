@@ -28,6 +28,9 @@
       'target_name': 'peeracle_media',
       'type': 'static_library',
       'standalone_static_library': 1,
+      'dependencies': [
+        '../DataStream/DataStream.gyp:peeracle_datastream',
+      ],
       'sources': [
         'MediaInterface.h',
         'WebMMedia.cc',
