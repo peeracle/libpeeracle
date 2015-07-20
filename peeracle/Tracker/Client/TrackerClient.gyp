@@ -43,6 +43,7 @@
         'TrackerClient.cc',
         'TrackerClient.h',
         'TrackerClientInterface.h',
+        'TrackerClientObserver.h',
       ],
     },
   ],
