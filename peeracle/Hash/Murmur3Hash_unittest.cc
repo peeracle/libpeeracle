@@ -25,8 +25,6 @@
 
 namespace peeracle {
 
-namespace Hash {
-
 class Murmur3HashTest : public testing::Test {
  protected:
   virtual void SetUp() {
@@ -55,7 +53,5 @@ TEST_F(Murmur3HashTest, SimpleHash) {
 
   std::cout << std::endl;
 }
-
-}  // namespace Hash
 
 }  // namespace peeracle

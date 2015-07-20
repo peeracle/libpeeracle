@@ -26,8 +26,6 @@
 
 namespace peeracle {
 
-namespace Hash {
-
 Murmur3Hash::Murmur3Hash() {
   DataStreamInit init;
 
@@ -74,6 +72,6 @@ void Murmur3Hash::checksum(DataStreamInterface *dataStream, uint8_t *result) {
   this->final(result);
 }
 
-}  // namespace Hash
+}
 
 }  // namespace peeracle

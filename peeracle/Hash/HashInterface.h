@@ -35,15 +35,8 @@
 namespace peeracle {
 
 /**
- * \addtogroup Hash
- * @{
- * @namespace peeracle::Hash
- * @brief Hash namespace
- */
-namespace Hash {
-
-/**
  * Hash module interface.
+ * \addtogroup Hash
  */
 class HashInterface {
  public:
@@ -78,11 +71,6 @@ class HashInterface {
  protected:
   virtual ~HashInterface() {}
 };
-
-/**
- * @}
- */
-}  // namespace Hash
 
 /**
  * @}

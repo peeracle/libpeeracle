@@ -36,14 +36,6 @@ namespace peeracle {
 
 /**
  * \addtogroup Hash
- * @{
- * @namespace peeracle::Hash
- * @brief Hash namespace
- */
-namespace Hash {
-
-/**
- * Murmur3Hash hash algorithm module.
  */
 class Murmur3Hash
   : public HashInterface {
@@ -62,11 +54,6 @@ class Murmur3Hash
  private:
   MemoryDataStream *_dataStream;
 };
-
-/**
- * @}
- */
-}  // namespace Hash
 
 /**
  * @}
