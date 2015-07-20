@@ -8,6 +8,7 @@
         'samples/samples.gyp:*',
         'test/test.gyp:*',
         'java/java.gyp:*',
+        'third_party/lzstringpp/lzstringpp.gyp:*'
       ],
     },
   ]
