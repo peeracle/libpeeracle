@@ -35,6 +35,7 @@
           ],
           'dependencies': [
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+            '../Message/TrackerMessage.gyp:peeracle_tracker_message',
           ],
         }],
       ],

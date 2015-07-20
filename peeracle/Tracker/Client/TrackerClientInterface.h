@@ -30,8 +30,11 @@ namespace peeracle {
 class TrackerClientInterface {
  public:
   virtual bool Init() = 0;
-  virtual bool Connect(const std::string &address, uint16_t port) = 0;
+  virtual bool Connect() = 0;
   virtual bool Update() = 0;
+
+  virtual void announce(const std::string id, uint32_t got) = 0;
+  virtual const std::string &getUrl() const = 0;
  protected:
   virtual ~TrackerClientInterface() {}
 };

@@ -23,24 +23,60 @@
 #ifndef PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
 #define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
 
+#include <map>
 #include <string>
+#include "peeracle/DataStream/DataStreamInterface.h"
 #include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 
 namespace peeracle {
 
 class TrackerMessage : public TrackerMessageInterface {
  public:
-  void set(const std::string &key, int value);
+  explicit TrackerMessage(uint8_t type = kKeepAlive);
+  ~TrackerMessage();
+
+  uint8_t getType() const;
+
+  void set(const std::string &key, int8_t value);
+  void set(const std::string &key, uint8_t value);
+  void set(const std::string &key, int16_t value);
+  void set(const std::string &key, uint16_t value);
+  void set(const std::string &key, int32_t value);
+  void set(const std::string &key, uint32_t value);
   void set(const std::string &key, const std::string &value);
-  void unset(const std::string &key);
-  void get(const std::string &key, int *value, int def);
+
+  void get(const std::string &key, int8_t *value, int8_t def);
+  void get(const std::string &key, uint8_t *value, uint8_t def);
+  void get(const std::string &key, int16_t *value, int16_t def);
+  void get(const std::string &key, uint16_t *value, uint16_t def);
+  void get(const std::string &key, int32_t *value, int32_t def);
+  void get(const std::string &key, uint32_t *value, uint32_t def);
   void get(const std::string &key, std::string *value, const std::string& def);
 
-  unsigned int getByteLength();
-  void serialize(unsigned char *buffer, unsigned int length);
-  void unserialize(const unsigned char *buffer, unsigned int length);
+  void unset(const std::string &key);
 
-  virtual ~TrackerMessage() {}
+  bool serialize(DataStreamInterface *dataStream);
+  bool unserialize(DataStreamInterface *dataStream);
+
+ private:
+  uint8_t _type;
+  std::map<std::string, std::string> _keys;
+
+  template<typename T>
+  void _get(const std::string &key, T *value, T def);
+
+  template<typename T>
+  void _set(const std::string &key, T value);
+
+  bool _serializeWelcome(DataStreamInterface *dataStream);
+  bool _serializeAnnounce(DataStreamInterface *dataStream);
+  bool _serializeEnter(DataStreamInterface *dataStream);
+  bool _serializePoke(DataStreamInterface *dataStream);
+
+  bool _unserializeWelcome(DataStreamInterface *dataStream);
+  bool _unserializeAnnounce(DataStreamInterface *dataStream);
+  bool _unserializeEnter(DataStreamInterface *dataStream);
+  bool _unserializePoke(DataStreamInterface *dataStream);
 };
 
 }  // namespace peeracle
