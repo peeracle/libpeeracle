@@ -20,13 +20,19 @@
  * SOFTWARE.
  */
 
-#ifndef SAMPLES_VLCPLUGIN_PEERACLEMANAGERINTERFACE_H_
-#define SAMPLES_VLCPLUGIN_PEERACLEMANAGERINTERFACE_H_
+#ifndef SAMPLES_VLC_PLUGIN_PEERACLEMANAGERINTERFACE_H_
+#define SAMPLES_VLC_PLUGIN_PEERACLEMANAGERINTERFACE_H_
 
 #include <cstdarg>
 
 class PeeracleManagerInterface {
  public:
+  enum Status {
+    STATUS_BUFFERING,
+    STATUS_DEMUXED,
+    STATUS_EOF
+  };
+
   virtual bool Init() = 0;
   virtual int Control(int i_query, va_list args) = 0;
   virtual int Demux() = 0;
@@ -34,4 +40,4 @@ class PeeracleManagerInterface {
   virtual ~PeeracleManagerInterface() { }
 };
 
-#endif  // SAMPLES_VLCPLUGIN_PEERACLEMANAGERINTERFACE_H_
+#endif  // SAMPLES_VLC_PLUGIN_PEERACLEMANAGERINTERFACE_H_

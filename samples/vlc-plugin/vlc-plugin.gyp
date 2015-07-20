@@ -44,8 +44,13 @@
           'sources': [
             'plugin.cc',
             'PeeracleManager.cc',
+            'PeeracleManager.h',
+            'PeeracleManagerInterface.h',
             'PeeracleStream.cc',
+            'PeeracleStream.h',
+            'PeeracleStreamInterface.h',
             'VLCDataStream.cc',
+            'VLCSessionHandleObserver.cc',
           ],
           'include_dirs': [
             'config/<(OS)/<(target_arch)',

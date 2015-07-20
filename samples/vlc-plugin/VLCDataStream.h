@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef SAMPLES_VLCPLUGIN_VLCDATASTREAM_H_
-#define SAMPLES_VLCPLUGIN_VLCDATASTREAM_H_
+#ifndef SAMPLES_VLC_PLUGIN_VLCDATASTREAM_H_
+#define SAMPLES_VLC_PLUGIN_VLCDATASTREAM_H_
 
 #include <string>
 
@@ -76,7 +76,15 @@ class VLCDataStream
   ~VLCDataStream() {}
 
  private:
+  template<typename T>
+  std::streamsize _read(T *buffer);
+
+  template<typename T>
+  std::streamsize _peek(T *buffer);
+
+ protected:
   stream_t *_stream;
+  bool _bigEndian;
 };
 
-#endif  // SAMPLES_VLCPLUGIN_VLCDATASTREAM_H_
+#endif  // SAMPLES_VLC_PLUGIN_VLCDATASTREAM_H_

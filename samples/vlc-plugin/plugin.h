@@ -67,6 +67,7 @@
 struct demux_sys_t
 {
   PeeracleManagerInterface *p_peeracleManager;
+  mtime_t currentTime;
 };
 
 #endif  // SAMPLES_VLCPLUGIN_PLUGIN_H_

@@ -20,43 +20,16 @@
  * SOFTWARE.
  */
 
-#ifndef SAMPLES_VLC_PLUGIN_PEERACLESTREAM_H_
-#define SAMPLES_VLC_PLUGIN_PEERACLESTREAM_H_
+#ifndef SAMPLES_VLC_PLUGIN_VLCSESSIONHANDLEOBSERVER_H_
+#define SAMPLES_VLC_PLUGIN_VLCSESSIONHANDLEOBSERVER_H_
 
-#include "peeracle/Metadata/MetadataInterface.h"
-#include "samples/vlc-plugin/plugin.h"
-#include "samples/vlc-plugin/PeeracleStreamInterface.h"
+#include "peeracle/Session/SessionHandleObserver.h"
 
-class PeeracleStream :
-  public PeeracleStreamInterface {
+class VLCSessionHandleObserver
+  : public peeracle::SessionHandleObserver {
  public:
-  explicit PeeracleStream(demux_t *vlc,
-                          peeracle::MetadataInterface *metadata);
-  ~PeeracleStream();
-
-  bool init();
-  PeeracleManagerInterface::Status Demux(mtime_t deadline);
-  int64_t GetDuration();
-  int GetGroup();
-  bool IsLive();
-  bool IsSeekable();
-  bool SetPosition(int64_t time);
-
- private:
-  demux_t *_vlc;
-  peeracle::MetadataInterface *_metadata;
-  stream_t *_demuxStream;
-  es_out_t *_esOut;
-  vlc_mutex_t _lock;
-
-  mtime_t _pcr;
-  int _group;
-
-  static es_out_id_t *esOutAdd(es_out_t *es, const es_format_t *fmt);
-  static int esOutSend(es_out_t *es, es_out_id_t *id, block_t *block);
-  static void esOutDel(es_out_t *es, es_out_id_t *id);
-  static int esOutControl(es_out_t *es, int query, va_list args);
-  static void esOutDestroy(es_out_t *es);
+  VLCSessionHandleObserver();
+  ~VLCSessionHandleObserver();
 };
 
-#endif  // SAMPLES_VLC_PLUGIN_PEERACLESTREAM_H_
+#endif  // SAMPLES_VLC_PLUGIN_VLCSESSIONHANDLEOBSERVER_H_
