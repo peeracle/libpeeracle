@@ -42,6 +42,8 @@ namespace peeracle {
  */
 class MediaInterface {
  public:
+  virtual bool Load(DataStreamInterface *dataStream) = 0;
+
   /**
    * Retrieve the initialization segment.
    * @param out

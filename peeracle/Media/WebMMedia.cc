@@ -30,6 +30,10 @@ WebMMedia::WebMMedia() {
 WebMMedia::~WebMMedia() {
 }
 
+bool WebMMedia::Load(DataStreamInterface *dataStream) {
+  return true;
+}
+
 void WebMMedia::getInitSegment(DataStreamInterface *out) {
 }
 

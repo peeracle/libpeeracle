@@ -36,6 +36,7 @@ class WebMMedia
   WebMMedia();
   ~WebMMedia();
 
+  bool Load(DataStreamInterface *dataStream);
   void getInitSegment(DataStreamInterface *out);
   void getMediaSegment(std::streampos timecode, DataStreamInterface *out);
   const std::vector<uint32_t> &getTimecodes() const;
