@@ -30,10 +30,6 @@
       'standalone_static_library': 1,
       'sources': [
         'MediaInterface.h',
-        'MP3Media.cc',
-        'MP3Media.h',
-        'MP4Media.cc',
-        'MP4Media.h',
         'WebMMedia.cc',
         'WebMMedia.h',
       ]
@@ -50,8 +46,6 @@
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'sources': [
-            'MP3Media_unittest.cc',
-            'MP4Media_unittest.cc',
             'WebMMedia_unittest.cc',
           ],
         },
