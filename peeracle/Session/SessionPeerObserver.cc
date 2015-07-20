@@ -20,31 +20,39 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_SESSION_SESSIONINTERFACE_H_
-#define PEERACLE_SESSION_SESSIONINTERFACE_H_
-
-#include <map>
 #include <string>
-#include "peeracle/Metadata/MetadataInterface.h"
-#include "peeracle/Session/SessionHandleInterface.h"
-#include "peeracle/Session/SessionHandleObserver.h"
+
+#include "peeracle/Session/SessionPeerObserver.h"
 
 namespace peeracle {
 
-class SessionInterface {
- public:
-  virtual bool update() = 0;
-  virtual SessionHandleInterface *addMetadata(MetadataInterface *metadata,
-    SessionHandleObserver *observer) = 0;
+SessionPeerObserver::SessionPeerObserver(SessionInterface *session) :
+  _peer(NULL), _session(session) {
+  (void) _session;
+}
 
-  virtual void addPeer(const std::string &id, PeerInterface *peer) = 0;
+SessionPeerObserver::~SessionPeerObserver() {
+}
 
-  virtual std::map<std::string, PeerInterface *> &getPeers() = 0;
-  virtual std::map<std::string, SessionHandleInterface *> &getHandles() = 0;
+void SessionPeerObserver::onIceCandidate(const std::string &sdpMid,
+                                         int sdpMLineIndex,
+                                         const std::string &candidate) {
+}
 
-  virtual ~SessionInterface() {}
-};
+void SessionPeerObserver::onSignalingChange(int state) {
+}
+
+void SessionPeerObserver::onStateChange(int state) {
+}
+
+void SessionPeerObserver::onIceConnectionChange(int state) {
+}
+
+void SessionPeerObserver::onIceGatheringChange(int state) {
+}
+
+void SessionPeerObserver::setPeer(PeerInterface *peer) {
+  _peer = peer;
+}
 
 }  // namespace peeracle
-
-#endif  // PEERACLE_SESSION_SESSIONINTERFACE_H_

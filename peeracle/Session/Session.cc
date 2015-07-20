@@ -20,20 +20,80 @@
  * SOFTWARE.
  */
 
+#include <iostream>
+#include <map>
+#include <vector>
+#include <string>
+
+#include "peeracle/Peer/Peer.h"
+#include "peeracle/Tracker/Client/TrackerClient.h"
+
 #include "peeracle/Session/Session.h"
-#include "peeracle/Session/SessionImpl.h"
+#include "peeracle/Session/SessionHandle.h"
+#include "peeracle/Session/SessionPeerObserver.h"
+#include "peeracle/Session/SessionTrackerClientObserver.h"
 
 namespace peeracle {
 
-Session::Session() : _impl(new Session::SessionImpl()) {
+Session::Session(SessionObserver *observer) :
+  _observer(observer) {
 }
 
 Session::~Session() {
-  delete _impl;
 }
 
-bool Session::Update() {
-  return _impl->Update();
+bool Session::update() {
+  for (std::map<std::string, TrackerClientInterface *>::iterator
+         it = _trackers.begin();
+       it != _trackers.end(); ++it) {
+    TrackerClientInterface *tracker = (*it).second;
+
+    tracker->Update();
+  }
+  return true;
+}
+
+SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
+                                             SessionHandleObserver *observer) {
+  SessionHandleInterface *handle;
+  SessionTrackerClientObserver *trackerObserver;
+
+  if (_handles.find(metadata->getId()) != _handles.end()) {
+    return _handles[metadata->getId()];
+  }
+
+  handle = new SessionHandle(metadata, observer);
+  _handles[metadata->getId()] = handle;
+
+  std::vector<std::string> &trackers = metadata->getTrackerUrls();
+  for (std::vector<std::string>::iterator it = trackers.begin();
+       it != trackers.end(); ++it) {
+    if (_trackers.find(*it) != _trackers.end()) {
+      continue;
+    }
+
+    trackerObserver = new SessionTrackerClientObserver(this);
+    TrackerClientInterface *tracker = new TrackerClient((*it), trackerObserver);
+    trackerObserver->setTrackerClient(tracker);
+    if (tracker->Init() && tracker->Connect()) {
+      _trackers[(*it)] = tracker;
+    }
+  }
+
+  (void) _observer;
+  return handle;
+}
+
+void Session::addPeer(const std::string &id, PeerInterface *peer) {
+  _peers[id] = peer;
+}
+
+std::map<std::string, SessionHandleInterface *> &Session::getHandles() {
+  return _handles;
+}
+
+std::map<std::string, PeerInterface *> &Session::getPeers() {
+  return _peers;
 }
 
 }  // namespace peeracle

@@ -20,31 +20,21 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_SESSION_SESSIONINTERFACE_H_
-#define PEERACLE_SESSION_SESSIONINTERFACE_H_
+#ifndef PEERACLE_SESSION_SESSIONHANDLEINTERFACE_H_
+#define PEERACLE_SESSION_SESSIONHANDLEINTERFACE_H_
 
-#include <map>
-#include <string>
+#include "peeracle/Peer/PeerInterface.h"
 #include "peeracle/Metadata/MetadataInterface.h"
-#include "peeracle/Session/SessionHandleInterface.h"
-#include "peeracle/Session/SessionHandleObserver.h"
 
 namespace peeracle {
 
-class SessionInterface {
+class SessionHandleInterface {
  public:
-  virtual bool update() = 0;
-  virtual SessionHandleInterface *addMetadata(MetadataInterface *metadata,
-    SessionHandleObserver *observer) = 0;
-
-  virtual void addPeer(const std::string &id, PeerInterface *peer) = 0;
-
-  virtual std::map<std::string, PeerInterface *> &getPeers() = 0;
-  virtual std::map<std::string, SessionHandleInterface *> &getHandles() = 0;
-
-  virtual ~SessionInterface() {}
+  virtual MetadataInterface *getMetadata() const = 0;
+  virtual void onPeer(PeerInterface *peer, uint32_t got, bool poke) = 0;
+  virtual ~SessionHandleInterface() {}
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_SESSION_SESSIONINTERFACE_H_
+#endif  // PEERACLE_SESSION_SESSIONHANDLEINTERFACE_H_

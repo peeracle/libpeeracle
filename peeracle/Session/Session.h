@@ -23,20 +23,37 @@
 #ifndef PEERACLE_SESSION_SESSION_H_
 #define PEERACLE_SESSION_SESSION_H_
 
+#include <map>
+#include <string>
+
+#include "peeracle/Peer/PeerInterface.h"
 #include "peeracle/Session/SessionInterface.h"
+#include "peeracle/Session/SessionHandleInterface.h"
+#include "peeracle/Session/SessionObserver.h"
+#include "peeracle/Tracker/Client/TrackerClientInterface.h"
 
 namespace peeracle {
 
 class Session
   : public SessionInterface {
  public:
-  Session();
+  explicit Session(SessionObserver *observer);
   ~Session();
 
-  bool Update();
+  bool update();
+  SessionHandleInterface *addMetadata(MetadataInterface *metadata,
+                                      SessionHandleObserver *observer);
+
+  std::map<std::string, PeerInterface *> &getPeers();
+  std::map<std::string, SessionHandleInterface *> &getHandles();
+
  private:
-  class SessionImpl;
-  SessionImpl *_impl;
+  SessionObserver *_observer;
+  std::map<std::string, PeerInterface *> _peers;
+  std::map<std::string, SessionHandleInterface *> _handles;
+  std::map<std::string, TrackerClientInterface *> _trackers;
+ public:
+  virtual void addPeer(const std::string &id, PeerInterface *peer);
 };
 
 }  // namespace peeracle
