@@ -288,14 +288,4 @@ std::streamsize MemoryDataStream::_write(T value) {
   return this->_write(originalData, sizeof(T));
 }
 
-std::streamsize MemoryDataStream::getBytes(uint8_t *buffer,
-                                           std::streamsize length) {
-  std::streamsize i;
-
-  for (i = 0; i < this->_buffer.size(); ++i) {
-    buffer[i] = this->_buffer[i];
-  }
-  return i;
-}
-
 }  // namespace peeracle

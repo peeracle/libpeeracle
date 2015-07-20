@@ -50,8 +50,6 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize seek(std::streamsize position);
   std::streamsize tell() const;
 
-  std::streamsize getBytes(uint8_t *buffer, std::streamsize length);
-
   std::streamsize read(char *buffer, std::streamsize length);
   std::streamsize read(int8_t *buffer);
   std::streamsize read(uint8_t *buffer);
