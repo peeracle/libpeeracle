@@ -21,34 +21,17 @@
 
 {
   'includes': [
-    '../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'libpeeracle_objc',
-      'type': 'static_library',
+      'target_name': 'PeeracleDemo',
+      'type': 'executable',
+      'product_name': 'PeeracleDemo',
+      'mac_bundle': 1,
       'dependencies': [
-        '../peeracle/peeracle.gyp:peeracle',
+        '../../objc/peeracle_objc.gyp:*',
       ],
-      'sources': [
-        'public/peeracle.h',
-        'peeracle.mm',
-      ],
-      'direct_dependent_settings': {
-        'include_dirs': [
-          '<(DEPTH)/objc',
-          '<(DEPTH)/objc/public',
-        ],
-      },
-      'include_dirs': [
-        '<(DEPTH)/objc',
-        '<(DEPTH)/objc/public',
-      ],
-      'link_settings': {
-        'libraries': [
-          '-lstdc++',
-        ],
-      },
       'all_dependent_settings': {
         'xcode_settings': {
           'CLANG_ENABLE_OBJC_ARC': 'YES',
@@ -62,25 +45,34 @@
       },
       'conditions': [
         ['OS=="ios"', {
-          'sources': [
-            'app/webrtc/objc/avfoundationvideocapturer.h',
-            'app/webrtc/objc/avfoundationvideocapturer.mm',
-            'app/webrtc/objc/RTCAVFoundationVideoSource+Internal.h',
-            'app/webrtc/objc/RTCAVFoundationVideoSource.mm',
-            'app/webrtc/objc/RTCEAGLVideoView.m',
-            'app/webrtc/objc/public/RTCEAGLVideoView.h',
-            'app/webrtc/objc/public/RTCAVFoundationVideoSource.h',
+          'mac_bundle_resources': [
           ],
-          'link_settings': {
-            'xcode_settings': {
-              'OTHER_LDFLAGS': [
-                '-framework CoreGraphics',
-                '-framework GLKit',
-              ],
-            },
+          'sources': [
+            'ios/main.m',
+          ],
+          'xcode_settings': {
+            'INFOPLIST_FILE': 'ios/Info.plist',
           },
         }],
+        ['OS=="mac"', {
+          'sources': [
+            'mac/main.m',
+          ],
+          'xcode_settings': {
+            'CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS': 'NO',
+            'INFOPLIST_FILE': 'mac/Info.plist',
+            'MACOSX_DEPLOYMENT_TARGET' : '10.8',
+            'OTHER_LDFLAGS': [
+              '-framework AVFoundation',
+            ],
+          },
+        }],
+        ['target_arch=="ia32"', {
+          'dependencies' : [
+            '<(webrtc_depot_dir)/testing/iossim/iossim.gyp:iossim#host',
+          ],
+        }],
       ],
-    },  # target libjingle_peerconnection_objc
+    },
   ],
 }

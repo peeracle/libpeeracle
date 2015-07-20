@@ -27,30 +27,21 @@
     {
       'target_name': 'samples',
       'type': 'none',
+      'dependencies': [
+        'seed/seed.gyp:*',
+      ],
       'conditions': [
-        ['OS=="android"', {
+        ['build_vlcplugin == 1', {
           'dependencies': [
-            'android/android.gyp:*',
+            'vlc-plugin/vlc-plugin.gyp:*'
           ],
-        }],  # OS=="android"
-        ['OS=="ios"', {
+        }],
+        ['OS=="ios" or (OS=="mac" and target_arch!="ia32" and mac_sdk>="10.8")', {
           'dependencies': [
-            'ios/ios.gyp:*',
+            'objc/objc.gyp:*',
           ],
-        }],  # OS=="ios"
-        ['OS=="win" or OS=="linux" or OS=="mac"', {
-          'dependencies': [
-            'seed/seed.gyp:*',
-          ],
-          'conditions': [
-            ['build_vlcplugin == 1', {
-              'dependencies': [
-                'vlc-plugin/vlc-plugin.gyp:*'
-              ],
-            }],
-          ],
-        }],  # OS=="ios"
+        }],
       ],
     }
-  ],
+  ]
 }

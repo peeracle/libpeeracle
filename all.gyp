@@ -6,6 +6,13 @@
     {
       'target_name': 'build',
       'type': 'none',
+      'conditions': [
+        ['OS == "mac"', {
+          'dependencies': [
+            'objc/peeracle_objc.gyp:*',
+          ],
+        }],
+      ],
       'dependencies': [
         'peeracle/peeracle.gyp:*',
         'samples/samples.gyp:*',
