@@ -76,6 +76,12 @@ void Murmur3Hash::checksum(DataStreamInterface *dataStream, uint8_t *result) {
   this->final(result);
 }
 
+void Murmur3Hash::serialize(uint8_t *in, DataStreamInterface *out) {
+  out->write(reinterpret_cast<char*>(in), 16);
+}
+
+void Murmur3Hash::unserialize(DataStreamInterface *in, uint8_t *out) {
+  in->read(reinterpret_cast<char *>(out), 16);
 }
 
 }  // namespace peeracle

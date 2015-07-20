@@ -53,6 +53,9 @@ class Murmur3Hash
   void final(uint8_t *result);
   void checksum(DataStreamInterface *dataStream, uint8_t *result);
 
+  static void serialize(uint8_t *in, DataStreamInterface *out);
+  static void unserialize(DataStreamInterface *in, uint8_t *out);
+
  private:
   MemoryDataStream *_dataStream;
 };
