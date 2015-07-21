@@ -60,7 +60,7 @@ bool MetadataMediaSegment::unserialize(DataStreamInterface *dataStream,
     return false;
   }
 
-  for (int c = 0; c < chunkCount; ++c) {
+  for (uint32_t c = 0; c < chunkCount; ++c) {
     uint8_t *chunk = new uint8_t[16];
 
     Murmur3Hash::unserialize(dataStream, chunk);
