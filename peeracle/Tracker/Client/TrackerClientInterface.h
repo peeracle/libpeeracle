@@ -23,6 +23,7 @@
 #ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
 #define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
 
+#include <stdint.h>
 #include <string>
 
 namespace peeracle {
