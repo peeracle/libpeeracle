@@ -37,6 +37,37 @@ class WebMMediaTest : public testing::Test {
   virtual void SetUp() {
     _media = new WebMMedia();
     _media->Load(NULL);
+
+    _expectedTimecodes.push_back(0);
+    _expectedTimecodes.push_back(2000);
+    _expectedTimecodes.push_back(4000);
+    _expectedTimecodes.push_back(6000);
+    _expectedTimecodes.push_back(8000);
+    _expectedTimecodes.push_back(10000);
+    _expectedTimecodes.push_back(12000);
+    _expectedTimecodes.push_back(14000);
+    _expectedTimecodes.push_back(16000);
+    _expectedTimecodes.push_back(18000);
+    _expectedTimecodes.push_back(20000);
+    _expectedTimecodes.push_back(22000);
+    _expectedTimecodes.push_back(24000);
+    _expectedTimecodes.push_back(26000);
+    _expectedTimecodes.push_back(28000);
+    _expectedTimecodes.push_back(30000);
+    _expectedTimecodes.push_back(32000);
+    _expectedTimecodes.push_back(34000);
+    _expectedTimecodes.push_back(36000);
+    _expectedTimecodes.push_back(38000);
+    _expectedTimecodes.push_back(40000);
+    _expectedTimecodes.push_back(42000);
+    _expectedTimecodes.push_back(44000);
+    _expectedTimecodes.push_back(46000);
+    _expectedTimecodes.push_back(48000);
+    _expectedTimecodes.push_back(50000);
+    _expectedTimecodes.push_back(52000);
+    _expectedTimecodes.push_back(54000);
+    _expectedTimecodes.push_back(56000);
+    _expectedTimecodes.push_back(58000);
   }
 
   virtual void TearDown() {
@@ -428,13 +459,7 @@ class WebMMediaTest : public testing::Test {
 
   const unsigned int _expectedInitLength = 4557;
 
-  const std::vector<int> _expectedTimecodes = {0, 2000, 4000, 6000, 8000, 10000,
-                                               12000, 14000, 16000, 18000,
-                                               20000, 22000, 24000, 26000,
-                                               28000, 30000, 32000, 34000,
-                                               36000, 38000, 40000, 42000,
-                                               44000, 46000, 48000, 50000,
-                                               52000, 54000, 56000, 58000};
+  std::vector<uint32_t> _expectedTimecodes;
 
   WebMMedia *_media;
   DataStreamInterface *_webmToTest;
