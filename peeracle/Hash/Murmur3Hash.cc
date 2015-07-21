@@ -22,7 +22,7 @@
 
 #include <iostream>
 #include "peeracle/Hash/Murmur3Hash.h"
-#include "third_party/murmur3/murmur3.h"
+#include "third_party/murmur3/MurmurHash3.h"
 
 namespace peeracle {
 
