@@ -34,6 +34,7 @@
             'USE_LIBWEBSOCKETS',
           ],
           'dependencies': [
+            '<(webrtc_depot_dir)/third_party/boringssl/boringssl.gyp:boringssl',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
             '../Message/TrackerMessage.gyp:peeracle_tracker_message',
           ],
