@@ -43,6 +43,8 @@
       'sources': [
         'TrackerClient.cc',
         'TrackerClient.h',
+        'TrackerClientImpl.cc',
+        'TrackerClientImpl.h',
         'TrackerClientInterface.h',
         'TrackerClientObserver.h',
       ],

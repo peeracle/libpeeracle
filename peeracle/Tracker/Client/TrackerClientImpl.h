@@ -20,37 +20,54 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
+#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTIMPL_H_
+#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTIMPL_H_
 
-#include <stdint.h>
+#include <queue>
 #include <string>
 
-#include "peeracle/Tracker/Client/TrackerClientInterface.h"
+#include "third_party/libwebsockets/lib/libwebsockets.h"
+#include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 #include "peeracle/Tracker/Client/TrackerClientObserver.h"
 
 namespace peeracle {
 
-class TrackerClient
-  : public TrackerClientInterface {
+#define MAX_TRACKER_PAYLOAD 32768
+
+class TrackerClient::TrackerClientImpl {
  public:
-  explicit TrackerClient(const std::string &url,
-                         TrackerClientObserver *observer);
-  ~TrackerClient();
+  explicit TrackerClientImpl(const std::string &url,
+                             TrackerClientObserver *observer);
+  ~TrackerClientImpl();
 
   bool Init();
   bool Connect();
   bool Update();
-  const std::string &getUrl() const;
-  void announce(const std::string id, uint32_t got);
+  void Send(TrackerMessageInterface *message);
 
- private:
+ protected:
   const std::string _url;
+  TrackerClientObserver *_observer;
 
-  class TrackerClientImpl;
-  TrackerClientImpl *_impl;
+  struct libwebsocket_context *_context;
+  struct libwebsocket *_wsi;
+  struct libwebsocket_protocols *_protocols;
+
+  std::queue<TrackerMessageInterface *> _messages;
+
+  struct Userdata {
+    TrackerClientImpl *client;
+    unsigned char buffer[LWS_SEND_BUFFER_PRE_PADDING +
+                         MAX_TRACKER_PAYLOAD +
+                         LWS_SEND_BUFFER_POST_PADDING];
+  } _userData;
+
+  static int Callback(struct libwebsocket_context *context,
+                      struct libwebsocket *wsi,
+                      enum libwebsocket_callback_reasons reason,
+                      void *user, void *in, size_t len);
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
+#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTIMPL_H_
