@@ -49,6 +49,7 @@
         'Session.h',
         'SessionHandle.cc',
         'SessionHandle.h',
+        'SessionHandleInterface.h',
         'SessionHandleObserver.h',
         'SessionObserver.h',
         'SessionPeerObserver.cc',
