@@ -20,46 +20,10 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <jni.h>
-#include "peeracle/Session/Session.h"
-#include "peeracle/peeracle.h"
+package org.peeracle;
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
-jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) {
-    printf("appel a init\n");
-    peeracle::init();
-    return JNI_VERSION_1_1;
-}
-
-void JNIEXPORT JNI_OnUnload(JavaVM *vm, void *reserved) {
-    printf("appel cleanup\n");
-    peeracle::cleanup();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Init(JNIEnv *, jclass) {
-  printf("appel a init\n");
-  peeracle::init();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Update(JNIEnv *, jclass) {
-  printf("appel update\n");
-  peeracle::update();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Cleanup(JNIEnv *, jclass) {
-  printf("appel cleanup\n");
-  peeracle::cleanup();
-}
-
-#ifdef __cplusplus
-}
-#endif
-
-void test() {
-}
+public class Peeracle {
+    public static native void Init();
+    public static native void Update();
+    public static native void Cleanup();
+};
