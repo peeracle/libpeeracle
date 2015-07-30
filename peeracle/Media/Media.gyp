@@ -33,6 +33,8 @@
       ],
       'sources': [
         'MediaInterface.h',
+        'ISOBMFFMedia.cc',
+        'ISOBMFFMedia.h',
         'WebMMedia.cc',
         'WebMMedia.h',
       ]
@@ -49,6 +51,7 @@
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'sources': [
+            'ISOBMFFMedia_unittest.cc',
             'WebMMedia_unittest.cc',
           ],
         },
