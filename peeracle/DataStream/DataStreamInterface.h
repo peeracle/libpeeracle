@@ -70,13 +70,13 @@ class DataStreamInterface {
    * Get the stream's length in bytes.
    * \return The opened stream's length.
    */
-  virtual std::streamsize length() const = 0;
+  virtual std::streamsize length() = 0;
 
   /**
    * Get the stream's cursor's current position.
    * \return The stream's cursor's current position in bytes.
    */
-  virtual std::streamsize tell() const = 0;
+  virtual std::streamsize tell() = 0;
 
   /**
    * Move the cursor to an absolution \p position.

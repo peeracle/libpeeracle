@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2015 peeracle contributors
  *
- * Permission is hereby granted, free of int8_tge, to any person obtaining a copy
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -20,36 +20,21 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_DATASTREAM_MEMORYDATASTREAM_H_
-#define PEERACLE_DATASTREAM_MEMORYDATASTREAM_H_
+#ifndef LIBPEERACLE_DATASTREAM_JNI_H
+#define LIBPEERACLE_DATASTREAM_JNI_H
 
-#include <string>
-#include <vector>
+#include <jni.h>
 #include "peeracle/DataStream/DataStreamInterface.h"
 
-/**
- * \addtogroup peeracle
- * @{
- * @namespace peeracle
- * @brief peeracle namespace
- */
-namespace peeracle {
-
-/**
- * \addtogroup DataStream
- * DataStream module interface.
- */
-class MemoryDataStream : public DataStreamInterface {
+class DataStreamJava : public peeracle::DataStreamInterface {
  public:
-  explicit MemoryDataStream(const DataStreamInit &dsInit);
-  ~MemoryDataStream();
+  DataStreamJava(JNIEnv *jni, jobject dataStream);
 
   bool open();
   void close();
   std::streamsize length();
-  std::streamsize seek(std::streamsize position);
   std::streamsize tell();
-
+  std::streamsize seek(std::streamsize position);
   std::streamsize read(char *buffer, std::streamsize length);
   std::streamsize read(int8_t *buffer);
   std::streamsize read(uint8_t *buffer);
@@ -60,7 +45,6 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize read(float *buffer);
   std::streamsize read(double *buffer);
   std::streamsize read(std::string *buffer);
-
   std::streamsize peek(uint8_t *buffer, std::streamsize length);
   std::streamsize peek(int8_t *buffer);
   std::streamsize peek(uint8_t *buffer);
@@ -71,7 +55,6 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize peek(float *buffer);
   std::streamsize peek(double *buffer);
   std::streamsize peek(std::string *buffer);
-
   std::streamsize write(const char *buffer, std::streamsize length);
   std::streamsize write(int8_t value);
   std::streamsize write(uint8_t value);
@@ -84,27 +67,14 @@ class MemoryDataStream : public DataStreamInterface {
   std::streamsize write(const std::string &value);
 
  private:
-  template<typename T>
-  std::streamsize _read(T *buffer);
+  JNIEnv* jni() {
+    void* env = NULL;
+    jint status = g_jvm->GetEnv(&env, JNI_VERSION_1_6);
+    return reinterpret_cast<JNIEnv *>(env);
+  }
 
-  template<typename T>
-  std::streamsize _peek(T *buffer);
-
-  template<typename T>
-  std::streamsize _write(T buffer, std::streamsize length);
-
-  template<typename T>
-  std::streamsize _write(T value);
-
- protected:
-  bool _bigEndian;
-  std::vector<uint8_t> _buffer;
-  std::streampos _cursor;
+  const jobject j_dataStream_global_;
+  const jclass j_dataStream_class_;
 };
 
-/**
- * @}
- */
-}  // namespace peeracle
-
-#endif  // PEERACLE_DATASTREAM_MEMORYDATASTREAM_H_
+#endif //LIBPEERACLE_DATASTREAM_JNI_H

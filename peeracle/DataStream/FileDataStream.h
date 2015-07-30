@@ -46,9 +46,9 @@ class FileDataStream : public DataStreamInterface {
 
   bool open();
   void close();
-  std::streamsize length() const;
+  std::streamsize length();
   std::streamsize seek(std::streamsize offset);
-  std::streamsize tell() const;
+  std::streamsize tell();
 
   std::streamsize read(char *buffer, std::streamsize length);
   std::streamsize read(int8_t *buffer);

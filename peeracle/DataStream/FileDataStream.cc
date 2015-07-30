@@ -65,11 +65,11 @@ std::streamsize FileDataStream::seek(std::streamsize offset) {
   return this->file_.tellg();
 }
 
-std::streamsize FileDataStream::length() const {
+std::streamsize FileDataStream::length() {
   return this->fileSize_;
 }
 
-std::streamsize FileDataStream::tell() const {
+std::streamsize FileDataStream::tell() {
   //  std::streamsize cursor = this->file_.tellg();
   return 0;
 }

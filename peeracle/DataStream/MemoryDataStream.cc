@@ -41,7 +41,7 @@ bool MemoryDataStream::open() {
 void MemoryDataStream::close() {
 }
 
-std::streamsize MemoryDataStream::length() const {
+std::streamsize MemoryDataStream::length() {
   return this->_buffer.size();
 }
 
@@ -55,7 +55,7 @@ std::streamsize MemoryDataStream::seek(std::streamsize position) {
   return this->_cursor;
 }
 
-std::streamsize MemoryDataStream::tell() const {
+std::streamsize MemoryDataStream::tell() {
   return this->_cursor;
 }
 

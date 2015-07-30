@@ -34,6 +34,7 @@
           'type': 'shared_library',
           'dependencies': [
             '<(peeracle_root)/peeracle/peeracle.gyp:peeracle',
+            '<(webrtc_depot_dir)/third_party/icu/icu.gyp:icuuc',
           ],
           'cflags': [
             '-fPIC'
@@ -45,6 +46,7 @@
             '<(java_home)/include/win32',
           ],
           'sources': [
+            'jni/datastream_jni.cc',
             'jni/peeracle_jni.cc',
           ],
           'conditions': [
