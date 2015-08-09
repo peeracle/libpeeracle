@@ -44,7 +44,7 @@ void Murmur3Hash::update(DataStream *dataStream) {
 
   dataStream->read(buffer, dataStream->length());
   this->_dataStream->write(buffer, dataStream->length());
-  delete buffer;
+  delete[] buffer;
 }
 
 void Murmur3Hash::update(const uint8_t *buffer, size_t length) {
@@ -68,7 +68,7 @@ void Murmur3Hash::final(uint8_t *result) {
     result[i + 3] = output[i + 0];
   }
 
-  delete buffer;
+  delete[] buffer;
 }
 
 void Murmur3Hash::checksum(DataStream *dataStream, uint8_t *result) {
