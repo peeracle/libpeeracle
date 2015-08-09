@@ -27,14 +27,10 @@
     {
       'target_name': 'peeracle_tracker',
       'type': 'none',
-      'conditions': [
-        ['OS == "linux" or OS == "win" or OS == "mac"', {
-          'dependencies': [
-            'Client/TrackerClient.gyp:*',
-            'Message/TrackerMessage.gyp:*',
-            'Server/TrackerServer.gyp:*'
-          ],
-        }]
+      'dependencies': [
+        'Client/TrackerClient.gyp:*',
+        'Message/TrackerMessage.gyp:*',
+        'Server/TrackerServer.gyp:*'
       ],
     },
   ],
