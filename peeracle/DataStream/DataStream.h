@@ -256,15 +256,7 @@ class DataStream {
 
   template<typename T>
   std::streamsize _read(T *buffer, std::streamsize length = sizeof(T)) {
-    const std::streamsize kSize = length;
-    char value[kSize];
-
-    if (this->vread(value, length) < length) {
-      return -1;
-    }
-
-    *buffer = *(reinterpret_cast<T*>(value));
-    return length;
+    return this->vread(reinterpret_cast<char *>(buffer), length);
   }
 
   /**
@@ -279,15 +271,7 @@ class DataStream {
 
   template<typename T>
   std::streamsize _peek(T *buffer, std::streamsize length = sizeof(T)) {
-    const std::streamsize kSize = length;
-    char value[kSize];
-
-    if (this->vpeek(value, length) < length) {
-      return -1;
-    }
-
-    *buffer = *(reinterpret_cast<T*>(value));
-    return length;
+    return this->vpeek(reinterpret_cast<char *>(buffer), length);
   }
 
   /**
