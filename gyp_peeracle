@@ -20,6 +20,14 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 checkout_root = os.path.abspath(os.path.join(script_dir))
 webrtc_root = 'third_party/webrtc'
 
+sys.path.insert(0, os.path.join(checkout_root, webrtc_root))
+
+import setup_links
+argv = sys.argv[:]
+sys.argv = [ argv[0], '-f' ]
+setup_links.main()
+sys.argv = argv
+
 sys.path.insert(0, os.path.join(checkout_root, webrtc_root, 'build'))
 import gyp_chromium
 import gyp_helper
