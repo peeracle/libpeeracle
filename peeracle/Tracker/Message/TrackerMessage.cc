@@ -130,7 +130,7 @@ void TrackerMessage::unset(const std::string &key) {
   _keys.erase(key);
 }
 
-bool TrackerMessage::_serializeWelcome(DataStreamInterface *dataStream) {
+bool TrackerMessage::_serializeWelcome(DataStream *dataStream) {
   std::string id;
 
   get("id", &id, "");
@@ -142,7 +142,7 @@ bool TrackerMessage::_serializeWelcome(DataStreamInterface *dataStream) {
   return true;
 }
 
-bool TrackerMessage::_serializeAnnounce(DataStreamInterface *dataStream) {
+bool TrackerMessage::_serializeAnnounce(DataStream *dataStream) {
   std::string hash;
   uint32_t got;
 
@@ -157,11 +157,11 @@ bool TrackerMessage::_serializeAnnounce(DataStreamInterface *dataStream) {
   return true;
 }
 
-bool TrackerMessage::_serializeEnter(DataStreamInterface *dataStream) {
+bool TrackerMessage::_serializeEnter(DataStream *dataStream) {
   return false;
 }
 
-bool TrackerMessage::_serializePoke(DataStreamInterface *dataStream) {
+bool TrackerMessage::_serializePoke(DataStream *dataStream) {
   std::string hash;
   std::string peer;
   uint32_t got;
@@ -184,7 +184,7 @@ bool TrackerMessage::_serializePoke(DataStreamInterface *dataStream) {
   return true;
 }
 
-bool TrackerMessage::serialize(DataStreamInterface *dataStream) {
+bool TrackerMessage::serialize(DataStream *dataStream) {
   dataStream->write(_type);
 
   switch (_type) {
@@ -206,7 +206,7 @@ bool TrackerMessage::serialize(DataStreamInterface *dataStream) {
   return false;
 }
 
-bool TrackerMessage::_unserializeWelcome(DataStreamInterface *dataStream) {
+bool TrackerMessage::_unserializeWelcome(DataStream *dataStream) {
   std::string id;
 
   dataStream->read(&id);
@@ -214,7 +214,7 @@ bool TrackerMessage::_unserializeWelcome(DataStreamInterface *dataStream) {
   return true;
 }
 
-bool TrackerMessage::_unserializeAnnounce(DataStreamInterface *dataStream) {
+bool TrackerMessage::_unserializeAnnounce(DataStream *dataStream) {
   std::string hash;
   uint32_t got;
 
@@ -226,11 +226,11 @@ bool TrackerMessage::_unserializeAnnounce(DataStreamInterface *dataStream) {
   return true;
 }
 
-bool TrackerMessage::_unserializeEnter(DataStreamInterface *dataStream) {
+bool TrackerMessage::_unserializeEnter(DataStream *dataStream) {
   return false;
 }
 
-bool TrackerMessage::_unserializePoke(DataStreamInterface *dataStream) {
+bool TrackerMessage::_unserializePoke(DataStream *dataStream) {
   std::string hash;
   std::string peer;
   uint32_t got;
@@ -245,7 +245,7 @@ bool TrackerMessage::_unserializePoke(DataStreamInterface *dataStream) {
   return true;
 }
 
-bool TrackerMessage::unserialize(DataStreamInterface *dataStream) {
+bool TrackerMessage::unserialize(DataStream *dataStream) {
   dataStream->read(&_type);
 
   switch (_type) {

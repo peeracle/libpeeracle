@@ -462,12 +462,12 @@ class WebMMediaTest : public testing::Test {
   std::vector<uint32_t> _expectedTimecodes;
 
   WebMMedia *_media;
-  DataStreamInterface *_webmToTest;
+  DataStream *_webmToTest;
 };
 
 TEST_F(WebMMediaTest, getInitSegment) {
   DataStreamInit actualDSInit;
-  DataStreamInterface *actualDS = new MemoryDataStream(actualDSInit);
+  DataStream *actualDS = new MemoryDataStream(actualDSInit);
 
   uint8_t *actualBytes;
 

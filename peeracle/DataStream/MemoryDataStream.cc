@@ -27,18 +27,11 @@
 namespace peeracle {
 
 MemoryDataStream::MemoryDataStream(const DataStreamInit &dsInit) :
-  _bigEndian(dsInit.bigEndian) {
+  _bigEndian(dsInit.bigEndian), _cursor(0) {
 }
 
 MemoryDataStream::~MemoryDataStream() {
   this->_buffer.clear();
-}
-
-bool MemoryDataStream::open() {
-  return true;
-}
-
-void MemoryDataStream::close() {
 }
 
 std::streamsize MemoryDataStream::length() const {
@@ -59,137 +52,35 @@ std::streamsize MemoryDataStream::tell() const {
   return this->_cursor;
 }
 
-std::streamsize MemoryDataStream::read(char *buffer,
+std::streamsize MemoryDataStream::vread(char *buffer,
                                        std::streamsize length) {
-  std::streamsize result = 0;
-
-  for (int i = 0; i < length; i++) {
-    result += this->_read(buffer++);
-  }
-
-  return result;
-}
-
-std::streamsize MemoryDataStream::read(int8_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(uint8_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(int16_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(uint16_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(int32_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(uint32_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(float *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(double *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize MemoryDataStream::read(std::string *buffer) {
-  std::streamsize i;
-  std::string result;
-
-  i = this->peek(&result);
-  if (i < 1) {
-    return i;
-  }
-
-  *buffer = result;
-  this->_cursor += i;
-  return i;
-}
-
-template <typename T>
-std::streamsize MemoryDataStream::_read(T *buffer) {
-  std::streamsize result = this->_peek(buffer);
+  std::streamsize result = this->vpeek(buffer, length);
 
   if (result > 0) {
     this->_cursor += result;
   }
+
   return result;
 }
 
-std::streamsize MemoryDataStream::peek(uint8_t *buffer,
+std::streamsize MemoryDataStream::vpeek(char *buffer,
                                        std::streamsize length) {
+  char *src;
   std::streamsize result = 0;
+  size_t size = static_cast<size_t>(length);
 
-  for (int i = 0; i < length; i++) {
-    result += this->_peek(buffer++);
-  }
-  return result;
-}
-
-std::streamsize MemoryDataStream::peek(int8_t *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(uint8_t *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(int16_t *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(uint16_t *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(int32_t *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(uint32_t *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(float *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(double *buffer) {
-  return this->_peek(buffer);
-}
-
-std::streamsize MemoryDataStream::peek(std::string *value) {
-  int8_t c;
-  std::streamsize i;
-  int size;
-  std::stringstream strm;
-
-  for (i = 0; i < 32768; ++i) {
-    if (this->_peek(&c) < 1 || c == '\0') {
-      break;
-    } else {
-      this->_cursor += 1;
-    }
-    size = i;
-    strm << c;
+  if (static_cast<std::streamsize>(this->_cursor) +
+        length > this->_buffer.size()) {
+    return -1;
   }
 
-  *value = strm.str();
-  this->_cursor -= size;
-  return i;
+  src = reinterpret_cast<char*>(&this->_buffer[this->_cursor]);
+  memcpy(buffer, src, size);
+
+  return length;
 }
 
-template <typename T>
+/*template <typename T>
 std::streamsize MemoryDataStream::_peek(T *buffer) {
   T value;
   T finalValue;
@@ -214,51 +105,9 @@ std::streamsize MemoryDataStream::_peek(T *buffer) {
 
   *buffer = value;
   return sizeof(T);
-}
+}*/
 
-std::streamsize MemoryDataStream::write(const char *buffer,
-                                        std::streamsize length) {
-  return this->_write(buffer, length);
-}
-
-std::streamsize MemoryDataStream::write(int8_t value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(uint8_t value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(int16_t value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(uint16_t value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(int32_t value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(uint32_t value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(float value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(double value) {
-  return this->_write(value);
-}
-
-std::streamsize MemoryDataStream::write(const std::string &value) {
-  return this->_write(value.c_str(), strlen(value.c_str()) + 1);
-}
-
-template <typename T>
-std::streamsize MemoryDataStream::_write(T buffer,
+std::streamsize MemoryDataStream::vwrite(const char *buffer,
                                          std::streamsize length) {
   size_t pos = static_cast<size_t>(this->_cursor);
   size_t size = static_cast<size_t>(length);
@@ -267,12 +116,12 @@ std::streamsize MemoryDataStream::_write(T buffer,
     this->_buffer.resize(pos + size);
   }
 
-  memcpy(&this->_buffer[pos], static_cast<T>(buffer), size);
+  memcpy(&this->_buffer[pos], buffer, size);
   this->_cursor += size;
   return size;
 }
 
-template <typename T>
+/*template <typename T>
 std::streamsize MemoryDataStream::_write(T value) {
   T finalValue = value;
   uint8_t *originalData = reinterpret_cast<uint8_t*>(&value);
@@ -286,6 +135,6 @@ std::streamsize MemoryDataStream::_write(T value) {
   }
 
   return this->_write(originalData, sizeof(T));
-}
+}*/
 
 }  // namespace peeracle

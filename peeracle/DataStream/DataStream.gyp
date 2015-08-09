@@ -39,9 +39,9 @@
       #   }]
       # ],
       'sources': [
-        'DataStreamInterface.h',
-        'FileDataStream.cc',
-        'FileDataStream.h',
+        'DataStream.h',
+        #'FileDataStream.cc',
+        #'FileDataStream.h',
         'MemoryDataStream.cc',
         'MemoryDataStream.h',
       ]

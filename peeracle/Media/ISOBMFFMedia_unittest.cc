@@ -130,12 +130,12 @@ class ISOBMFFMediaTest : public testing::Test {
   std::vector<uint32_t> _expectedTimecodes;
 
   ISOBMFFMedia *_media;
-  DataStreamInterface *_ISOBMFFToTest;
+  DataStream *_ISOBMFFToTest;
 };
 
 TEST_F(ISOBMFFMediaTest, getInitSegment) {
   DataStreamInit actualDSInit;
-  DataStreamInterface *actualDS = new MemoryDataStream(actualDSInit);
+  DataStream *actualDS = new MemoryDataStream(actualDSInit);
 
   uint8_t *actualBytes;
 

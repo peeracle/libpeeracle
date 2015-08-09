@@ -24,7 +24,7 @@
 #define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
 
 #include <string>
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 
 /**
  * \addtogroup peeracle
@@ -132,8 +132,8 @@ class TrackerMessageInterface {
    */
   virtual void unset(const std::string& key) = 0;
 
-  virtual bool serialize(DataStreamInterface *dataStream) = 0;
-  virtual bool unserialize(DataStreamInterface *dataStream) = 0;
+  virtual bool serialize(DataStream *dataStream) = 0;
+  virtual bool unserialize(DataStream *dataStream) = 0;
 
   virtual ~TrackerMessageInterface() {}
 };

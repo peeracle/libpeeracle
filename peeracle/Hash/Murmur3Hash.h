@@ -48,13 +48,13 @@ class Murmur3Hash
    * Initialize the Murmur3 hash algorithm module.
    */
   void init();
-  void update(DataStreamInterface *dataStream);
+  void update(DataStream *dataStream);
   void update(const uint8_t *buffer, size_t length);
   void final(uint8_t *result);
-  void checksum(DataStreamInterface *dataStream, uint8_t *result);
+  void checksum(DataStream *dataStream, uint8_t *result);
 
-  static void serialize(uint8_t *in, DataStreamInterface *out);
-  static void unserialize(DataStreamInterface *in, uint8_t *out);
+  static void serialize(uint8_t *in, DataStream *out);
+  static void unserialize(DataStream *in, uint8_t *out);
 
  private:
   MemoryDataStream *_dataStream;

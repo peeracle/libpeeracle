@@ -26,7 +26,7 @@
 #include <stdint.h>
 #include <vector>
 
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 
 /**
  * \addtogroup peeracle
@@ -42,13 +42,13 @@ namespace peeracle {
  */
 class MediaInterface {
  public:
-  virtual bool Load(DataStreamInterface *dataStream) = 0;
+  virtual bool Load(DataStream *dataStream) = 0;
 
   /**
    * Retrieve the initialization segment.
    * @param out
    */
-  virtual void getInitSegment(DataStreamInterface *out) = 0;
+  virtual void getInitSegment(DataStream *out) = 0;
 
   /**
    * Retrieve a media segment by the specified \p timecode.
@@ -56,7 +56,7 @@ class MediaInterface {
    * @param out
    */
   virtual void getMediaSegment(std::streampos timecode,
-                               DataStreamInterface *out) = 0;
+                               DataStream *out) = 0;
 
   /**
    * Get a list of timecodes.

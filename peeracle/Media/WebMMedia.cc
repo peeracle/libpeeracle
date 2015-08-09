@@ -30,15 +30,15 @@ WebMMedia::WebMMedia() {
 WebMMedia::~WebMMedia() {
 }
 
-bool WebMMedia::Load(DataStreamInterface *dataStream) {
+bool WebMMedia::Load(DataStream *dataStream) {
   return true;
 }
 
-void WebMMedia::getInitSegment(DataStreamInterface *out) {
+void WebMMedia::getInitSegment(DataStream *out) {
 }
 
 void WebMMedia::getMediaSegment(std::streampos timecode,
-                                DataStreamInterface *out) {
+                                DataStream *out) {
 }
 
 const std::vector<uint32_t> &WebMMedia::getTimecodes() const {

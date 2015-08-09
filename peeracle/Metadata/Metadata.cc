@@ -32,7 +32,7 @@ namespace peeracle {
 Metadata::Metadata() {
 }
 
-bool Metadata::serialize(DataStreamInterface *dataStream) {
+bool Metadata::serialize(DataStream *dataStream) {
   uint32_t trackersSize;
 
   if (_trackers.size() > 0) {
@@ -56,7 +56,7 @@ bool Metadata::serialize(DataStreamInterface *dataStream) {
   return false;
 }
 
-bool Metadata::unserialize(DataStreamInterface *dataStream) {
+bool Metadata::unserialize(DataStream *dataStream) {
   HashInterface *hash;
   uint8_t id[16];
   uint32_t trackerCount;

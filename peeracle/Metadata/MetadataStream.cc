@@ -74,7 +74,7 @@ std::vector<MetadataMediaSegmentInterface *>
   return _mediaSegments;
 }
 
-bool MetadataStream::unserialize(DataStreamInterface *dataStream,
+bool MetadataStream::unserialize(DataStream *dataStream,
                                  const std::string &hashName,
                                  HashInterface *hash) {
   uint32_t mediaSegmentCount;

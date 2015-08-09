@@ -39,7 +39,7 @@ Murmur3Hash::~Murmur3Hash() {
 void Murmur3Hash::init() {
 }
 
-void Murmur3Hash::update(DataStreamInterface *dataStream) {
+void Murmur3Hash::update(DataStream *dataStream) {
   char *buffer = new char[dataStream->length()];
 
   dataStream->read(buffer, dataStream->length());
@@ -71,16 +71,16 @@ void Murmur3Hash::final(uint8_t *result) {
   delete buffer;
 }
 
-void Murmur3Hash::checksum(DataStreamInterface *dataStream, uint8_t *result) {
+void Murmur3Hash::checksum(DataStream *dataStream, uint8_t *result) {
   this->update(dataStream);
   this->final(result);
 }
 
-void Murmur3Hash::serialize(uint8_t *in, DataStreamInterface *out) {
+void Murmur3Hash::serialize(uint8_t *in, DataStream *out) {
   out->write(reinterpret_cast<char*>(in), 16);
 }
 
-void Murmur3Hash::unserialize(DataStreamInterface *in, uint8_t *out) {
+void Murmur3Hash::unserialize(DataStream *in, uint8_t *out) {
   in->read(reinterpret_cast<char *>(out), 16);
 }
 
