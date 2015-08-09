@@ -30,7 +30,7 @@
       'type': 'static_library',
       'standalone_static_library': 1,
       'dependencies': [
-        '<(webrtc_depot_dir)/talk/libjingle.gyp:libjingle_peerconnection',
+        '<(webrtc_depth)/talk/libjingle.gyp:libjingle_peerconnection',
         '../Tracker/Client/TrackerClient.gyp:peeracle_tracker_client',
       ],
       'defines': [

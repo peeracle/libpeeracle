@@ -36,7 +36,7 @@
     ],
     'include_dirs': [
       '<(DEPTH)',
-      '<(webrtc_depot_dir)',
+      '<(webrtc_depth)',
     ],
     'conditions': [
       ['use_cpplint == 1', {

@@ -32,7 +32,7 @@
         'SSL_USE_OPENSSL',
       ],
       'dependencies': [
-        '<(webrtc_depot_dir)/third_party/boringssl/boringssl.gyp:boringssl'
+        '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl'
       ],
       'conditions': [
         ['OS == "win"', {
