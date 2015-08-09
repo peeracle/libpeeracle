@@ -23,30 +23,39 @@
   'includes': [
     '../../../build/common.gypi'
   ],
-  'targets': [
-    {
-      'target_name': 'peeracle_tracker_server',
-      'type': 'static_library',
-      'standalone_static_library': 1,
-      'conditions': [
-        ['use_libwebsockets == 1', {
-          'defines': [
-            'USE_LIBWEBSOCKETS',
-          ],
-          'dependencies': [
-            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
-          ],
-        }],
-      ],
-      'sources': [
-        'TrackerServer.cc',
-        'TrackerServer.h',
-        'TrackerServerInterface.h',
-      ]
-    },
-  ],
   'conditions': [
-    ['build_tests == 1', {
+    ['OS!="android" and OS!="ios"', {
+      'targets': [
+        {
+          'target_name': 'peeracle_tracker_server',
+          'type': 'static_library',
+          'standalone_static_library': 1,
+          'conditions': [
+            ['use_libwebsockets == 1', {
+              'defines': [
+                'USE_LIBWEBSOCKETS',
+              ],
+              'dependencies': [
+                '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+              ],
+            }],
+          ],
+          'sources': [
+            'TrackerServer.cc',
+            'TrackerServer.h',
+            'TrackerServerInterface.h',
+          ]
+        },
+      ]
+    }, {
+      'targets': [
+        {
+          'target_name': 'peeracle_tracker_server',
+          'type': 'none',
+        },
+      ]
+    }],
+    ['build_tests == 1 and OS!="android" and OS!="ios"', {
       'targets': [
         {
           'target_name': 'peeracle_tracker_server_unittest',

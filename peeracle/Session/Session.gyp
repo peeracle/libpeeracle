@@ -33,16 +33,6 @@
         '../Peer/Peer.gyp:peeracle_peer',
         '../Tracker/Client/TrackerClient.gyp:peeracle_tracker_client'
       ],
-      'conditions': [
-        ['use_libwebsockets == 1', {
-          'defines': [
-            'USE_LIBWEBSOCKETS',
-          ],
-          'dependencies': [
-            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
-          ],
-        }],
-      ],
       'sources': [
         'SessionInterface.h',
         'Session.cc',

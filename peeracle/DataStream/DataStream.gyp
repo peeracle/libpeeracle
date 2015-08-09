@@ -52,7 +52,7 @@
       'targets': [
         {
           'target_name': 'peeracle_datastream_unittest',
-          'type': '<(gtest_target_type)',
+          'type': 'executable',
           'dependencies': [
             'peeracle_datastream',
             '../Utils/Utils.gyp:peeracle_randomgenerator',

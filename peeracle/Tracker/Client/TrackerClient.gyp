@@ -24,7 +24,7 @@
     '../../../build/common.gypi'
   ],
   'conditions': [
-    ['OS != "android" and OS != "ios"', {
+    ['OS!="ios" and OS!="android"', {
       'targets': [
         {
           'target_name': 'peeracle_tracker_client',
@@ -57,10 +57,10 @@
         {
           'target_name': 'peeracle_tracker_client',
           'type': 'none'
-	},
+	      },
       ],
     }],
-    ['build_tests == 1', {
+    ['build_tests == 1 and OS!="android" and OS!="ios"', {
       'targets': [
         {
           'target_name': 'peeracle_tracker_client_unittest',
