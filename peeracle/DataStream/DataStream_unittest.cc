@@ -21,15 +21,16 @@
  */
 
 #include <fstream>
-#include "third_party/googletest/gtest/include/gtest/gtest.h"
+#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
 #include "peeracle/DataStream/FileDataStream.h"
 #include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Utils/RandomGenerator.h"
 
 namespace peeracle {
 
-typedef ::testing::Types<int8_t, uint8_t, int16_t, uint16_t, int32_t,
-  uint32_t, float, double> DataStreamTypes;
+/*typedef ::testing::Types<int8_t, uint8_t, int16_t, uint16_t, int32_t,
+  uint32_t, float, double> DataStreamTypes;*/
+typedef ::testing::Types<int8_t> DataStreamTypes;
 TYPED_TEST_CASE(DataStreamTest, DataStreamTypes);
 
 template <typename T>
@@ -79,7 +80,7 @@ class DataStreamTest
     oldpos = this->_ds->tell();
     len = this->_ds->read(value);
     newpos = this->_ds->tell();
-    EXPECT_EQ(-1, len);
+    ASSERT_EQ(-1, len);
     EXPECT_EQ(original, *value);
     EXPECT_EQ(oldpos, newpos);
   }

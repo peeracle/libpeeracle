@@ -39,7 +39,7 @@ class MetadataMediaSegment
   uint32_t getLength();
   const std::vector<uint8_t *> &getChunks();
 
-  bool unserialize(DataStreamInterface *dataStream,
+  bool unserialize(DataStream *dataStream,
                    const std::string &hashName, HashInterface *hash);
 
  private:

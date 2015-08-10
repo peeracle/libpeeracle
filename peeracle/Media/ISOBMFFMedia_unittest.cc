@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-#include "third_party/googletest/gtest/include/gtest/gtest.h"
+#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
 #include "peeracle/DataStream/FileDataStream.h"
 #include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Media/ISOBMFFMedia.h"
@@ -130,12 +130,12 @@ class ISOBMFFMediaTest : public testing::Test {
   std::vector<uint32_t> _expectedTimecodes;
 
   ISOBMFFMedia *_media;
-  DataStreamInterface *_ISOBMFFToTest;
+  DataStream *_ISOBMFFToTest;
 };
 
 TEST_F(ISOBMFFMediaTest, getInitSegment) {
   DataStreamInit actualDSInit;
-  DataStreamInterface *actualDS = new MemoryDataStream(actualDSInit);
+  DataStream *actualDS = new MemoryDataStream(actualDSInit);
 
   uint8_t *actualBytes;
 

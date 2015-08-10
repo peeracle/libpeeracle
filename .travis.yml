@@ -1,15 +1,27 @@
 language: cpp
 
-before_install:
-- sudo apt-get -qq update
-- sudo apt-get -qq install -y build-essential libglib2.0-dev libgtk2.0-dev libxtst-dev
-  libxss-dev libpci-dev libdbus-1-dev libgconf2-dev libgnome-keyring-dev 
-  libnss3-dev libasound2-dev libpulse-dev libudev-dev
+addons:
+  apt:
+    packages:
+    - build-essential
+    - libglib2.0-dev
+    - libgtk2.0-dev
+    - libxtst-dev
+    - libxss-dev
+    - libpci-dev
+    - libdbus-1-dev
+    - libgconf2-dev
+    - libgnome-keyring-dev 
+    - libnss3-dev
+    - libasound2-dev
+    - libpulse-dev
+    - libudev-dev
 
 install:
 - unset CC
 - unset CXX
 - export PATH=$PATH:`pwd`/third_party/depot_tools
+- ./third_party/webrtc/setup_links.py -f
 - ./gyp_peeracle
 
 script:

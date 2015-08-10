@@ -28,7 +28,7 @@
 #include <string>
 #include <vector>
 
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 #include "peeracle/Hash/HashInterface.h"
 
 namespace peeracle {
@@ -39,7 +39,7 @@ class MetadataMediaSegmentInterface {
   virtual uint32_t getLength() = 0;
   virtual const std::vector<uint8_t *> &getChunks() = 0;
 
-  virtual bool unserialize(DataStreamInterface *dataStream,
+  virtual bool unserialize(DataStream *dataStream,
                            const std::string &hashName,
                            HashInterface *hash) = 0;
 

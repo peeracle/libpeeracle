@@ -27,7 +27,7 @@
 #include <ios>
 #include <string>
 #include <vector>
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 #include "peeracle/Metadata/MetadataStreamInterface.h"
 
 namespace peeracle {
@@ -48,8 +48,8 @@ class MetadataInterface {
   virtual void setDuration(double duration) = 0;
   virtual void addTracker(const std::string &tracker) = 0;
 
-  virtual bool serialize(DataStreamInterface *dataStream) = 0;
-  virtual bool unserialize(DataStreamInterface *dataStream) = 0;
+  virtual bool serialize(DataStream *dataStream) = 0;
+  virtual bool unserialize(DataStream *dataStream) = 0;
 
   virtual ~MetadataInterface() { }
 };

@@ -39,18 +39,18 @@
             'GTEST_RELATIVE_PATH',
           ],
           'dependencies': [
-            '<(DEPTH)/third_party/googletest/gtest.gyp:gtest',
+            '<(webrtc_depth)/testing/gtest.gyp:gtest',
           ],
           'direct_dependent_settings': {
             'defines': [
               'GTEST_RELATIVE_PATH',
             ],
             'include_dirs': [
-              '<(DEPTH)/third_party/googletest/gtest/include',
+              '<(webrtc_depth)/testing/gtest/include',
             ],
           },
           'export_dependent_settings': [
-            '<(DEPTH)/third_party/googletest/gtest.gyp:gtest',
+            '<(webrtc_depth)/testing/gtest.gyp:gtest',
           ],
         },
       ],

@@ -47,8 +47,8 @@ class Metadata : public MetadataInterface {
   void setDuration(double duration);
   void addTracker(const std::string &tracker);
 
-  bool serialize(DataStreamInterface *dataStream);
-  bool unserialize(DataStreamInterface *dataStream);
+  bool serialize(DataStream *dataStream);
+  bool unserialize(DataStream *dataStream);
 
  private:
   std::string _id;

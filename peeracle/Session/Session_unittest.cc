@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-#include "third_party/googletest/gtest/include/gtest/gtest.h"
+#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
 #include "Session.h"
 
 namespace peeracle {

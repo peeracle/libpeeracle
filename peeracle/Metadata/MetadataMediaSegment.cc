@@ -46,7 +46,7 @@ const std::vector<uint8_t *> &MetadataMediaSegment::getChunks() {
   return _chunks;
 }
 
-bool MetadataMediaSegment::unserialize(DataStreamInterface *dataStream,
+bool MetadataMediaSegment::unserialize(DataStream *dataStream,
                                        const std::string &hashAlgorithm,
                                        HashInterface *hash) {
   uint32_t chunkCount;

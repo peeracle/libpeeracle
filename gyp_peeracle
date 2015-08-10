@@ -20,6 +20,8 @@ script_dir = os.path.dirname(os.path.realpath(__file__))
 checkout_root = os.path.abspath(os.path.join(script_dir))
 webrtc_root = 'third_party/webrtc'
 
+sys.path.insert(0, os.path.join(checkout_root, webrtc_root))
+
 sys.path.insert(0, os.path.join(checkout_root, webrtc_root, 'build'))
 import gyp_chromium
 import gyp_helper
@@ -83,8 +85,9 @@ if __name__ == '__main__':
   gyp_defines += 'use_cpplint=%d ' % (0 if options.disable_cpplint else 1)
   gyp_defines += 'use_curl=%d ' % (0 if options.disable_curl else 1)
   gyp_defines += 'use_libwebsockets=%d' % (0 if options.disable_libwebsockets else 1)
+
   if 'GYP_DEFINES' in os.environ:
-    gyp_defines += os.environ['GYP_DEFINES']
+    gyp_defines += ' ' + os.environ['GYP_DEFINES']
 
   os.environ['GYP_DEFINES'] = gyp_defines
 

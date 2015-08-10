@@ -23,35 +23,44 @@
   'includes': [
     '../../../build/common.gypi'
   ],
-  'targets': [
-    {
-      'target_name': 'peeracle_tracker_client',
-      'type': 'static_library',
-      'standalone_static_library': 1,
-      'conditions': [
-        ['use_libwebsockets == 1', {
-          'defines': [
-            'USE_LIBWEBSOCKETS',
-          ],
-          'dependencies': [
-            '<(webrtc_depot_dir)/third_party/boringssl/boringssl.gyp:boringssl',
-            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
-            '../Message/TrackerMessage.gyp:peeracle_tracker_message',
-          ],
-        }],
-      ],
-      'sources': [
-        'TrackerClient.cc',
-        'TrackerClient.h',
-        'TrackerClientImpl.cc',
-        'TrackerClientImpl.h',
-        'TrackerClientInterface.h',
-        'TrackerClientObserver.h',
-      ],
-    },
-  ],
   'conditions': [
-    ['build_tests == 1', {
+    ['OS!="ios" and OS!="android"', {
+      'targets': [
+        {
+          'target_name': 'peeracle_tracker_client',
+          'type': 'static_library',
+          'standalone_static_library': 1,
+          'conditions': [
+            ['use_libwebsockets == 1', {
+              'defines': [
+                'USE_LIBWEBSOCKETS',
+              ],
+              'dependencies': [
+                '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
+                '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+                '../Message/TrackerMessage.gyp:peeracle_tracker_message',
+              ],
+            }],
+          ],
+          'sources': [
+            'TrackerClient.cc',
+            'TrackerClient.h',
+            'TrackerClientImpl.cc',
+            'TrackerClientImpl.h',
+            'TrackerClientInterface.h',
+            'TrackerClientObserver.h',
+          ],
+        },
+      ],
+    }, {
+      'targets': [
+        {
+          'target_name': 'peeracle_tracker_client',
+          'type': 'none'
+	      },
+      ],
+    }],
+    ['build_tests == 1 and OS!="android" and OS!="ios"', {
       'targets': [
         {
           'target_name': 'peeracle_tracker_client_unittest',
@@ -59,7 +68,7 @@
           'dependencies': [
             'peeracle_tracker_client',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
-            '<(webrtc_depot_dir)/third_party/boringssl/boringssl.gyp:boringssl',
+            '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
           'sources': [

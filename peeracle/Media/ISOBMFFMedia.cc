@@ -30,15 +30,15 @@ ISOBMFFMedia::ISOBMFFMedia() {
 ISOBMFFMedia::~ISOBMFFMedia() {
 }
 
-bool ISOBMFFMedia::Load(DataStreamInterface *dataStream) {
+bool ISOBMFFMedia::Load(DataStream *dataStream) {
   return true;
 }
 
-void ISOBMFFMedia::getInitSegment(DataStreamInterface *out) {
+void ISOBMFFMedia::getInitSegment(DataStream *out) {
 }
 
 void ISOBMFFMedia::getMediaSegment(std::streampos timecode,
-                                DataStreamInterface *out) {
+                                DataStream *out) {
 }
 
 const std::vector<uint32_t> &ISOBMFFMedia::getTimecodes() const {

@@ -24,11 +24,11 @@
     'variables': {
       'webrtc_root': '<(DEPTH)/third_party/webrtc/webrtc',
       'peeracle_root': '<(DEPTH)',
-      'webrtc_depot_dir': '<(DEPTH)/third_party/webrtc',
+      'webrtc_depth': '<(DEPTH)/third_party/webrtc',
     },
     'webrtc_root': '<(webrtc_root)',
     'peeracle_root': '<(peeracle_root)',
-    'webrtc_depot_dir': '<(webrtc_depot_dir)',
+    'webrtc_depth': '<(webrtc_depth)',
     'build_with_chromium': 0,
     'clang_use_chrome_plugins': 0,
     'conditions': [

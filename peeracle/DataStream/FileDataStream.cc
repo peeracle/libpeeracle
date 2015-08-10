@@ -91,42 +91,6 @@ std::streamsize FileDataStream::read(char *buffer,
   return s;
 }
 
-std::streamsize FileDataStream::read(int8_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(uint8_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(int16_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(uint16_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(int32_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(uint32_t *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(float *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(double *buffer) {
-  return this->_read(buffer);
-}
-
-std::streamsize FileDataStream::read(std::string *buffer) {
-  return 0;
-}
-
 template<typename T>
 std::streamsize FileDataStream::_read(T *buffer) {
   if (!this->file_.is_open()) {

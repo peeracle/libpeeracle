@@ -25,7 +25,7 @@
 
 #include <string>
 #include <vector>
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 
 /**
  * \addtogroup peeracle
@@ -39,67 +39,24 @@ namespace peeracle {
  * \addtogroup DataStream
  * DataStream module interface.
  */
-class MemoryDataStream : public DataStreamInterface {
+class MemoryDataStream : public DataStream {
  public:
   explicit MemoryDataStream(const DataStreamInit &dsInit);
   ~MemoryDataStream();
 
-  bool open();
-  void close();
-  std::streamsize length();
+  std::streamsize length() const;
   std::streamsize seek(std::streamsize position);
-  std::streamsize tell();
-
-  std::streamsize read(char *buffer, std::streamsize length);
-  std::streamsize read(int8_t *buffer);
-  std::streamsize read(uint8_t *buffer);
-  std::streamsize read(int16_t *buffer);
-  std::streamsize read(uint16_t *buffer);
-  std::streamsize read(int32_t *buffer);
-  std::streamsize read(uint32_t *buffer);
-  std::streamsize read(float *buffer);
-  std::streamsize read(double *buffer);
-  std::streamsize read(std::string *buffer);
-
-  std::streamsize peek(uint8_t *buffer, std::streamsize length);
-  std::streamsize peek(int8_t *buffer);
-  std::streamsize peek(uint8_t *buffer);
-  std::streamsize peek(int16_t *buffer);
-  std::streamsize peek(uint16_t *buffer);
-  std::streamsize peek(int32_t *buffer);
-  std::streamsize peek(uint32_t *buffer);
-  std::streamsize peek(float *buffer);
-  std::streamsize peek(double *buffer);
-  std::streamsize peek(std::string *buffer);
-
-  std::streamsize write(const char *buffer, std::streamsize length);
-  std::streamsize write(int8_t value);
-  std::streamsize write(uint8_t value);
-  std::streamsize write(int16_t value);
-  std::streamsize write(uint16_t value);
-  std::streamsize write(int32_t value);
-  std::streamsize write(uint32_t value);
-  std::streamsize write(float value);
-  std::streamsize write(double value);
-  std::streamsize write(const std::string &value);
+  std::streamsize tell() const;
 
  private:
-  template<typename T>
-  std::streamsize _read(T *buffer);
-
-  template<typename T>
-  std::streamsize _peek(T *buffer);
-
-  template<typename T>
-  std::streamsize _write(T buffer, std::streamsize length);
-
-  template<typename T>
-  std::streamsize _write(T value);
+  std::streamsize vread(char *buffer, std::streamsize length);
+  std::streamsize vpeek(char *buffer, std::streamsize length);
+  std::streamsize vwrite(const char *buffer, std::streamsize length);
 
  protected:
   bool _bigEndian;
-  std::vector<uint8_t> _buffer;
   std::streampos _cursor;
+  std::vector<uint8_t> _buffer;
 };
 
 /**

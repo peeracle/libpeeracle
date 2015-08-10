@@ -25,7 +25,7 @@
 
 #include <map>
 #include <string>
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 #include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 
 namespace peeracle {
@@ -55,8 +55,8 @@ class TrackerMessage : public TrackerMessageInterface {
 
   void unset(const std::string &key);
 
-  bool serialize(DataStreamInterface *dataStream);
-  bool unserialize(DataStreamInterface *dataStream);
+  bool serialize(DataStream *dataStream);
+  bool unserialize(DataStream *dataStream);
 
  private:
   uint8_t _type;
@@ -68,15 +68,15 @@ class TrackerMessage : public TrackerMessageInterface {
   template<typename T>
   void _set(const std::string &key, T value);
 
-  bool _serializeWelcome(DataStreamInterface *dataStream);
-  bool _serializeAnnounce(DataStreamInterface *dataStream);
-  bool _serializeEnter(DataStreamInterface *dataStream);
-  bool _serializePoke(DataStreamInterface *dataStream);
+  bool _serializeWelcome(DataStream *dataStream);
+  bool _serializeAnnounce(DataStream *dataStream);
+  bool _serializeEnter(DataStream *dataStream);
+  bool _serializePoke(DataStream *dataStream);
 
-  bool _unserializeWelcome(DataStreamInterface *dataStream);
-  bool _unserializeAnnounce(DataStreamInterface *dataStream);
-  bool _unserializeEnter(DataStreamInterface *dataStream);
-  bool _unserializePoke(DataStreamInterface *dataStream);
+  bool _unserializeWelcome(DataStream *dataStream);
+  bool _unserializeAnnounce(DataStream *dataStream);
+  bool _unserializeEnter(DataStream *dataStream);
+  bool _unserializePoke(DataStream *dataStream);
 };
 
 }  // namespace peeracle
