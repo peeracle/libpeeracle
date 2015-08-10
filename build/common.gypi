@@ -29,6 +29,7 @@
     'use_cpplint%': 1,        # use cpplint.py before compiling
     'use_curl%': 1,           # use cURL
     'use_libwebsockets%': 1,  # use libwebsockets
+    'apk_tests_path%': '<(DEPTH)/build/android/apk_tests.gyp',
   },
   'target_defaults': {
     'defines': [
