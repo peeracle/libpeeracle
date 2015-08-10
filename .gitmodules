@@ -1,9 +1,6 @@
 [submodule "third_party/depot_tools"]
 	path = third_party/depot_tools
 	url = https://chromium.googlesource.com/chromium/tools/depot_tools.git
-[submodule "third_party/googletest"]
-	path = third_party/googletest
-	url = https://github.com/peeracle/googletest.git
 [submodule "third_party/curl"]
 	path = third_party/curl
 	url = https://github.com/peeracle/curl.git
