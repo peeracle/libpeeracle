@@ -21,7 +21,7 @@
  */
 
 #include <fstream>
-#include "third_party/googletest/gtest/include/gtest/gtest.h"
+#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
 #include "peeracle/DataStream/FileDataStream.h"
 #include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Utils/RandomGenerator.h"
