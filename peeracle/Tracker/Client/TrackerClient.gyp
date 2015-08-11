@@ -24,58 +24,69 @@
     '../../../build/common.gypi'
   ],
   'conditions': [
-    ['OS!="ios" and OS!="android"', {
+    ['OS!="android" and OS!="ios"', {
       'targets': [
         {
-          'target_name': 'peeracle_tracker_client',
+          'target_name': 'peeracle_websockets_client',
           'type': 'static_library',
           'standalone_static_library': 1,
-          'conditions': [
-            ['use_libwebsockets == 1', {
-              'defines': [
-                'USE_LIBWEBSOCKETS',
-              ],
-              'dependencies': [
-                '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
-                '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
-                '../Message/TrackerMessage.gyp:peeracle_tracker_message',
-              ],
-            }],
-          ],
-          'sources': [
-            'TrackerClient.cc',
-            'TrackerClient.h',
-            'TrackerClientImpl.cc',
-            'TrackerClientImpl.h',
-            'TrackerClientInterface.h',
-            'TrackerClientObserver.h',
-          ],
-        },
-      ],
-    }, {
-      'targets': [
-        {
-          'target_name': 'peeracle_tracker_client',
-          'type': 'none'
-	      },
-      ],
-    }],
-    ['build_tests == 1 and OS!="android" and OS!="ios"', {
-      'targets': [
-        {
-          'target_name': 'peeracle_tracker_client_unittest',
-          'type': 'executable',
           'dependencies': [
-            'peeracle_tracker_client',
-            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
             '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
           'sources': [
-            'TrackerClient_unittest.cc',
+            'WebSocketsClient.cc',
+            'WebSocketsClient.h',
+            'WebSocketsClientInterface.h',
+            'WebSocketsClientObserver.h',
+          ],
+        },
+        {
+          'target_name': 'peeracle_websockets_client_unittest',
+          'type': 'executable',
+          'dependencies': [
+            'peeracle_websockets_client',
+            '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'sources': [
+            'WebSocketsClient_unittest.cc',
           ],
         },
       ],
     }],
+  ],
+  'targets': [
+    {
+      'target_name': 'peeracle_tracker_client',
+      'type': 'static_library',
+      'standalone_static_library': 1,
+      'conditions': [
+        ['OS!="android" and OS!="ios"', {
+          'dependencies': [
+            'peeracle_websockets_client',
+          ],
+        }],
+      ],
+      'dependencies': [
+        '../Message/TrackerMessage.gyp:peeracle_tracker_message',
+      ],
+      'sources': [
+        #'TrackerClient.cc',
+        #'TrackerClient.h',
+        #'TrackerClientInterface.h',
+        #'TrackerClientObserver.h',
+      ],
+    },
+    {
+      'target_name': 'peeracle_tracker_client_unittest',
+      'type': 'executable',
+      'dependencies': [
+        'peeracle_tracker_client',
+        '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+      ],
+      'sources': [
+        'TrackerClient_unittest.cc',
+      ],
+    },
   ],
 }

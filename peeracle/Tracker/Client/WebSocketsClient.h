@@ -20,38 +20,16 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
-#include "TrackerClient.h"
+#ifndef PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENT_H_
+#define PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENT_H_
+
+#include "peeracle/Tracker/Client/WebSocketsClientInterface.h"
 
 namespace peeracle {
 
-/*class TrackerClientTest : public testing::Test {
- protected:
-  virtual void SetUp() {
-    _client = new TrackerClient("ws://127.0.0.1:8080", NULL);
-  }
-
-  virtual void TearDown() {
-    delete _client;
-  }
-
-  TrackerClient *_client;
+class WebSocketsClient : public WebSocketsClientInterface {
 };
 
-TEST_F(TrackerClientTest, Connect) {
-  bool ret;
-
-  std::cout << "init" << std::endl;
-  ret = _client->Init();
-  EXPECT_TRUE(ret);
-
-  std::cout << "conn" << std::endl;
-  ret = _client->Connect();
-  EXPECT_TRUE(ret);
-
-  std::cout << "update" << std::endl;
-  ret = _client->Update();
-  EXPECT_TRUE(ret);
-}*/
-
 }  // namespace peeracle
+
+#endif  // PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENT_H_
