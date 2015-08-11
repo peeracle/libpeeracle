@@ -30,6 +30,7 @@
     'use_curl%': 1,           # use cURL
     'use_libwebsockets%': 1,  # use libwebsockets
     'apk_tests_path%': '<(DEPTH)/build/android/apk_tests.gyp',
+    'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); print dir if os.path.exists(os.path.join(dir, \'include/jni.h\')) else 0")',
   },
   'target_defaults': {
     'defines': [

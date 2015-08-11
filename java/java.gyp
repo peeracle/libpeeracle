@@ -21,43 +21,105 @@
 
 {
   'includes': [
+    '../third_party/webrtc/webrtc/build/common.gypi',
     '../build/common.gypi'
   ],
-  'variables': {
-    'java_home%': '<!(python -c "import os; dir=os.getenv(\'JAVA_HOME\', \'/usr/lib/jvm/java-7-openjdk-amd64\'); print dir if os.path.exists(os.path.join(dir, \'include/jni.h\')) else 0")',
-  },
-  'conditions': [
-    ['build_java == 1 and java_home != 0 and OS=="android"', {
-      'targets': [
+  'targets': [
+    {
+      'target_name': 'libpeeracle',
+      'type': 'shared_library',
+      'dependencies': [
+        '<(webrtc_depth)/third_party/icu/icu.gyp:icuuc',
+        '<(DEPTH)/peeracle/DataStream/DataStream.gyp:peeracle_datastream',
+        '<(DEPTH)/peeracle/Hash/Hash.gyp:peeracle_hash',
+        '<(DEPTH)/peeracle/Media/Media.gyp:peeracle_media',
+        '<(DEPTH)/peeracle/Metadata/Metadata.gyp:peeracle_metadata',
+        '<(DEPTH)/peeracle/Peer/Peer.gyp:peeracle_peer',
+        '<(DEPTH)/peeracle/Session/Session.gyp:peeracle_session',
+        '<(DEPTH)/peeracle/Tracker/Client/TrackerClient.gyp:peeracle_tracker_client',
+        '<(DEPTH)/peeracle/Tracker/Message/TrackerMessage.gyp:peeracle_tracker_message',
+        '<(DEPTH)/peeracle/Utils/Utils.gyp:peeracle_randomgenerator',
+      ],
+      'cflags': [
+        '-fPIC'
+      ],
+      'include_dirs': [
+        '<(java_home)/include',
+        '<(java_home)/include/linux',
+      ],
+      'defines': [
+        'BUILD_LIBPEERACLE',
+      ],
+      'sources': [
+        'jni/peeracle_jni.cc',
+        'jni/datastream_jni.cc',
+        '../peeracle/peeracle.cc',
+      ],
+      'conditions': [
+        ['OS=="android"', {
+          'variables': {
+            # This library uses native JNI exports; tell GYP so that the
+            # required symbols will be kept.
+            'use_native_jni_exports': 1,
+          },
+        }],
+      ],
+    },
+    {
+      'target_name': 'libpeeracle_jar',
+      'type': 'none',
+      'actions': [
         {
-          'target_name': 'libpeeracle',
-          'type': 'shared_library',
-          'dependencies': [
-            '<(webrtc_depth)/third_party/icu/icu.gyp:icuuc',
-            '<(DEPTH)/peeracle/peeracle.gyp:peeracle',
-          ],
-          'cflags': [
-            '-fPIC'
-          ],
-          'include_dirs': [
-            '<(java_home)/include',
-            '<(java_home)/include/linux',
-          ],
-          'sources': [
-            'jni/peeracle_jni.cc',
-            'jni/datastream_jni.cc',
+          'variables': {
+            'java_src_dir': 'java/src',
+            'build_jar_log': '<(INTERMEDIATE_DIR)/build_jar.log',
+            'peeracle_java_files': [
+              'src/org/peeracle/DataStream.java'
+            ],
+            'android_java_files': [
+            ],
+          },
+          'action_name': 'create_jar',
+          'outputs': [
+            '<(PRODUCT_DIR)/libpeeracle.jar',
           ],
           'conditions': [
             ['OS=="android"', {
               'variables': {
-                # This library uses native JNI exports; tell GYP so that the
-                # required symbols will be kept.
-                'use_native_jni_exports': 1,
+                'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
+                'build_classpath': '<(java_src_dir):<(peeracle_root)/third_party/android_sdk/platforms/android-<(android_sdk_version)/android.jar',
               },
+            }, {
+              'variables': {
+                'java_files': ['<@(peeracle_java_files)'],
+                'build_classpath': '<(java_src_dir)',
+              }
             }],
           ],
+          'inputs': [
+            'build/build_jar.sh',
+            '<@(java_files)',
+          ],
+          'action': [
+            'bash', '-ec',
+            'mkdir -p <(INTERMEDIATE_DIR) && '
+            '{ build/build_jar.sh <(java_home) <@(_outputs) '
+            '      <(INTERMEDIATE_DIR)/build_jar.tmp '
+            '      <(build_classpath) <@(java_files) '
+            '      > <(build_jar_log) 2>&1 || '
+            '  { cat <(build_jar_log) ; exit 1; } }'
+          ],
         },
-	{
+      ],
+      'dependencies': [
+        'libpeeracle',
+      ],
+    },
+  ],
+  'conditions': [
+    ['OS=="android"', {
+      'targets': [
+        {
           'target_name': 'libpeeracle_java',
           'type': 'none',
           'dependencies': [
@@ -66,70 +128,11 @@
           'variables': {
             'java_in_dir': '.',
             'additional_src_dirs' : [
-#              'android',
             ],
           },
           'includes': ['../third_party/webrtc/build/java.gypi'],
         },
-        {
-          'target_name': 'libpeeracle_jar',
-          'type': 'none',
-          'actions': [
-            {
-              'variables': {
-                'java_src_dir': 'java/src',
-                'build_jar_log': '<(INTERMEDIATE_DIR)/build_jar.log',
-                'peeracle_java_files': [
-                  'src/org/peeracle/DataStream.java'
-                ],
-                'android_java_files': [
-                ],
-              },
-              'action_name': 'create_jar',
-              'outputs': [
-                '<(PRODUCT_DIR)/libpeeracle.jar',
-              ],
-              'conditions': [
-                ['OS=="android"', {
-                  'variables': {
-                    'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
-                    'build_classpath': '<(java_src_dir):<(peeracle_root)/third_party/android_sdk/platforms/android-<(android_sdk_version)/android.jar',
-                  },
-                }, {
-                  'variables': {
-                    'java_files': ['<@(peeracle_java_files)'],
-                    'build_classpath': '<(java_src_dir)',
-                  }
-                }],
-              ],
-              'inputs': [
-                'build/build_jar.sh',
-                '<@(java_files)',
-              ],
-              'action': [
-                'bash', '-ec',
-                'mkdir -p <(INTERMEDIATE_DIR) && '
-                '{ build/build_jar.sh <(java_home) <@(_outputs) '
-                '      <(INTERMEDIATE_DIR)/build_jar.tmp '
-                '      <(build_classpath) <@(java_files) '
-                '      > <(build_jar_log) 2>&1 || '
-                '  { cat <(build_jar_log) ; exit 1; } }'
-              ],
-            },
-          ],
-          'dependencies': [
-            'libpeeracle',
-          ],
-        },
-      ],
-    }, {
-      'targets': [
-        {
-          'target_name': 'peeracle_java',
-          'type': 'none'
-        },
       ],
     }],
-  ],
+  ]
 }
-
