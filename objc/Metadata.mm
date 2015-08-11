@@ -20,30 +20,54 @@
  * SOFTWARE.
  */
 
-#if !defined(__has_feature) || !__has_feature(objc_arc)
-#error "This file requires ARC support."
-#endif
+#import "Metadata+Internal.h"
 
-#import <Foundation/Foundation.h>
+#include "peeracle/Metadata/Metadata.h"
 
-#include "peeracle/peeracle.h"
-#import "peeracle.h"
-
-@implementation Peeracle
-
-+ (bool) Init {
-  peeracle::init();
-  return true;
+@implementation Metadata {
+  peeracle::MetadataInterface *_metadata;
 }
 
-+ (bool) Update {
-  peeracle::update();
-  return false;
+/*@property(nonatomic, readonly) NSString* hash;
+@property(nonatomic, readonly) NSUInteger magic;
+@property(nonatomic, readonly) NSUInteger version;
+@property(nonatomic) NSString* hashAlgorithm;
+@property(nonatomic) NSUInteger timecodeScale;
+@property(nonatomic) double duration;
+@property(nonatomic) NSArray* trackerUrls;
+@property(nonatomic, readonly) NSArray* streams;*/
+
+- (NSString*) hash {
+  return [NSString stringWithCString:_metadata->getId().c_str()
+                            encoding:[NSString defaultCStringEncoding]];
 }
 
-+ (bool) Cleanup {
-  peeracle::cleanup();
-  return false;
+- (void) setHashAlgorithm:(NSString*)value {
+  _metadata->setHashAlgorithm([value UTF8String]);
+}
+
+- (void) setTimecodeScale:(NSUInteger)value {
+  _metadata->setTimecodeScale(value);
+}
+
+- (void) setDuration:(double)value {
+  _metadata->setDuration(value);
+}
+
+- (id) init {
+  _metadata = new peeracle::Metadata();
+}
+
+- (void) dealloc {
+  delete _metadata;
+}
+
+@end
+
+@implementation Metadata (Internal)
+
+- (peeracle::MetadataInterface*) metadata {
+  return _metadata;
 }
 
 @end

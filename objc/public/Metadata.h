@@ -20,30 +20,20 @@
  * SOFTWARE.
  */
 
-#if !defined(__has_feature) || !__has_feature(objc_arc)
-#error "This file requires ARC support."
-#endif
-
 #import <Foundation/Foundation.h>
 
-#include "peeracle/peeracle.h"
-#import "peeracle.h"
+@class Metadata;
+@interface Metadata : NSObject
 
-@implementation Peeracle
+@property(nonatomic, readonly) NSString* hash;
+@property(nonatomic, readonly) NSUInteger magic;
+@property(nonatomic, readonly) NSUInteger version;
+@property(nonatomic) NSString* hashAlgorithm;
+@property(nonatomic) NSUInteger timecodeScale;
+@property(nonatomic) double duration;
+@property(nonatomic) NSArray* trackerUrls;
+@property(nonatomic, readonly) NSArray* streams;
 
-+ (bool) Init {
-  peeracle::init();
-  return true;
-}
-
-+ (bool) Update {
-  peeracle::update();
-  return false;
-}
-
-+ (bool) Cleanup {
-  peeracle::cleanup();
-  return false;
-}
+- (void)addTrackerUrl:(NSString*)url;
 
 @end

@@ -20,30 +20,43 @@
  * SOFTWARE.
  */
 
-#if !defined(__has_feature) || !__has_feature(objc_arc)
-#error "This file requires ARC support."
-#endif
+#include "objc/FileDataStream.h"
 
-#import <Foundation/Foundation.h>
-
-#include "peeracle/peeracle.h"
-#import "peeracle.h"
-
-@implementation Peeracle
-
-+ (bool) Init {
-  peeracle::init();
-  return true;
+namespace peeracle {
+  FileDataStream::FileDataStream() {
+    _stream = [NSInputStream inputStreamWithFileAtPath:@"test"];
+    [_stream open];
+    
+    NSInteger len = 32;
+    uint8_t buffer[len];
+    [_stream read:buffer maxLength:len];
+  }
+  
+  FileDataStream::~FileDataStream() {
+    [_stream close];
+  }
+  
+  std::streamsize FileDataStream::length() const {
+    return 0;
+  }
+  
+  std::streamsize FileDataStream::seek(std::streamsize position) {
+    return 0;
+  }
+  
+  std::streamsize FileDataStream::tell() const {
+    return 0;
+  }
+  
+  std::streamsize FileDataStream::vread(char *buffer, std::streamsize length) {
+    return 0;
+  }
+  
+  std::streamsize FileDataStream::vpeek(char *buffer, std::streamsize length) {
+    return 0;
+  }
+  
+  std::streamsize FileDataStream::vwrite(const char *buffer, std::streamsize length) {
+    return 0;
+  }
 }
-
-+ (bool) Update {
-  peeracle::update();
-  return false;
-}
-
-+ (bool) Cleanup {
-  peeracle::cleanup();
-  return false;
-}
-
-@end

@@ -43,7 +43,6 @@ webrtc::PeerConnectionFactoryInterface *getPeerConnectionFactory() {
 
 bool init() {
   rtc::InitializeSSL();
-  rtc::ThreadManager::Instance()->WrapCurrentThread();
 
   _signalingThread = new rtc::Thread();
   _workerThread = new rtc::Thread();
@@ -51,7 +50,8 @@ bool init() {
   _signalingThread->SetName("signaling_thread", NULL);
   _workerThread->SetName("worker_thread", NULL);
 
-  ASSERT(_signalingThread->Start() && _workerThread->Start());
+  _signalingThread->Start();
+  _workerThread->Start();
 
   _peerConnectionFactory =
     webrtc::CreatePeerConnectionFactory(_signalingThread,

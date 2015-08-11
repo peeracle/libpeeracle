@@ -46,9 +46,15 @@
       'conditions': [
         ['OS=="ios"', {
           'mac_bundle_resources': [
+            'ios/Base.lproj/LaunchScreen.xib',
+            'ios/Base.lproj/Main.storyboard'
           ],
           'sources': [
+            'ios/AppDelegate.h',
+            'ios/AppDelegate.m',
             'ios/main.m',
+            'ios/ViewController.h',
+            'ios/ViewController.m'
           ],
           'xcode_settings': {
             'INFOPLIST_FILE': 'ios/Info.plist',
@@ -69,7 +75,7 @@
         }],
         ['target_arch=="ia32"', {
           'dependencies' : [
-            '<(webrtc_depot_dir)/testing/iossim/iossim.gyp:iossim#host',
+            '<(webrtc_depth)/testing/iossim/iossim.gyp:iossim#host',
           ],
         }],
       ],

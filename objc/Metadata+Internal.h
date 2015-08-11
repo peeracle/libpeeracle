@@ -20,30 +20,11 @@
  * SOFTWARE.
  */
 
-#if !defined(__has_feature) || !__has_feature(objc_arc)
-#error "This file requires ARC support."
-#endif
+#import "Metadata.h"
+#include "peeracle/Metadata/MetadataInterface.h"
 
-#import <Foundation/Foundation.h>
+@interface Metadata (Internal)
 
-#include "peeracle/peeracle.h"
-#import "peeracle.h"
-
-@implementation Peeracle
-
-+ (bool) Init {
-  peeracle::init();
-  return true;
-}
-
-+ (bool) Update {
-  peeracle::update();
-  return false;
-}
-
-+ (bool) Cleanup {
-  peeracle::cleanup();
-  return false;
-}
+@property(nonatomic, assign) peeracle::MetadataInterface *_metadata;
 
 @end
