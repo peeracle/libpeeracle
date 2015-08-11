@@ -21,39 +21,17 @@
 
 {
   'includes': [
-    '../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'libpeeracle_objc',
-      'type': 'static_library',
+      'target_name': 'PeeracleDemo',
+      'type': 'executable',
+      'product_name': 'PeeracleDemo',
+      'mac_bundle': 1,
       'dependencies': [
-        '../peeracle/peeracle.gyp:peeracle',
+        '../../objc/peeracle_objc.gyp:*',
       ],
-      'sources': [
-        'public/peeracle.h',
-        'peeracle.mm',
-        'FileDataStream.h',
-        'FileDataStream.mm',
-        'public/Metadata.h',
-        'Metadata.mm',
-        'Metadata+Internal.h',
-      ],
-      'direct_dependent_settings': {
-        'include_dirs': [
-          '<(DEPTH)/objc',
-          '<(DEPTH)/objc/public',
-        ],
-      },
-      'include_dirs': [
-        '<(DEPTH)/objc',
-        '<(DEPTH)/objc/public',
-      ],
-      'link_settings': {
-        'libraries': [
-          '-lstdc++',
-        ],
-      },
       'all_dependent_settings': {
         'xcode_settings': {
           'CLANG_ENABLE_OBJC_ARC': 'YES',
@@ -67,18 +45,40 @@
       },
       'conditions': [
         ['OS=="ios"', {
-          'sources': [
+          'mac_bundle_resources': [
+            'ios/Base.lproj/LaunchScreen.xib',
+            'ios/Base.lproj/Main.storyboard'
           ],
-          'link_settings': {
-            'xcode_settings': {
-              'OTHER_LDFLAGS': [
-                '-framework CoreGraphics',
-                '-framework GLKit',
-              ],
-            },
+          'sources': [
+            'ios/AppDelegate.h',
+            'ios/AppDelegate.m',
+            'ios/main.m',
+            'ios/ViewController.h',
+            'ios/ViewController.m'
+          ],
+          'xcode_settings': {
+            'INFOPLIST_FILE': 'ios/Info.plist',
           },
         }],
+        ['OS=="mac"', {
+          'sources': [
+            'mac/main.m',
+          ],
+          'xcode_settings': {
+            'CLANG_WARN_OBJC_MISSING_PROPERTY_SYNTHESIS': 'NO',
+            'INFOPLIST_FILE': 'mac/Info.plist',
+            'MACOSX_DEPLOYMENT_TARGET' : '10.8',
+            'OTHER_LDFLAGS': [
+              '-framework AVFoundation',
+            ],
+          },
+        }],
+        ['target_arch=="ia32"', {
+          'dependencies' : [
+            '<(webrtc_depth)/testing/iossim/iossim.gyp:iossim#host',
+          ],
+        }],
       ],
-    },  # target libjingle_peerconnection_objc
+    },
   ],
 }

@@ -35,7 +35,7 @@
         }],  # OS=="android"
         ['OS=="ios"', {
           'dependencies': [
-            'ios/ios.gyp:*',
+            'objc/objc.gyp:*',
           ],
         }],  # OS=="ios"
         ['OS=="win" or OS=="linux" or OS=="mac"', {
