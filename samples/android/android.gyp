@@ -21,36 +21,40 @@
 
 {
   'includes': [
-    '../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'samples',
+      'target_name': 'PeeracleDemo',
       'type': 'none',
-      'conditions': [
-        ['OS=="android"', {
-          'dependencies': [
-            'android/android.gyp:*',
-          ],
-        }],  # OS=="android"
-        ['OS=="ios"', {
-          'dependencies': [
-            'ios/ios.gyp:*',
-          ],
-        }],  # OS=="ios"
-        ['OS=="win" or OS=="linux" or OS=="mac"', {
-          'dependencies': [
-            'seed/seed.gyp:*',
-          ],
-          'conditions': [
-            ['build_vlcplugin == 1', {
-              'dependencies': [
-                'vlc-plugin/vlc-plugin.gyp:*'
-              ],
-            }],
-          ],
-        }],  # OS=="ios"
+      'dependencies': [
+        '<(DEPTH)/java/java.gyp:libpeeracle_java'
       ],
-    }
-  ],
+      'variables': {
+        'apk_name': 'PeeracleDemo',
+        'java_in_dir': 'app/src/main',
+        'has_java_resources': 1,
+        'resource_dir': 'app/src/main/res',
+        'R_package': 'org.peeracle.peeracledemo',
+        'R_package_relpath': 'org/peeracle/peeracledemo',
+        'input_jars_paths': [
+          'third_party/autobanh/autobanh.jar',
+         ],
+        'library_dexed_jars_paths': [
+          'third_party/autobanh/autobanh.jar',
+         ],
+        'native_lib_target': 'libpeeracle',
+        'add_to_dependents_classpaths':1,
+      },
+      'includes': [ '../../third_party/webrtc/build/java_apk.gypi' ],
+    },  # target PeeracleDemo
+    {
+      'target_name': 'PeeracleDemo_apk',
+      'type': 'none',
+      'dependencies': [
+         'PeeracleDemo',
+       ],
+       'includes': [ '../../third_party/webrtc/build/apk_fake_jar.gypi' ],
+    },  # target PeeracleDemo_apk
+  ],  # targets
 }
