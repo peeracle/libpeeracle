@@ -25,62 +25,25 @@
 
 #include <string>
 
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 #include "samples/vlc-plugin/plugin.h"
 
 class VLCDataStream
-  : public peeracle::DataStreamInterface {
+  : public peeracle::DataStream {
  public:
   explicit VLCDataStream(stream_t *stream);
-
-  bool open();
-  void close();
 
   std::streamsize length() const;
   std::streamsize seek(std::streamsize offset);
   std::streamsize tell() const;
 
-  std::streamsize read(char *buffer, std::streamsize length);
-  std::streamsize read(int8_t *buffer);
-  std::streamsize read(uint8_t *buffer);
-  std::streamsize read(int16_t *buffer);
-  std::streamsize read(uint16_t *buffer);
-  std::streamsize read(int32_t *buffer);
-  std::streamsize read(uint32_t *buffer);
-  std::streamsize read(float *buffer);
-  std::streamsize read(double *buffer);
-  std::streamsize read(std::string *buffer);
-
-  std::streamsize peek(uint8_t *buffer, std::streamsize length);
-  std::streamsize peek(int8_t *buffer);
-  std::streamsize peek(uint8_t *buffer);
-  std::streamsize peek(int16_t *buffer);
-  std::streamsize peek(uint16_t *buffer);
-  std::streamsize peek(int32_t *buffer);
-  std::streamsize peek(uint32_t *buffer);
-  std::streamsize peek(float *buffer);
-  std::streamsize peek(double *buffer);
-  std::streamsize peek(std::string *buffer);
-
-  std::streamsize write(const char *buffer, std::streamsize length);
-  std::streamsize write(int8_t value);
-  std::streamsize write(uint8_t value);
-  std::streamsize write(int16_t value);
-  std::streamsize write(uint16_t value);
-  std::streamsize write(int32_t value);
-  std::streamsize write(uint32_t value);
-  std::streamsize write(float value);
-  std::streamsize write(double value);
-  std::streamsize write(const std::string &value);
-
-  ~VLCDataStream() {}
-
  private:
-  template<typename T>
-  std::streamsize _read(T *buffer);
+  std::streamsize vread(char *buffer, std::streamsize length);
+  std::streamsize vpeek(char *buffer, std::streamsize length);
+  std::streamsize vwrite(const char *buffer, std::streamsize length);
 
-  template<typename T>
-  std::streamsize _peek(T *buffer);
+ public:
+  ~VLCDataStream() {}
 
  protected:
   stream_t *_stream;

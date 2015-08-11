@@ -23,7 +23,7 @@
 #ifndef SAMPLES_VLC_PLUGIN_PEERACLEMANAGER_H_
 #define SAMPLES_VLC_PLUGIN_PEERACLEMANAGER_H_
 
-#include "peeracle/DataStream/DataStreamInterface.h"
+#include "peeracle/DataStream/DataStream.h"
 #include "peeracle/Metadata/Metadata.h"
 #include "peeracle/Session/SessionInterface.h"
 #include "peeracle/Session/SessionObserver.h"
@@ -46,7 +46,7 @@ class PeeracleManager : public PeeracleManagerInterface {
 
   PeeracleStreamInterface *_stream;
   peeracle::MetadataInterface *_metadata;
-  peeracle::DataStreamInterface *_metadataDataStream;
+  peeracle::DataStream *_metadataDataStream;
   peeracle::SessionInterface *_session;
   peeracle::SessionObserver *_sessionObserver;
   peeracle::SessionHandleObserver *_handleObserver;
