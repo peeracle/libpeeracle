@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2015 peeracle contributors
  *
- * Permission is hereby granted, free of int8_tge, to any person obtaining a copy
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -20,61 +20,34 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_DATASTREAM_FILEDATASTREAM_H_
-#define PEERACLE_DATASTREAM_FILEDATASTREAM_H_
+#ifndef LIBPEERACLE_DATASTREAM_JNI_H
+#define LIBPEERACLE_DATASTREAM_JNI_H
 
-#include <fstream>
-#include <string>
+#include <jni.h>
 #include "peeracle/DataStream/DataStream.h"
 
-/**
- * \addtogroup peeracle
- * @{
- * @namespace peeracle
- * @brief peeracle namespace
- */
-namespace peeracle {
-
-/**
- * \addtogroup DataStream
- * DataStream module interface.
- */
-class FileDataStream : public DataStream {
+class DataStreamJava : public peeracle::DataStream {
  public:
-  explicit FileDataStream(const DataStreamInit &dsInit);
-  virtual ~FileDataStream() {}
+  DataStreamJava(JNIEnv *jni, jobject dataStreamm);
 
-  bool open();
-  void close();
-  std::streamsize length();
-  std::streamsize seek(std::streamsize offset);
-  std::streamsize tell();
+  std::streamsize length() const;
+  std::streamsize tell() const;
+  std::streamsize seek(std::streamsize position);
 
  private:
   std::streamsize vread(char *buffer, std::streamsize length);
   std::streamsize vpeek(char *buffer, std::streamsize length);
   std::streamsize vwrite(const char *buffer, std::streamsize length);
 
- protected:
-  const std::string filename_;
-  std::fstream file_;
-  std::streamsize fileSize_;
-  bool readOnly_;
-
  private:
-  template<typename T>
-  std::streamsize _read(T *buffer);
+  JNIEnv* jni() {
+    void* env = NULL;
+    jint status = g_jvm->GetEnv(&env, JNI_VERSION_1_6);
+    return reinterpret_cast<JNIEnv *>(env);
+  }
 
-  template<typename T>
-  std::streamsize _peek(T *buffer);
-
-  template<typename T>
-  std::streamsize _write(T buffer);
+  const jobject j_dataStream_global_;
+  const jclass j_dataStream_class_;
 };
 
-/**
- * @}
- */
-}  // namespace peeracle
-
-#endif  // PEERACLE_DATASTREAM_FILEDATASTREAM_H_
+#endif //LIBPEERACLE_DATASTREAM_JNI_H

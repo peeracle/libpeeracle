@@ -30,5 +30,5 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
+    provided fileTree(include: ['libpeeracle.jar'], dir: 'libs')
 }
