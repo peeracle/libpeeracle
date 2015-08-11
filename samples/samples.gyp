@@ -46,7 +46,7 @@
           'target_name': 'PeeracleDemo',
           'type': 'none',
           'dependencies': [
-            '<(DEPTH)/peeracle/peeracle.gyp:peeracle'
+            '<(DEPTH)/java/java.gyp:libpeeracle_java'
           ],
           'variables': {
             'apk_name': 'PeeracleDemo',
@@ -56,10 +56,10 @@
             'R_package': 'org.peeracle.peeracledemo',
             'R_package_relpath': 'org/peeracle/peeracledemo',
             'input_jars_paths': [
-              'android/third_party/autobanh/autobanh.jar'
+              'android/third_party/autobanh/autobanh.jar',
              ],
             'library_dexed_jars_paths': [
-              'android/third_party/autobanh/autobanh.jar'
+              'android/third_party/autobanh/autobanh.jar',
              ],
             'native_lib_target': 'libpeeracle',
             'add_to_dependents_classpaths':1,

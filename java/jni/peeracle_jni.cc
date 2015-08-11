@@ -37,7 +37,7 @@ extern "C" {
 jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) {
   printf("appel a init\n");
   g_jvm = vm;
-  peeracle::init();
+  // peeracle::init();
   return JNI_VERSION_1_6;
 }
 

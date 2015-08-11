@@ -27,8 +27,6 @@
 #include "java/jni/peeracle_jni.h"
 #include "java/jni/datastream_jni.h"
 
-using namespace icu_54;
-
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,9 +43,12 @@ JNIEXPORT void JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
                       reinterpret_cast<jlong>(dataStream));
 
   std::cout << "New DataStream created at adr " << dataStream << std::endl;
-  dataStream->open();
-  dataStream->close();
   dataStream->seek(5);
+
+  char buffer[32] = {0};
+  dataStream->read(buffer, 32);
+  std::cout << std::hex << buffer[0] << ", " << buffer[1] << ", " << buffer[2]
+  << std::dec << std::endl;
   /*char c = 'b';
   dataStream->read(&c, 5);
   int8_t i = 2;
@@ -92,16 +93,46 @@ JNIEXPORT void JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
   dataStream->write("hello");*/
 }
 
-#ifdef __cplusplus
-}
-#endif
-
 DataStreamJava::DataStreamJava(JNIEnv *jni, jobject dataStream) :
   j_dataStream_global_(dataStream),
   j_dataStream_class_(jni->GetObjectClass(dataStream)) {
 }
 
-bool DataStreamJava::open() {
+std::streamsize DataStreamJava::length() const {
+  // jmethodID m = jni()->GetMethodID(j_dataStream_class_,"close", "()V");
+  // jni()->CallVoidMethod(j_dataStream_global_, m);
+  return 0;
+}
+
+std::streamsize DataStreamJava::tell() const {
+  return 0;
+}
+
+std::streamsize DataStreamJava::seek(std::streamsize position) {
+  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
+                                   "seek", "(J)J");
+  jni()->CallLongMethod(j_dataStream_global_, m, static_cast<jlong>(position));
+  return 0;
+}
+
+std::streamsize DataStreamJava::vread(char *buffer, std::streamsize length) {
+  return 0;
+}
+
+std::streamsize DataStreamJava::vpeek(char *buffer, std::streamsize length) {
+  return 0;
+}
+
+std::streamsize DataStreamJava::vwrite(const char *buffer,
+                                       std::streamsize length) {
+  return 0;
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+/*bool DataStreamJava::open() {
   std::cout << "open: class " << j_dataStream_class_ << std::endl;
   jmethodID m = jni()->GetMethodID(j_dataStream_class_,
                                    "open", "()Z");
@@ -117,27 +148,9 @@ void DataStreamJava::close() {
   jmethodID m = jni()->GetMethodID(j_dataStream_class_,
                                    "close", "()V");
   jni()->CallVoidMethod(j_dataStream_global_, m);
-}
+}*/
 
-std::streamsize DataStreamJava::length() {
-  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
-                                   "close", "()V");
-  jni()->CallVoidMethod(j_dataStream_global_, m);
-  return 0;
-}
-
-std::streamsize DataStreamJava::tell() {
-  return 0;
-}
-
-std::streamsize DataStreamJava::seek(std::streamsize position) {
-  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
-                                   "seek", "(J)J");
-  jni()->CallLongMethod(j_dataStream_global_, m);
-  return 0;
-}
-
-std::streamsize DataStreamJava::read(char *buffer, std::streamsize length) {
+/*std::streamsize DataStreamJava::read(char *buffer, std::streamsize length) {
   jmethodID m = jni()->GetMethodID(j_dataStream_class_,
                                    "read", "()J");
   jni()->CallLongMethod(j_dataStream_global_, m);
@@ -344,3 +357,4 @@ std::streamsize DataStreamJava::write(const std::string &value) {
   jni()->CallLongMethod(j_dataStream_global_, m, jstr);
   return 0;
 }
+*/
