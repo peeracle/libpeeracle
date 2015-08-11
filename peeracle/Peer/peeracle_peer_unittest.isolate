@@ -20,24 +20,30 @@
 # SOFTWARE.
 
 {
-  'includes': [
-    '../../build/common.gypi'
-  ],
-  'targets': [
-    {
-      'target_name': 'peeracle_tracker',
-      'type': 'none',
-      'dependencies': [
-        'Client/TrackerClient.gyp:*',
-        'Message/TrackerMessage.gyp:*'
-      ],
-      'conditions': [
-        ['OS!="android" and OS!="ios"', {
-          'dependencies': [
-            'Server/TrackerServer.gyp:*'
-          ],
-        }]
-      ],
-    },
+  'conditions': [
+    ['OS=="android"', {
+      'variables': {
+        'files': [
+        ],
+      },
+    }],
+    ['OS=="linux" or OS=="mac" or OS=="win" or OS=="android" or OS=="ios"', {
+      'variables': {
+        'files': [
+        ],
+      },
+    }],
+    ['OS=="linux" or OS=="mac" or OS=="win"', {
+      'variables': {
+        'command': [
+          '<(DEPTH)/test/test_env.py',
+          '<(PRODUCT_DIR)/peeracle_peer_unittest<(EXECUTABLE_SUFFIX)',
+        ],
+        'files': [
+          '<(DEPTH)/test/test_env.py',
+          '<(PRODUCT_DIR)/peeracle_peer_unittest<(EXECUTABLE_SUFFIX)',
+        ],
+      },
+    }],
   ],
 }

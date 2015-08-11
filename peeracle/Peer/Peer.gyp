@@ -21,8 +21,8 @@
 
 {
   'includes': [
+    '../../third_party/webrtc/webrtc/build/common.gypi',
     '../../build/common.gypi',
-    '../../third_party/webrtc/webrtc/build/common.gypi'
   ],
   'targets': [
     {
@@ -55,18 +55,56 @@
       'targets': [
         {
           'target_name': 'peeracle_peer_unittest',
-          'type': 'executable',
+          'type': '<(gtest_target_type)',
           'dependencies': [
             'peeracle_peer',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'conditions': [
+            ['OS=="android"', {
+              'dependencies': [
+                '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
+              ],
+            }],
           ],
           'defines': [
             'BUILD_LIBPEERACLE',
           ],
           'sources': [
+            '../peeracle.cc',
             'Peer_unittest.cc',
           ],
         },
+      ],
+      'conditions': [
+        ['OS=="android"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_peer_unittest_apk_target',
+              'type': 'none',
+              'dependencies': [
+                '<(apk_tests_path):peeracle_peer_unittest_apk',
+              ],
+            },
+          ],
+        }],
+        ['test_isolation_mode != "noop"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_peer_unittest_run',
+              'type': 'none',
+              'dependencies': [
+                'peeracle_peer_unittest',
+              ],
+              'includes': [
+                '../../build/isolate.gypi',
+              ],
+              'sources': [
+                'peeracle_peer_unittest.isolate',
+              ],
+            },
+          ],
+        }]
       ],
     }],
   ],

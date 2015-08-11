@@ -21,8 +21,8 @@
 
 {
   'includes': [
-    '../../build/common.gypi',
-    '../../third_party/webrtc/webrtc/build/common.gypi'
+    '../../third_party/webrtc/webrtc/build/common.gypi',
+    '../../build/common.gypi'
   ],
   'targets': [
     {
@@ -32,6 +32,9 @@
       'dependencies': [
         '../Peer/Peer.gyp:peeracle_peer',
         '../Tracker/Client/TrackerClient.gyp:peeracle_tracker_client'
+      ],
+      'defines': [
+        'BUILD_LIBPEERACLE',
       ],
       'sources': [
         'SessionInterface.h',
@@ -54,15 +57,56 @@
       'targets': [
         {
           'target_name': 'peeracle_session_unittest',
-          'type': 'executable',
+          'type': '<(gtest_target_type)',
           'dependencies': [
             'peeracle_session',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
+          'conditions': [
+            ['OS=="android"', {
+              'dependencies': [
+                '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
+              ],
+            }],
+          ],
+          'defines': [
+            'BUILD_LIBPEERACLE',
+          ],
           'sources': [
+            '../peeracle.cc',
             'Session_unittest.cc',
           ],
         },
+      ],
+      'conditions': [
+        ['OS=="android"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_session_unittest_apk_target',
+              'type': 'none',
+              'dependencies': [
+                '<(apk_tests_path):peeracle_session_unittest_apk',
+              ],
+            },
+          ],
+        }],
+        ['test_isolation_mode != "noop"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_session_unittest_run',
+              'type': 'none',
+              'dependencies': [
+                'peeracle_session_unittest',
+              ],
+              'includes': [
+                '../../build/isolate.gypi',
+              ],
+              'sources': [
+                'peeracle_session_unittest.isolate',
+              ],
+            },
+          ],
+        }]
       ],
     }],
   ],

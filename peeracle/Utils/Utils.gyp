@@ -57,16 +57,53 @@
       'targets': [
         {
           'target_name': 'peeracle_utils_unittest',
-          'type': 'executable',
+          'type': '<(gtest_target_type)',
           'dependencies': [
             'peeracle_randomgenerator',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+          ],
+          'conditions': [
+            ['OS=="android"', {
+              'dependencies': [
+                '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
+              ],
+            }],
           ],
           'sources': [
             'RandomGenerator_unittest.cc',
           ],
         },
       ],
+      'conditions': [
+        ['OS=="android"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_utils_unittest_apk_target',
+              'type': 'none',
+              'dependencies': [
+                '<(apk_tests_path):peeracle_utils_unittest_apk',
+              ],
+            },
+          ],
+        }],
+        ['test_isolation_mode != "noop"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_utils_unittest_run',
+              'type': 'none',
+              'dependencies': [
+                'peeracle_utils_unittest',
+              ],
+              'includes': [
+                '../../build/isolate.gypi',
+              ],
+              'sources': [
+                'peeracle_utils_unittest.isolate',
+              ],
+            },
+          ],
+        }]
+            ],
     }],
   ],
 }

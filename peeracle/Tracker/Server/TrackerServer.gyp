@@ -23,43 +23,27 @@
   'includes': [
     '../../../build/common.gypi'
   ],
+  'targets': [
+    {
+      'target_name': 'peeracle_tracker_server',
+      'type': 'static_library',
+      'standalone_static_library': 1,
+      'dependencies': [
+        '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+      ],
+      'sources': [
+        'TrackerServer.cc',
+        'TrackerServer.h',
+        'TrackerServerInterface.h',
+      ]
+    },
+  ],
   'conditions': [
-    ['OS!="android" and OS!="ios"', {
-      'targets': [
-        {
-          'target_name': 'peeracle_tracker_server',
-          'type': 'static_library',
-          'standalone_static_library': 1,
-          'conditions': [
-            ['use_libwebsockets == 1', {
-              'defines': [
-                'USE_LIBWEBSOCKETS',
-              ],
-              'dependencies': [
-                '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
-              ],
-            }],
-          ],
-          'sources': [
-            'TrackerServer.cc',
-            'TrackerServer.h',
-            'TrackerServerInterface.h',
-          ]
-        },
-      ]
-    }, {
-      'targets': [
-        {
-          'target_name': 'peeracle_tracker_server',
-          'type': 'none',
-        },
-      ]
-    }],
-    ['build_tests == 1 and OS!="android" and OS!="ios"', {
+    ['build_tests == 1', {
       'targets': [
         {
           'target_name': 'peeracle_tracker_server_unittest',
-          'type': 'executable',
+          'type': '<(gtest_target_type)',
           'dependencies': [
             'peeracle_tracker_server',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
@@ -68,6 +52,25 @@
             'TrackerServer_unittest.cc',
           ],
         },
+      ],
+      'conditions': [
+        ['test_isolation_mode != "noop"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_tracker_server_unittest_run',
+              'type': 'none',
+              'dependencies': [
+                'peeracle_tracker_server_unittest',
+              ],
+              'includes': [
+                '../../../build/isolate.gypi',
+              ],
+              'sources': [
+                'peeracle_tracker_server_unittest.isolate',
+              ],
+            },
+          ],
+        }]
       ],
     }],
   ],

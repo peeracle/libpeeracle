@@ -27,7 +27,7 @@
     ['OS!="android" and OS!="ios"', {
       'targets': [
         {
-          'target_name': 'peeracle_websockets_client',
+          'target_name': 'peeracle_websocketsclient',
           'type': 'static_library',
           'standalone_static_library': 1,
           'dependencies': [
@@ -41,17 +41,112 @@
             'WebSocketsClientObserver.h',
           ],
         },
+      ],
+      'conditions': [
+        ['build_tests == 1', {
+          'targets': [
+            {
+              'target_name': 'peeracle_websocketsclient_unittest',
+              'type': '<(gtest_target_type)',
+              'dependencies': [
+                'peeracle_websocketsclient',
+                '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
+              ],
+              'conditions': [
+                ['OS=="android"', {
+                  'dependencies': [
+                    '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
+                  ],
+                }],
+              ],
+              'sources': [
+                'WebSocketsClient_unittest.cc',
+              ],
+            },
+          ],
+          'conditions': [
+            ['OS=="android"', {
+              'targets': [
+                {
+                  'target_name': 'peeracle_websocketsclient_unittest_apk_target',
+                  'type': 'none',
+                  'dependencies': [
+                    '<(apk_tests_path):peeracle_websocketsclient_unittest_apk',
+                  ],
+                },
+              ],
+            }],
+            ['test_isolation_mode != "noop"', {
+              'targets': [
+                {
+                  'target_name': 'peeracle_websocketsclient_unittest_run',
+                  'type': 'none',
+                  'dependencies': [
+                    'peeracle_websocketsclient_unittest',
+                  ],
+                  'includes': [
+                    '../../../build/isolate.gypi',
+                  ],
+                  'sources': [
+                    'peeracle_websocketsclient_unittest.isolate',
+                  ],
+                },
+              ],
+            }]
+          ],
+        }],
+      ],
+    }],
+    ['build_tests == 1', {
+      'targets': [
         {
-          'target_name': 'peeracle_websockets_client_unittest',
-          'type': 'executable',
+          'target_name': 'peeracle_tracker_client_unittest',
+          'type': '<(gtest_target_type)',
           'dependencies': [
-            'peeracle_websockets_client',
+            'peeracle_tracker_client',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
+          'conditions': [
+            ['OS=="android"', {
+              'dependencies': [
+                '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
+              ],
+            }],
+          ],
           'sources': [
-            'WebSocketsClient_unittest.cc',
+            'TrackerClient_unittest.cc',
           ],
         },
+      ],
+      'conditions': [
+        ['OS=="android"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_tracker_client_unittest_apk_target',
+              'type': 'none',
+              'dependencies': [
+                '<(apk_tests_path):peeracle_tracker_client_unittest_apk',
+              ],
+            },
+          ],
+        }],
+        ['test_isolation_mode != "noop"', {
+          'targets': [
+            {
+              'target_name': 'peeracle_tracker_client_unittest_run',
+              'type': 'none',
+              'dependencies': [
+                'peeracle_tracker_client_unittest',
+              ],
+              'includes': [
+                '../../../build/isolate.gypi',
+              ],
+              'sources': [
+                'peeracle_tracker_client_unittest.isolate',
+              ],
+            },
+          ],
+        }]
       ],
     }],
   ],
@@ -63,7 +158,7 @@
       'conditions': [
         ['OS!="android" and OS!="ios"', {
           'dependencies': [
-            'peeracle_websockets_client',
+            'peeracle_websocketsclient',
           ],
         }],
       ],
@@ -76,17 +171,5 @@
         #'TrackerClientInterface.h',
         #'TrackerClientObserver.h',
       ],
-    },
-    {
-      'target_name': 'peeracle_tracker_client_unittest',
-      'type': 'executable',
-      'dependencies': [
-        'peeracle_tracker_client',
-        '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
-      ],
-      'sources': [
-        'TrackerClient_unittest.cc',
-      ],
-    },
-  ],
+    }],
 }
