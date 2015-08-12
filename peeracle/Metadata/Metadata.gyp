@@ -42,7 +42,10 @@
         'MetadataMediaSegment.cc',
         'MetadataMediaSegment.h',
         'MetadataMediaSegmentInterface.h',
-      ]
+      ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -64,6 +67,9 @@
           ],
           'sources': [
             'Metadata_unittest.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
           ],
         },
       ],

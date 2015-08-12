@@ -55,6 +55,9 @@
         'jni/datastream_jni.cc',
         '../peeracle/peeracle.cc',
       ],
+      'includes': [
+        '../build/lint.gypi',
+      ],
       'conditions': [
         ['OS=="android"', {
           'variables': {

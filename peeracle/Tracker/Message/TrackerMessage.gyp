@@ -37,6 +37,9 @@
         'TrackerMessage.h',
         'TrackerMessageInterface.h',
       ],
+      'includes': [
+        '../../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -58,6 +61,9 @@
           ],
           'sources': [
             'TrackerMessage_unittest.cc',
+          ],
+          'includes': [
+            '../../../build/lint.gypi',
           ],
         },
       ],

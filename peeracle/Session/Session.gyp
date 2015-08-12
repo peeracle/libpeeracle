@@ -49,7 +49,10 @@
         'SessionPeerObserver.h',
         'SessionTrackerClientObserver.cc',
         'SessionTrackerClientObserver.h',
-      ]
+      ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -75,6 +78,9 @@
           'sources': [
             '../peeracle.cc',
             'Session_unittest.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
           ],
         },
       ],

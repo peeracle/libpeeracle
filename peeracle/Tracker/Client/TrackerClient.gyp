@@ -40,6 +40,9 @@
             'WebSocketsClientInterface.h',
             'WebSocketsClientObserver.h',
           ],
+          'includes': [
+            '../../../build/lint.gypi',
+          ],
         },
       ],
       'conditions': [
@@ -61,6 +64,9 @@
               ],
               'sources': [
                 'WebSocketsClient_unittest.cc',
+              ],
+              'includes': [
+                '../../../build/lint.gypi',
               ],
             },
           ],
@@ -116,6 +122,9 @@
           'sources': [
             'TrackerClient_unittest.cc',
           ],
+          'includes': [
+            '../../../build/lint.gypi',
+          ],
         },
       ],
       'conditions': [
@@ -170,6 +179,9 @@
         #'TrackerClient.h',
         #'TrackerClientInterface.h',
         #'TrackerClientObserver.h',
+      ],
+      'includes': [
+        '../../../build/lint.gypi',
       ],
     }],
 }

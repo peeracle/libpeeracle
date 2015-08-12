@@ -33,6 +33,9 @@
       'sources': [
         'main.cc',
       ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     }
   ]
 }

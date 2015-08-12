@@ -26,7 +26,6 @@
     'build_tests%': 1,        # build unit tests
     'build_samples%': 1,      # build samples
     'build_vlcplugin%': 1,    # build VLC plugin
-    'use_cpplint%': 1,        # use cpplint.py before compiling
     'use_curl%': 1,           # use cURL
     'use_libwebsockets%': 1,  # use libwebsockets
     'apk_tests_path%': '<(DEPTH)/build/android/apk_tests.gyp',
@@ -39,54 +38,6 @@
     'include_dirs': [
       '<(DEPTH)',
       '<(webrtc_depth)',
-    ],
-    'conditions': [
-      ['use_cpplint == 1', {
-        'rules': [
-          {
-            'rule_name': 'lint_cc',
-            'extension': 'cc',
-            'inputs': [
-              'cpplint.py',
-            ],
-            'outputs': [
-              '>(INTERMEDIATE_DIR)/<(RULE_INPUT_NAME).lintstamp',
-            ],
-            'conditions': [
-              ['OS == "win"', {
-                'action': [
-                  'python', '>(_inputs)', '<!(cd)\\<(RULE_INPUT_PATH)'
-                ],
-              }, {
-                'action': [
-                  'python', '>(_inputs)', '$$(pwd)/<(RULE_INPUT_PATH)'
-                ],
-              }],
-            ],
-          },
-          {
-            'rule_name': 'lint_h',
-            'extension': 'h',
-            'inputs': [
-              'cpplint.py',
-            ],
-            'outputs': [
-              '>(INTERMEDIATE_DIR)/<(RULE_INPUT_NAME).lintstamp',
-            ],
-            'conditions': [
-              ['OS == "win"', {
-                'action': [
-                  'python', '>(_inputs)', '<!(cd)\\<(RULE_INPUT_PATH)'
-                ],
-                }, {
-                'action': [
-                  'python', '>(_inputs)', '$$(pwd)/<(RULE_INPUT_PATH)'
-                ],
-              }],
-            ],
-          },
-        ],
-      }],
     ],
   },
 }

@@ -44,7 +44,10 @@
         #'FileDataStream.h',
         'MemoryDataStream.cc',
         'MemoryDataStream.h',
-      ]
+      ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -67,6 +70,9 @@
           ],
           'sources': [
             'DataStream_unittest.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
           ],
         },
       ],

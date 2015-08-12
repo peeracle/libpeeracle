@@ -35,7 +35,10 @@
         'TrackerServer.cc',
         'TrackerServer.h',
         'TrackerServerInterface.h',
-      ]
+      ],
+      'includes': [
+        '../../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -50,6 +53,9 @@
           ],
           'sources': [
             'TrackerServer_unittest.cc',
+          ],
+          'includes': [
+            '../../../build/lint.gypi',
           ],
         },
       ],

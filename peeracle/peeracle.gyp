@@ -44,6 +44,9 @@
       'sources': [
         'peeracle.cc',
       ],
+      'includes': [
+        '../build/lint.gypi',
+      ],
     },
   ],
 }

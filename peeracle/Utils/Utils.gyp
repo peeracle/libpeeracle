@@ -50,6 +50,9 @@
         'RandomGenerator.h',
         'RandomGeneratorInterface.h',
       ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [

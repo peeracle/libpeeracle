@@ -36,7 +36,10 @@
         'HashInterface.h',
         'Murmur3Hash.cc',
         'Murmur3Hash.h',
-      ]
+      ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -58,6 +61,9 @@
           ],
           'sources': [
             'Murmur3Hash_unittest.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
           ],
         },
       ],

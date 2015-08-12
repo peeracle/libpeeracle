@@ -52,6 +52,9 @@
             'VLCDataStream.cc',
             'VLCSessionHandleObserver.cc',
           ],
+          'includes': [
+            '../../build/lint.gypi',
+          ],
           'include_dirs': [
             'config/<(OS)/<(target_arch)',
           ],

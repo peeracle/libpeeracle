@@ -37,7 +37,10 @@
         'ISOBMFFMedia.h',
         'WebMMedia.cc',
         'WebMMedia.h',
-      ]
+      ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -60,6 +63,9 @@
           'sources': [
             'ISOBMFFMedia_unittest.cc',
             'WebMMedia_unittest.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
           ],
         },
       ],

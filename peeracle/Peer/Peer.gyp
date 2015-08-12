@@ -47,7 +47,10 @@
         'PeerImpl.h',
         'SetLocalSDPObserver.cc',
         'SetRemoteSDPObserver.cc',
-      ]
+      ],
+      'includes': [
+        '../../build/lint.gypi',
+      ],
     },
   ],
   'conditions': [
@@ -73,6 +76,9 @@
           'sources': [
             '../peeracle.cc',
             'Peer_unittest.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
           ],
         },
       ],
