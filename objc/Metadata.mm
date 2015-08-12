@@ -24,9 +24,9 @@
 
 #include "peeracle/Metadata/Metadata.h"
 
-@implementation Metadata {
-  peeracle::MetadataInterface *_metadata;
-}
+@implementation Metadata
+
+@synthesize nativeMetadata = _nativeMetadata;
 
 /*@property(nonatomic, readonly) NSString* hash;
 @property(nonatomic, readonly) NSUInteger magic;
@@ -38,36 +38,30 @@
 @property(nonatomic, readonly) NSArray* streams;*/
 
 - (NSString*) hash {
-  return [NSString stringWithCString:_metadata->getId().c_str()
+  return [NSString stringWithCString:_nativeMetadata->getId().c_str()
                             encoding:[NSString defaultCStringEncoding]];
 }
 
-- (void) setHashAlgorithm:(NSString*)value {
-  _metadata->setHashAlgorithm([value UTF8String]);
+- (void) setHashAlgorithm:(NSString*)hashAlgorithm {
+  _nativeMetadata->setHashAlgorithm([hashAlgorithm UTF8String]);
 }
 
-- (void) setTimecodeScale:(NSUInteger)value {
-  _metadata->setTimecodeScale(value);
+- (void) setTimecodeScale:(uint32_t)timecodeScale {
+  _nativeMetadata->setTimecodeScale(timecodeScale);
 }
 
-- (void) setDuration:(double)value {
-  _metadata->setDuration(value);
+- (void) setDuration:(double)duration {
+  _nativeMetadata->setDuration(duration);
+}
+
+- (void) addTrackerUrl:(NSString *)url {
 }
 
 - (id) init {
-  _metadata = new peeracle::Metadata();
+  _nativeMetadata = new peeracle::Metadata();
 }
 
 - (void) dealloc {
-  delete _metadata;
+  delete _nativeMetadata;
 }
-
-@end
-
-@implementation Metadata (Internal)
-
-- (peeracle::MetadataInterface*) metadata {
-  return _metadata;
-}
-
 @end
