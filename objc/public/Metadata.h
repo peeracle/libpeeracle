@@ -22,14 +22,13 @@
 
 #import <Foundation/Foundation.h>
 
-@class Metadata;
 @interface Metadata : NSObject
 
 @property(nonatomic, readonly) NSString* hash;
-@property(nonatomic, readonly) NSUInteger magic;
-@property(nonatomic, readonly) NSUInteger version;
+@property(nonatomic, readonly) uint32_t magic;
+@property(nonatomic, readonly) uint32_t version;
 @property(nonatomic) NSString* hashAlgorithm;
-@property(nonatomic) NSUInteger timecodeScale;
+@property(nonatomic) uint32_t timecodeScale;
 @property(nonatomic) double duration;
 @property(nonatomic) NSArray* trackerUrls;
 @property(nonatomic, readonly) NSArray* streams;

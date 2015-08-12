@@ -20,11 +20,11 @@
  * SOFTWARE.
  */
 
-#import "Metadata.h"
+#import "objc/public/Metadata.h"
 #include "peeracle/Metadata/MetadataInterface.h"
 
-@interface Metadata (Internal)
+@interface Metadata ()
 
-@property(nonatomic, assign) peeracle::MetadataInterface *_metadata;
+@property(nonatomic, assign) peeracle::MetadataInterface *nativeMetadata;
 
 @end
