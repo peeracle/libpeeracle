@@ -33,7 +33,7 @@
             'android/android.gyp:*',
           ],
         }],  # OS=="android"
-        ['OS=="ios"', {
+        ['OS=="mac" or OS=="ios"', {
           'dependencies': [
             'objc/objc.gyp:*',
           ],
