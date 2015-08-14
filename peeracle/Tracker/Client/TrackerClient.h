@@ -28,6 +28,9 @@
 
 #include "peeracle/Tracker/Client/TrackerClientInterface.h"
 #include "peeracle/Tracker/Client/TrackerClientObserver.h"
+#include "peeracle/Tracker/Client/WebSocketsClientInterface.h"
+#include "peeracle/Tracker/Client/WebSocketsClientObserver.h"
+#include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 
 namespace peeracle {
 
@@ -47,8 +50,11 @@ class TrackerClient
  private:
   const std::string _url;
 
-  class TrackerClientImpl;
-  TrackerClientImpl *_impl;
+  TrackerClientObserver *_observer;
+  WebSocketsClientObserver *_webSocketsClientObserver;
+  WebSocketsClientInterface *_webSocketsClient;
+
+  void _send(TrackerMessageInterface *message);
 };
 
 }  // namespace peeracle

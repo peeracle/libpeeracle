@@ -26,6 +26,14 @@
 namespace peeracle {
 
 class WebSocketsClientObserver {
+ public:
+  virtual void onConnect() = 0;
+  virtual void onMessage(const char *buffer, size_t length) = 0;
+  virtual void onDisconnect() = 0;
+  virtual void onError() = 0;
+
+ protected:
+  virtual ~WebSocketsClientObserver() { }
 };
 
 }  // namespace peeracle

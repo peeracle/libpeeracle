@@ -34,6 +34,13 @@
             '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
+          'export_dependent_settings': [
+            '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
+            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+          ],
+          'defines': [
+            'USE_LIBWEBSOCKETS',
+          ],
           'sources': [
             'WebSocketsClient.cc',
             'WebSocketsClient.h',
@@ -55,13 +62,6 @@
                 'peeracle_websocketsclient',
                 '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
               ],
-              'conditions': [
-                ['OS=="android"', {
-                  'dependencies': [
-                    '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
-                  ],
-                }],
-              ],
               'sources': [
                 'WebSocketsClient_unittest.cc',
               ],
@@ -71,17 +71,6 @@
             },
           ],
           'conditions': [
-            ['OS=="android"', {
-              'targets': [
-                {
-                  'target_name': 'peeracle_websocketsclient_unittest_apk_target',
-                  'type': 'none',
-                  'dependencies': [
-                    '<(apk_tests_path):peeracle_websocketsclient_unittest_apk',
-                  ],
-                },
-              ],
-            }],
             ['test_isolation_mode != "noop"', {
               'targets': [
                 {
@@ -170,15 +159,20 @@
             'peeracle_websocketsclient',
           ],
         }],
+        ['OS=="android"', {
+          'dependencies': [
+            '../../../java/java.gyp:android_websocketsclient',
+          ],
+        }],
       ],
       'dependencies': [
         '../Message/TrackerMessage.gyp:peeracle_tracker_message',
       ],
       'sources': [
-        #'TrackerClient.cc',
-        #'TrackerClient.h',
-        #'TrackerClientInterface.h',
-        #'TrackerClientObserver.h',
+        'TrackerClient.cc',
+        'TrackerClient.h',
+        'TrackerClientInterface.h',
+        'TrackerClientObserver.h',
       ],
       'includes': [
         '../../../build/lint.gypi',

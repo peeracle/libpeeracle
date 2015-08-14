@@ -20,22 +20,28 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#ifndef JAVA_JNI_WEBSOCKETSCLIENT_JNI_H_
+#define JAVA_JNI_WEBSOCKETSCLIENT_JNI_H_
+
+#include <stddef.h>
+#include <string>
+#include "peeracle/Tracker/Client/WebSocketsClientInterface.h"
+#include "peeracle/Tracker/Client/WebSocketsClientObserver.h"
 
 namespace peeracle {
 
-class WebSocketsClientInterface {
+class WebSocketsClient : public WebSocketsClientInterface {
  public:
-  virtual ~WebSocketsClientInterface() {}
+  WebSocketsClient(const std::string& url, WebSocketsClientObserver *observer);
+  ~WebSocketsClient();
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
-  virtual bool Send(const char *buffer, size_t length) = 0;
-  virtual bool Disconnect() = 0;
+  bool Init();
+  bool Connect();
+  bool Update();
+  bool Send(const char *buffer, size_t length);
+  bool Disconnect();
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#endif  // JAVA_JNI_WEBSOCKETSCLIENT_JNI_H_

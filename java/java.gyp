@@ -60,6 +60,9 @@
       ],
       'conditions': [
         ['OS=="android"', {
+          'dependencies': [
+            'android_websocketsclient',
+          ],
           'variables': {
             # This library uses native JNI exports; tell GYP so that the
             # required symbols will be kept.
@@ -134,6 +137,29 @@
             ],
           },
           'includes': ['../third_party/webrtc/build/java.gypi'],
+        },
+        {
+          'target_name': 'android_websocketsclient',
+          'type': 'static_library',
+          'cflags': [
+            '-fPIC'
+          ],
+          'include_dirs': [
+            '<(java_home)/include',
+            '<(java_home)/include/linux',
+          ],
+          'sources': [
+            'jni/WebSocketsClient_jni.h',
+            'jni/WebSocketsClient_jni.cc',
+          ],
+          'includes': [
+            '../build/lint.gypi',
+          ],
+          'variables': {
+            # This library uses native JNI exports; tell GYP so that the
+            # required symbols will be kept.
+            'use_native_jni_exports': 1,
+          },
         },
       ],
     }],
