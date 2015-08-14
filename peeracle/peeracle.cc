@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include "third_party/webrtc/webrtc/base/helpers.h"
 #include "third_party/webrtc/webrtc/base/ssladapter.h"
 #include "peeracle/peeracle.h"
 
@@ -42,9 +43,9 @@ webrtc::PeerConnectionFactoryInterface *getPeerConnectionFactory() {
 }
 
 bool init() {
-  rtc::ThreadManager::Instance()->WrapCurrentThread();
-
   rtc::InitializeSSL();
+  rtc::InitRandom(rtc::Time());
+  rtc::ThreadManager::Instance()->WrapCurrentThread();
 
   _signalingThread = new rtc::Thread();
   _workerThread = new rtc::Thread();
