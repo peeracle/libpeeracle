@@ -1,14 +1,27 @@
 package org.peeracle.peeracledemo;
 
+import android.content.res.Resources;
+
 import org.peeracle.DataStream;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Arrays;
 
 public class FileDataStream extends DataStream {
     long cursor = 0;
-    byte[] bytes = new byte[32];
+    byte[] bytes;
 
-    public FileDataStream() {
+    public FileDataStream(Resources resources) {
         super();
-        System.out.println("FileDataStream: constructor");
+        InputStream in_s = resources.openRawResource(R.raw.text);
+        try {
+            bytes = new byte[in_s.available()];
+            in_s.read(bytes);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        System.out.println("FileDataStream: constructor: " + bytes.length);
     }
 
     @Override
@@ -19,7 +32,7 @@ public class FileDataStream extends DataStream {
 
     @Override
     public long seek(long position) {
-        System.out.println("FileDataStream: seek position: " + position);
+        System.out.println("FileDataStream: seek position: " + position );
         /*if (position < 0 || cursor + position > bytes.length)
             return -1;*/
         cursor = position;
@@ -33,7 +46,11 @@ public class FileDataStream extends DataStream {
     }
 
     @Override
-    public long read(byte[] buffer, long length) {return 0;}
+    public long read(byte[] buffer, long length) {
+        System.out.println(buffer[0]);
+        buffer[0] = 64;
+        return 0;
+    }
     @Override
     public long peek(byte[] buffer, long length) {return 0;}
     @Override

@@ -13,7 +13,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fileDataStream = new FileDataStream();
+        fileDataStream = new FileDataStream(getResources());
     }
 
     @Override

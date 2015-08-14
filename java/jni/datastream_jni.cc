@@ -31,7 +31,8 @@
 extern "C" {
 #endif
 
-JNIEXPORT void JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
+__attribute__((visibility("default"))) void
+JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
   (JNIEnv *jni, jobject j_this) {
   DataStreamJava *dataStream = new DataStreamJava(jni, j_this);
 
@@ -45,11 +46,13 @@ JNIEXPORT void JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
   std::cout << "New DataStream created at adr " << dataStream << std::endl;
   dataStream->seek(5);
 
-  char buffer[32] = {0};
-  dataStream->read(buffer, 32);
-  std::cout << std::hex << buffer[0] << ", " << buffer[1] << ", " << buffer[2]
-  << std::dec << std::endl;
-  /*char c = 'b';
+  /*char buffer[32] = {0};
+  dataStream->read(buffer, 22);
+  dataStream->read(buffer, 22);
+  std::cout << "BUFFER  = " << static_cast<int>(buffer[0]) << ", " <<
+    static_cast<int>(buffer[1]) << ", " << static_cast<int>(buffer[2]) <<
+    std::endl;
+  char c = 'b';
   dataStream->read(&c, 5);
   int8_t i = 2;
   dataStream->read(&i);
@@ -67,10 +70,10 @@ JNIEXPORT void JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
   dataStream->read(&o);
   double p = 2;
   dataStream->read(&p);*/
-  uint8_t j = 2;
+  /*uint8_t j = 2;
   std::cout << "j before = " << static_cast<int32_t>(j) << std::endl;
   dataStream->peek(&j);
-  std::cout << "j after = " << static_cast<int32_t>(j) << std::endl;
+  std::cout << "j after = " << static_cast<int32_t>(j) << std::endl;*/
   /*dataStream->peek(&j, 5);
   dataStream->peek(&i);
   dataStream->peek(&j);
@@ -99,7 +102,7 @@ DataStreamJava::DataStreamJava(JNIEnv *jni, jobject dataStream) :
 }
 
 std::streamsize DataStreamJava::length() const {
-  // jmethodID m = jni()->GetMethodID(j_dataStream_class_,"close", "()V");
+  // jmethodID m = jni()->GetMethodID(j_dataStream_class_,"close", "()"."V");
   // jni()->CallVoidMethod(j_dataStream_global_, m);
   return 0;
 }
@@ -116,15 +119,34 @@ std::streamsize DataStreamJava::seek(std::streamsize position) {
 }
 
 std::streamsize DataStreamJava::vread(char *buffer, std::streamsize length) {
+  jbyteArray jBuff = jni()->NewByteArray(length);
+  jni()->SetByteArrayRegion(jBuff, 0, length, reinterpret_cast<const jbyte*>
+  (buffer));
+  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
+                                   "read", "([BJ)J");
+  jni()->CallLongMethod(j_dataStream_global_, m, jBuff, length);
+  // jni()->DeleteLocalRef(jBuff);
   return 0;
 }
 
 std::streamsize DataStreamJava::vpeek(char *buffer, std::streamsize length) {
+  jbyteArray jBuff = jni()->NewByteArray(sizeof(buffer));
+  jni()->SetByteArrayRegion(jBuff, 0, sizeof(buffer),
+                            reinterpret_cast<const jbyte*>(buffer));
+  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
+                                   "peek", "([BJ)J");
+  jni()->CallLongMethod(j_dataStream_global_, m, jBuff, length);
   return 0;
 }
 
 std::streamsize DataStreamJava::vwrite(const char *buffer,
                                        std::streamsize length) {
+  jbyteArray jBuff = jni()->NewByteArray(sizeof(buffer));
+  jni()->SetByteArrayRegion(jBuff, 0, sizeof(buffer),
+                            reinterpret_cast<const jbyte*>(buffer));
+  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
+                                   "write", "([BJ)J");
+  jni()->CallLongMethod(j_dataStream_global_, m, jBuff, length);
   return 0;
 }
 

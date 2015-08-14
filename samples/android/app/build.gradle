@@ -2,7 +2,7 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 22
-    buildToolsVersion "21.1.2"
+    buildToolsVersion '22.0.0'
 
     defaultConfig {
         applicationId "org.peeracle.peeracledemo"
@@ -21,6 +21,8 @@ android {
         main {
             java.srcDirs = ['src/main/src']
             res.srcDirs = ['src/main/res']
+            jni.srcDirs = []
+            jniLibs.srcDir 'src/main/jni'
         }
 
         androidTest {
@@ -30,5 +32,5 @@ android {
 }
 
 dependencies {
-    provided fileTree(include: ['libpeeracle.jar'], dir: 'libs')
+    compile files('src/main/libs/libpeeracle.jar')
 }

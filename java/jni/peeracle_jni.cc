@@ -34,14 +34,14 @@ JavaVM *g_jvm;
 extern "C" {
 #endif
 
-jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) {
-  printf("appel a init\n");
-  g_jvm = vm;
+jint JNIEXPORT JNICALL JNI_OnLoad(JavaVM *jvm, void *reserved) {
+  printf("appel a in it\n");
+  g_jvm = jvm;
   // peeracle::init();
   return JNI_VERSION_1_6;
 }
 
-void JNIEXPORT JNI_OnUnload(JavaVM *vm, void *reserved) {
+void JNIEXPORT JNICALL JNI_OnUnload(JavaVM *vm, void *reserved) {
   printf("appel cleanup\n");
   peeracle::cleanup();
 }
@@ -72,5 +72,3 @@ JNIEXPORT void JNICALL Java_org_peeracle_Metadata_dispose
 #ifdef __cplusplus
 }
 #endif
-
-
