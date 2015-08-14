@@ -43,20 +43,20 @@ Session::~Session() {
 }
 
 bool Session::update() {
-  /*for (std::map<std::string, TrackerClientInterface *>::iterator
+  for (std::map<std::string, TrackerClientInterface *>::iterator
          it = _trackers.begin();
        it != _trackers.end(); ++it) {
     TrackerClientInterface *tracker = (*it).second;
 
     tracker->Update();
-  }*/
+  }
   return true;
 }
 
 SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
                                              SessionHandleObserver *observer) {
   SessionHandleInterface *handle;
-  // SessionTrackerClientObserver *trackerObserver;
+  SessionTrackerClientObserver *trackerObserver;
 
   if (_handles.find(metadata->getId()) != _handles.end()) {
     return _handles[metadata->getId()];
@@ -72,12 +72,12 @@ SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
       continue;
     }
 
-    /*trackerObserver = new SessionTrackerClientObserver(this);
+    trackerObserver = new SessionTrackerClientObserver(this);
     TrackerClientInterface *tracker = new TrackerClient((*it), trackerObserver);
     trackerObserver->setTrackerClient(tracker);
     if (tracker->Init() && tracker->Connect()) {
       _trackers[(*it)] = tracker;
-    }*/
+    }
   }
 
   (void) _observer;
