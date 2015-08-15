@@ -59,6 +59,7 @@
 
 - (id) init {
   _nativeMetadata = new peeracle::Metadata();
+  return self;
 }
 
 - (void) dealloc {
