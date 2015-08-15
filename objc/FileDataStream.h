@@ -21,24 +21,8 @@
  */
 
 #import <Foundation/Foundation.h>
-#include "peeracle/DataStream/DataStream.h"
+#import "objc/public/DataStream.h"
 
-namespace peeracle {
-  class FileDataStream : public DataStream {
-   public:
-    explicit FileDataStream();
-    ~FileDataStream();
-    
-    std::streamsize length() const;
-    std::streamsize seek(std::streamsize position);
-    std::streamsize tell() const;
-    
-   private:
-    std::streamsize vread(char *buffer, std::streamsize length);
-    std::streamsize vpeek(char *buffer, std::streamsize length);
-    std::streamsize vwrite(const char *buffer, std::streamsize length);
-    
-   protected:
-    NSInputStream *_stream;
-  };
-}
+@interface FileDataStream : DataStream
+
+@end
