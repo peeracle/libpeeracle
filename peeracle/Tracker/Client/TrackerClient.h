@@ -28,9 +28,9 @@
 
 #include "peeracle/Tracker/Client/TrackerClientInterface.h"
 #include "peeracle/Tracker/Client/TrackerClientObserver.h"
-#include "peeracle/Tracker/Client/WebSocketsClientInterface.h"
-#include "peeracle/Tracker/Client/WebSocketsClientObserver.h"
 #include "peeracle/Tracker/Message/TrackerMessageInterface.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
 
 namespace peeracle {
 

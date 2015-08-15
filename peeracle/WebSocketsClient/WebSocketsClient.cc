@@ -25,7 +25,7 @@
 #include <string>
 #include <iostream>
 
-#include "peeracle/Tracker/Client/WebSocketsClient.h"
+#include "peeracle/WebSocketsClient/WebSocketsClient.h"
 #include "peeracle/Tracker/Message/TrackerMessage.h"
 #include "peeracle/DataStream/MemoryDataStream.h"
 

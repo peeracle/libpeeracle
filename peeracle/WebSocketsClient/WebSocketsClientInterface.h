@@ -20,20 +20,22 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
-#include "peeracle/Tracker/Client/WebSocketsClient.h"
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
 
 namespace peeracle {
 
-class WebSocketsClientTest : public testing::Test {
- protected:
-  virtual void SetUp() {
-  }
+class WebSocketsClientInterface {
+ public:
+  virtual ~WebSocketsClientInterface() {}
 
-  virtual void TearDown() {
-  }
-
-  WebSocketsClient *_client;
+  virtual bool Init() = 0;
+  virtual bool Connect() = 0;
+  virtual bool Update() = 0;
+  virtual bool Send(const char *buffer, size_t length) = 0;
+  virtual bool Disconnect() = 0;
 };
 
 }  // namespace peeracle
+
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_

@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENT_H_
-#define PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENT_H_
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
 
 #include <string>
 #include <queue>
@@ -29,8 +29,8 @@
 #ifdef USE_LIBWEBSOCKETS
 #include "third_party/libwebsockets/lib/libwebsockets.h"
 #endif
-#include "peeracle/Tracker/Client/WebSocketsClientInterface.h"
-#include "peeracle/Tracker/Client/WebSocketsClientObserver.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
 
 namespace peeracle {
 
@@ -78,4 +78,4 @@ class WebSocketsClient : public WebSocketsClientInterface {
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENT_H_
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_

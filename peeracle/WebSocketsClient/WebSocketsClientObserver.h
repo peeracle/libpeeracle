@@ -20,35 +20,22 @@
  * SOFTWARE.
  */
 
-#include "java/jni/WebSocketsClient_jni.h"
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTOBSERVER_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTOBSERVER_H_
 
 namespace peeracle {
 
-WebSocketsClient::WebSocketsClient(const std::string& url,
-                                   WebSocketsClientObserver *observer) {
-}
+class WebSocketsClientObserver {
+ public:
+  virtual void onConnect() = 0;
+  virtual void onMessage(const char *buffer, size_t length) = 0;
+  virtual void onDisconnect() = 0;
+  virtual void onError() = 0;
 
-WebSocketsClient::~WebSocketsClient() {
-}
-
-bool WebSocketsClient::Init() {
-  return false;
-}
-
-bool WebSocketsClient::Connect() {
-  return false;
-}
-
-bool WebSocketsClient::Update() {
-  return false;
-}
-
-bool WebSocketsClient::Send(const char *buffer, size_t length) {
-  return false;
-}
-
-bool WebSocketsClient::Disconnect() {
-  return false;
-}
+ protected:
+  virtual ~WebSocketsClientObserver() { }
+};
 
 }  // namespace peeracle
+
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTOBSERVER_H_

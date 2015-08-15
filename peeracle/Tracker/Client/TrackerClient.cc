@@ -26,8 +26,8 @@
 
 #include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Tracker/Client/TrackerClient.h"
-#include "peeracle/Tracker/Client/WebSocketsClient.h"
 #include "peeracle/Tracker/Message/TrackerMessage.h"
+#include "peeracle/WebSocketsClient/WebSocketsClient.h"
 
 namespace peeracle {
 

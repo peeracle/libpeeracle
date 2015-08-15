@@ -37,6 +37,7 @@
         'Session/Session.gyp:*',
         'Tracker/Tracker.gyp:*',
         'Utils/Utils.gyp:*',
+        'WebSocketsClient/WebSocketsClient.gyp:*',
       ],
       'defines': [
         'BUILD_LIBPEERACLE',
