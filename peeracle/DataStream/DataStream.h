@@ -29,6 +29,8 @@
 #include <string>
 #include <sstream>
 
+#include "third_party/webrtc/webrtc/typedefs.h"
+
 /**
  * \addtogroup peeracle
  * @{
@@ -79,39 +81,39 @@ class DataStream {
   virtual std::streamsize seek(std::streamsize position) = 0;
 
   std::streamsize read(char *buffer, std::streamsize length) {
-    return this->_read(buffer, length);
+    return _read(buffer, length);
   }
 
   std::streamsize read(int8_t *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(uint8_t *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(int16_t *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(uint16_t *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(int32_t *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(uint32_t *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(float *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   std::streamsize read(double *value) {
-    return this->_read(value);
+    return _readSwap(value);
   }
 
   /**
@@ -126,7 +128,7 @@ class DataStream {
     std::stringstream strm;
 
     for (i = 0; i < 32768; ++i) {
-      if (this->_read(&c, 1) < 1 || c == '\0') {
+      if (_read(&c, 1) < 1 || c == '\0') {
         break;
       }
       strm << c;
@@ -137,39 +139,39 @@ class DataStream {
   }
 
   std::streamsize peek(uint8_t *buffer, std::streamsize length) {
-    return this->_peek(buffer, length);
+    return _peek(buffer, length);
   }
 
   std::streamsize peek(int8_t *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(uint8_t *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(int16_t *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(uint16_t *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(int32_t *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(uint32_t *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(float *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   std::streamsize peek(double *buffer) {
-    return this->_peek(buffer);
+    return _peekSwap(buffer);
   }
 
   /**
@@ -184,7 +186,7 @@ class DataStream {
     std::stringstream strm;
 
     for (i = 0; i < 32768; ++i) {
-      if (this->_peek(&c, 1) < 1 || c == '\0') {
+      if (_peek(&c, 1) < 1 || c == '\0') {
         break;
       }
       strm << c;
@@ -195,39 +197,39 @@ class DataStream {
   }
 
   std::streamsize write(const char *buffer, std::streamsize length) {
-    return this->_write(buffer, length);
+    return _write(buffer, length);
   }
 
   std::streamsize write(int8_t value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(uint8_t value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(int16_t value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(uint16_t value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(int32_t value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(uint32_t value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(float value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   std::streamsize write(double value) {
-    return this->_write(value);
+    return _write(value);
   }
 
   /**
@@ -238,7 +240,7 @@ class DataStream {
    */
   std::streamsize write(const std::string &value) {
     const char *str = value.c_str();
-    return this->_write(str, strlen(str));
+    return _write(str, strlen(str));
   }
 
   virtual ~DataStream() { }
@@ -256,7 +258,14 @@ class DataStream {
 
   template<typename T>
   std::streamsize _read(T *buffer, std::streamsize length = sizeof(T)) {
-    return this->vread(reinterpret_cast<char *>(buffer), length);
+    return vread(reinterpret_cast<char *>(buffer), length);
+  }
+
+  template<typename T>
+  std::streamsize _readSwap(T *buffer, std::streamsize length = sizeof(T)) {
+    std::streamsize result = _read(buffer, length);
+    _swap(buffer, length);
+    return result;
   }
 
   /**
@@ -271,7 +280,14 @@ class DataStream {
 
   template<typename T>
   std::streamsize _peek(T *buffer, std::streamsize length = sizeof(T)) {
-    return this->vpeek(reinterpret_cast<char *>(buffer), length);
+    return vpeek(reinterpret_cast<char *>(buffer), length);
+  }
+
+  template<typename T>
+  std::streamsize _peekSwap(T *buffer, std::streamsize length = sizeof(T)) {
+    std::streamsize result = _peek(buffer, length);
+    _swap(buffer, length);
+    return result;
   }
 
   /**
@@ -286,8 +302,29 @@ class DataStream {
 
   template<typename T>
   std::streamsize _write(T value, std::streamsize length = sizeof(T)) {
-    return this->vwrite(reinterpret_cast<const char*>(&value), length);
+    return vwrite(reinterpret_cast<const char*>(&value), length);
   }
+
+  template<typename T>
+  void _swap(T *buffer, std::streamsize length = sizeof(T)) {
+#ifdef WEBRTC_ARCH_LITTLE_ENDIAN
+    int i;
+    T input = *buffer;
+    const char* inputPtr = reinterpret_cast<char*>(&input);
+    char* outputPtr = reinterpret_cast<char*>(&buffer);
+
+    if (!_bigEndian) {
+      return;
+    }
+
+    for (i = 0; i < length; ++i) {
+      *outputPtr++ = (*inputPtr >> 8)|(*inputPtr << 8);
+      ++inputPtr;
+    }
+#endif
+  }
+
+  bool _bigEndian;
 };
 
 /**
