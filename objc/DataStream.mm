@@ -20,9 +20,20 @@
  * SOFTWARE.
  */
 
-#import <Foundation/Foundation.h>
-#import "objc/public/DataStream.h"
+#import "DataStream+Internal.h"
 
-@interface FileDataStream : DataStream
+#include "peeracle/DataStream/DataStream.h"
+
+@implementation DataStream
+
+@synthesize nativeDataStream = _nativeDataStream;
+
+- (void*) nativeDataStream {
+  return _nativeDataStream;
+}
+
+- (void) setNativeDataStream:(peeracle::DataStream *)nativeDataStream {
+  _nativeDataStream = nativeDataStream;
+}
 
 @end

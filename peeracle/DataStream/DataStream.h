@@ -85,11 +85,11 @@ class DataStream {
   }
 
   std::streamsize read(int8_t *value) {
-    return _readSwap(value);
+    return _read(value);
   }
 
   std::streamsize read(uint8_t *value) {
-    return _readSwap(value);
+    return _read(value);
   }
 
   std::streamsize read(int16_t *value) {
@@ -143,11 +143,11 @@ class DataStream {
   }
 
   std::streamsize peek(int8_t *buffer) {
-    return _peekSwap(buffer);
+    return _peek(buffer);
   }
 
   std::streamsize peek(uint8_t *buffer) {
-    return _peekSwap(buffer);
+    return _peek(buffer);
   }
 
   std::streamsize peek(int16_t *buffer) {
@@ -308,22 +308,25 @@ class DataStream {
   template<typename T>
   void _swap(T *buffer, std::streamsize length = sizeof(T)) {
 #ifdef WEBRTC_ARCH_LITTLE_ENDIAN
-    int i;
-    T input = *buffer;
-    const char* inputPtr = reinterpret_cast<char*>(&input);
-    char* outputPtr = reinterpret_cast<char*>(&buffer);
+    T value;
+    T finalValue;
+    uint8_t *originalData;
+    uint8_t *finalData;
 
-    if (!_bigEndian) {
-      return;
+    value = *(reinterpret_cast<T*>(buffer));
+    if (_bigEndian) {
+      originalData = reinterpret_cast<uint8_t*>(&value);
+      finalData = reinterpret_cast<uint8_t*>(&finalValue);
+      for (uint32_t i = 0; i < sizeof(T); ++i) {
+        finalData[i] = originalData[(sizeof(T) - i) - 1];
+      }
+      value = finalValue;
     }
-
-    for (i = 0; i < length; ++i) {
-      *outputPtr++ = (*inputPtr >> 8)|(*inputPtr << 8);
-      ++inputPtr;
-    }
+    *buffer = value;
 #endif
   }
 
+ protected:
   bool _bigEndian;
 };
 
