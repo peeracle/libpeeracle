@@ -5,8 +5,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
+import org.peeracle.Metadata;
+
 public class MainActivity extends Activity {
     FileDataStream fileDataStream;
+    Metadata m;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -14,6 +17,9 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         fileDataStream = new FileDataStream(getResources());
+        m = new Metadata();
+        m.unserialize(fileDataStream);
+
     }
 
     @Override

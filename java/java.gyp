@@ -32,13 +32,13 @@
         '<(webrtc_depth)/third_party/icu/icu.gyp:icuuc',
         '<(DEPTH)/peeracle/DataStream/DataStream.gyp:peeracle_datastream',
         '<(DEPTH)/peeracle/Hash/Hash.gyp:peeracle_hash',
+        '<(DEPTH)/peeracle/Media/Media.gyp:peeracle_media',
         '<(DEPTH)/peeracle/Metadata/Metadata.gyp:peeracle_metadata',
         '<(DEPTH)/peeracle/Peer/Peer.gyp:peeracle_peer',
         '<(DEPTH)/peeracle/Session/Session.gyp:peeracle_session',
         '<(DEPTH)/peeracle/Tracker/Client/TrackerClient.gyp:peeracle_tracker_client',
         '<(DEPTH)/peeracle/Tracker/Message/TrackerMessage.gyp:peeracle_tracker_message',
         '<(DEPTH)/peeracle/Utils/Utils.gyp:peeracle_randomgenerator',
-        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
       ],
       'cflags': [
         '-fPIC'

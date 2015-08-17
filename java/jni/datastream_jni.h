@@ -30,6 +30,9 @@ class DataStreamJava : public peeracle::DataStream {
  public:
   DataStreamJava(JNIEnv *jni, jobject dataStreamm);
 
+  jobject getJNIObject() const;
+  jclass getJNIClass() const;
+
   std::streamsize length() const;
   std::streamsize tell() const;
   std::streamsize seek(std::streamsize position);

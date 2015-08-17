@@ -20,40 +20,33 @@
  * SOFTWARE.
  */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <jni.h>
-#include "helpers.h"
+#ifndef PEERACLE_METADATA_METADATA_JNI_H
+#define PEERACLE_METADATA_METADATA_JNI_H
 
-static JavaVM *g_jvm = NULL;
+#include "java/jni/peeracle_jni.h"
+#include "peeracle/Metadata/Metadata.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+namespace peeracle {
 
-jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) {
-  CHECK(!g_jvm, "OnLoad called more than once");
-  return JNI_VERSION_1_4;
-}
+class JNIMetadata : public peeracle::Metadata {
+ public:
+  JNIMetadata(JNIEnv *jni, jobject metadata);
+  ~JNIMetadata();
 
-void JNIEXPORT JNI_OnUnload(JavaVM *vm, void *reserved) {
-}
+  jobject getJNIObject() const;
+  jclass getJNIClass() const;
 
-#ifdef __cplusplus
-}
-#endif
+ private:
+  JNIEnv* jni() {
+    void* env = NULL;
+    g_jvm->GetEnv(&env, JNI_VERSION_1_6);
+    return reinterpret_cast<JNIEnv *>(env);
+  }
 
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Update(JNIEnv *, jclass) {
-  printf("appel update\n");
-  peeracle::update();
-}
+  const jobject j_metadata_global_;
+  const jclass j_metadata_class_;
+};
 
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Cleanup(JNIEnv *, jclass) {
-  printf("appel cleanup\n");
-  peeracle::cleanup();
-}
+}  // namespace peeracle
 
-#ifdef __cplusplus
-}
-#endif
+#endif //PEERACLE_METADATA_METADATA_JNI_H

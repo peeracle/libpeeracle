@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <android/log.h>
 #include <stdint.h>
 #include <iostream>
 #include <string>
@@ -31,20 +32,16 @@
 extern "C" {
 #endif
 
-__attribute__((visibility("default"))) void
-JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
+JNIEXPORT void JNICALL Java_org_peeracle_DataStream_nativeCreateDataStream
   (JNIEnv *jni, jobject j_this) {
-  DataStreamJava *dataStream = new DataStreamJava(jni, j_this);
+  DataStreamJava *dataStream = new DataStreamJava(jni,
+                                                  jni->NewGlobalRef(j_this));
 
-  jclass j_datastream_class(jni->GetObjectClass(j_this));
   const jmethodID j_datastream_set_native_datastream(jni->GetMethodID(
-    j_datastream_class, "setNativeDataStream", "(J)V"));
-  jni->CallVoidMethod(j_this,
-                      j_datastream_set_native_datastream,
+    dataStream->getJNIClass(), "setNativeDataStream", "(J)V"));
+  jni->CallVoidMethod(j_this, j_datastream_set_native_datastream,
                       reinterpret_cast<jlong>(dataStream));
 
-  std::cout << "New DataStream created at adr " << dataStream << std::endl;
-  dataStream->seek(5);
 
   /*char buffer[32] = {0};
   dataStream->read(buffer, 22);
@@ -101,6 +98,14 @@ DataStreamJava::DataStreamJava(JNIEnv *jni, jobject dataStream) :
   j_dataStream_class_(jni->GetObjectClass(dataStream)) {
 }
 
+jobject DataStreamJava::getJNIObject() const {
+  return j_dataStream_global_;
+}
+
+jclass DataStreamJava::getJNIClass() const {
+  return j_dataStream_class_;
+}
+
 std::streamsize DataStreamJava::length() const {
   // jmethodID m = jni()->GetMethodID(j_dataStream_class_,"close", "()"."V");
   // jni()->CallVoidMethod(j_dataStream_global_, m);
@@ -119,14 +124,23 @@ std::streamsize DataStreamJava::seek(std::streamsize position) {
 }
 
 std::streamsize DataStreamJava::vread(char *buffer, std::streamsize length) {
+  __android_log_print(ANDROID_LOG_DEBUG, "DataStreamJava::vread", "begin");
   jbyteArray jBuff = jni()->NewByteArray(length);
+  __android_log_print(ANDROID_LOG_DEBUG, "DataStreamJava::vread",
+                      "NewByteArray %p", jBuff);
   jni()->SetByteArrayRegion(jBuff, 0, length, reinterpret_cast<const jbyte*>
   (buffer));
-  jmethodID m = jni()->GetMethodID(j_dataStream_class_,
+  __android_log_print(ANDROID_LOG_DEBUG, "DataStreamJava::vread",
+                      "SetByteArrayRegion %p, %p, %d", jBuff, buffer, length);
+  jmethodID m = jni()->GetMethodID(jni()->GetObjectClass(j_dataStream_global_),
                                    "read", "([BJ)J");
-  jni()->CallLongMethod(j_dataStream_global_, m, jBuff, length);
-  // jni()->DeleteLocalRef(jBuff);
-  return 0;
+  __android_log_print(ANDROID_LOG_DEBUG, "DataStreamJava::vread",
+                      "GetMethod read %p", m);
+  jlong j_length = static_cast<std::streamsize>(length);
+  jlong res = jni()->CallLongMethod(j_dataStream_global_, m, jBuff, j_length);
+  __android_log_print(ANDROID_LOG_DEBUG, "DataStreamJava::vread",
+                      "CallLongMethod read %lld", res);
+  return static_cast<std::streamsize>(res);
 }
 
 std::streamsize DataStreamJava::vpeek(char *buffer, std::streamsize length) {
