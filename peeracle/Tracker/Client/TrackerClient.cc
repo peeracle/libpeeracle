@@ -22,32 +22,102 @@
 
 #include <stdint.h>
 #include <string>
+#include <iostream>
 
+#include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Tracker/Client/TrackerClient.h"
-#include "peeracle/Tracker/Client/TrackerClientImpl.h"
 #include "peeracle/Tracker/Message/TrackerMessage.h"
+#include "peeracle/WebSocketsClient/WebSocketsClient.h"
 
 namespace peeracle {
 
+class TrackerWebSocketsClientObserver : public WebSocketsClientObserver {
+ public:
+  explicit TrackerWebSocketsClientObserver(TrackerClient *client,
+                                           TrackerClientObserver *observer) :
+    _client(client), _observer(observer) {
+  }
+
+  void onConnect() {
+  }
+
+  void onMessage(const char *buffer, size_t length) {
+    int type;
+    DataStreamInit dsInit;
+    MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
+    TrackerMessageInterface *message = new TrackerMessage();
+
+    dataStream->write(buffer, length);
+    dataStream->seek(0);
+    message->unserialize(dataStream);
+    delete dataStream;
+
+    type = message->getType();
+    std::cout << "Got message type " << static_cast<int>(type) << std::endl;
+    switch (type) {
+      case TrackerMessageInterface::kWelcome:
+      {
+        std::string id;
+
+        message->get("id", &id, "");
+
+        _observer->onConnect(id);
+        break;
+      }
+      case TrackerMessageInterface::kPoke:
+      {
+        std::string hash;
+        std::string peer;
+        uint32_t got;
+
+        message->get("hash", &hash, "");
+        message->get("peer", &peer, "");
+        message->get("got", &got, 0);
+
+        _observer->onPeerConnect(hash, peer, got, true);
+        break;
+      }
+      default:
+        break;
+    }
+
+    delete message;
+  }
+
+  void onDisconnect() {
+    _observer->onDisconnect();
+  }
+
+  void onError() {
+  }
+
+ protected:
+  TrackerClient *_client;
+  TrackerClientObserver *_observer;
+};
+
 TrackerClient::TrackerClient(const std::string &url,
                              TrackerClientObserver *observer) :
-  _url(url), _impl(new TrackerClientImpl(url, observer)) {
+  _url(url), _observer(observer) {
+  _webSocketsClientObserver = new TrackerWebSocketsClientObserver(this,
+                                                                  observer);
+  _webSocketsClient = new WebSocketsClient(url, _webSocketsClientObserver);
 }
 
 TrackerClient::~TrackerClient() {
-  delete _impl;
+  delete _webSocketsClient;
 }
 
 bool TrackerClient::Init() {
-  return _impl->Init();
+  return _webSocketsClient->Init();
 }
 
 bool TrackerClient::Connect() {
-  return _impl->Connect();
+  return _webSocketsClient->Connect();
 }
 
 bool TrackerClient::Update() {
-  return _impl->Update();
+  return _webSocketsClient->Update();
 }
 
 const std::string &TrackerClient::getUrl() const {
@@ -61,7 +131,27 @@ void TrackerClient::announce(const std::string id, uint32_t got) {
   msg->set("hash", id);
   msg->set("got", got);
 
-  _impl->Send(msg);
+  _send(msg);
+  delete msg;
+}
+
+void TrackerClient::_send(TrackerMessageInterface *message) {
+  char *buffer;
+  DataStreamInit dsInit;
+  MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
+  std::streamsize length;
+
+  message->serialize(dataStream);
+  dataStream->seek(0);
+
+  length = dataStream->length();
+  buffer = new char[length];
+
+  dataStream->read(buffer, length);
+
+  _webSocketsClient->Send(buffer, static_cast<size_t>(length));
+
+  delete dataStream;
 }
 
 }  // namespace peeracle

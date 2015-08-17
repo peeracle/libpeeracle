@@ -20,12 +20,20 @@
  * SOFTWARE.
  */
 
-package org.peeracle.DataSource;
+#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
+#include "peeracle/WebSocketsClient/WebSocketsClient.h"
 
-import java.io.IOException;
+namespace peeracle {
 
-public interface DataSource {
-  long open();
-  void close();
-  int read(byte[] buffer, int length);
-}
+class WebSocketsClientTest : public testing::Test {
+ protected:
+  virtual void SetUp() {
+  }
+
+  virtual void TearDown() {
+  }
+
+  WebSocketsClient *_client;
+};
+
+}  // namespace peeracle

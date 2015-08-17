@@ -20,11 +20,9 @@
  * SOFTWARE.
  */
 
-#ifndef LIBPEERACLE_PEERACLE_JNI_H
-#define LIBPEERACLE_PEERACLE_JNI_H
+#ifndef JAVA_JNI_PEERACLE_JNI_H_
+#define JAVA_JNI_PEERACLE_JNI_H_
 
 #include <jni.h>
 
-extern JavaVM *g_jvm;
-
-#endif //LIBPEERACLE_PEERACLE_JNI_H
+#endif  // JAVA_JNI_PEERACLE_JNI_H_

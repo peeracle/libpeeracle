@@ -57,8 +57,17 @@
 - (void) addTrackerUrl:(NSString *)url {
 }
 
+- (bool) serialize:(DataStream *)dataStream {
+  _nativeMetadata->serialize(reinterpret_cast<peeracle::DataStream*>([dataStream nativeDataStream]));
+}
+
+- (bool) unserialize:(DataStream *)dataStream {
+  _nativeMetadata->unserialize(reinterpret_cast<peeracle::DataStream*>([dataStream nativeDataStream]));
+}
+
 - (id) init {
   _nativeMetadata = new peeracle::Metadata();
+  return self;
 }
 
 - (void) dealloc {

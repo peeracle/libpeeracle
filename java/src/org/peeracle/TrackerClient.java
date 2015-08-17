@@ -20,26 +20,31 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+package org.peeracle;
 
-#include <stdint.h>
-#include <string>
+public class TrackerClient {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-namespace peeracle {
+  public static interface Observer {
+    public void onConnect();
+    public void onPeerConnect(String hash, String peerId, long got,
+                              boolean poke);
+    public void onDisconnect();
+    public void onError();
+  }
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
+  public TrackerClient(String url, Observer observer) {
+    nativeTrackerClient = this.nativeCreateTrackerClient(url, observer);
+  }
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
+  public native boolean Init();
+  public native boolean Connect();
+  public native boolean Update();
+  public native String getUrl();
+  public native void announce(String id, long got);
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
-
-}  // namespace peeracle
-
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+  public native long nativeCreateTrackerClient(String url, Observer observer);
+  private long nativeTrackerClient;
+}

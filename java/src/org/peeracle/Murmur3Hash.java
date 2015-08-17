@@ -20,24 +20,32 @@
  * SOFTWARE.
  */
 
-package org.peeracle.DataSource;
+package org.peeracle;
 
-public class FileDataSource implements DataSource {
-  public FileDataSource(String filename) {
+public class Murmur3Hash extends Hash {
+  static {
+    System.loadLibrary("peeracle");
+  }
+
+  public Murmur3Hash() {
+    nativeMurmur3Hash = this.nativeCreateMurmur3Hash();
   }
 
   @Override
-  public long open() {
-    return 0;
-  }
+  public native void init();
 
   @Override
-  public void close() {
-
-  }
+  public native void update(DataStream dataStream);
 
   @Override
-  public int read(byte[] buffer, int length) {
-    return 0;
-  }
+  public native void update(byte[] buffer, long length);
+
+  @Override
+  public native byte[] finish();
+
+  @Override
+  public native byte[] checksum(DataStream dataStream);
+
+  public native long nativeCreateMurmur3Hash();
+  public final long nativeMurmur3Hash;
 }

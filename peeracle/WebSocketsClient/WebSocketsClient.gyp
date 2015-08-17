@@ -21,36 +21,61 @@
 
 {
   'includes': [
-    '../../../build/common.gypi'
+    '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'peeracle_tracker_client',
+      'target_name': 'peeracle_websocketsclient',
       'type': 'static_library',
       'standalone_static_library': 1,
-      'dependencies': [
-        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
-        '../Message/TrackerMessage.gyp:peeracle_tracker_message',
-      ],
       'sources': [
-        'TrackerClient.cc',
-        'TrackerClient.h',
-        'TrackerClientInterface.h',
-        'TrackerClientObserver.h',
+        'WebSocketsClient.h',
+        'WebSocketsClientInterface.h',
+        'WebSocketsClientObserver.h',
       ],
-      'includes': [
-        '../../../build/lint.gypi',
+      'conditions': [
+        ['OS=="win" or OS=="mac" or OS=="linux"', {
+          'defines': [
+            'USE_LIBWEBSOCKETS',
+          ],
+          'dependencies': [
+            '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
+            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+          ],
+          'export_dependent_settings': [
+            '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
+            '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
+          ],
+          'sources': [
+            'WebSocketsClient.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
+          ],
+        }],
+        ['OS=="android"', {
+          'sources': [
+            'WebSocketsClient_jni.cc',
+          ],
+          'includes': [
+            '../../build/lint.gypi',
+          ],
+        }],
+        ['OS=="ios"', {
+          'sources': [
+          ],
+        }],
       ],
-    }
+    },
   ],
   'conditions': [
     ['build_tests == 1', {
       'targets': [
         {
-          'target_name': 'peeracle_tracker_client_unittest',
+          'target_name': 'peeracle_websocketsclient_unittest',
           'type': '<(gtest_target_type)',
           'dependencies': [
-            'peeracle_tracker_client',
+            'peeracle_websocketsclient',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'conditions': [
@@ -61,10 +86,10 @@
             }],
           ],
           'sources': [
-            'TrackerClient_unittest.cc',
+            'WebSocketsClient_unittest.cc',
           ],
           'includes': [
-            '../../../build/lint.gypi',
+            '../../build/lint.gypi',
           ],
         },
       ],
@@ -72,27 +97,27 @@
         ['test_isolation_mode != "noop"', {
           'targets': [
             {
-              'target_name': 'peeracle_tracker_client_unittest_run',
+              'target_name': 'peeracle_websocketsclient_unittest_run',
               'type': 'none',
               'dependencies': [
-                'peeracle_tracker_client_unittest',
+                'peeracle_websocketsclient_unittest',
               ],
               'includes': [
-                '../../../build/isolate.gypi',
+                '../../build/isolate.gypi',
               ],
               'sources': [
-                'peeracle_tracker_client_unittest.isolate',
+                'peeracle_websocketsclient_unittest.isolate',
               ],
-            }
+            },
           ],
         }],
         ['OS=="android"', {
           'targets': [
             {
-              'target_name': 'peeracle_tracker_client_unittest_apk_target',
+              'target_name': 'peeracle_websocketsclient_unittest_apk_target',
               'type': 'none',
               'dependencies': [
-                '<(apk_tests_path):peeracle_tracker_client_unittest_apk',
+                '<(apk_tests_path):peeracle_websocketsclient_unittest_apk',
               ],
             },
           ],

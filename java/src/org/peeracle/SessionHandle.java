@@ -20,25 +20,24 @@
  * SOFTWARE.
  */
 
-package org.peeracle.DataSource;
+package org.peeracle;
 
-public class HttpDataSource implements DataSource {
-  public HttpDataSource(String url) {
-
+public class SessionHandle {
+  static {
+    System.loadLibrary("peeracle");
   }
 
-  @Override
-  public long open() {
-    return 0;
+  public static interface Observer {
   }
 
-  @Override
-  public void close() {
-
+  public SessionHandle(Metadata metadata, Observer observer) {
+    nativeSessionHandle = this.nativeCreateSessionHandle(metadata, observer);
   }
 
-  @Override
-  public int read(byte[] buffer, int length) {
-    return 0;
-  }
+  public native Metadata getMetadata();
+  public native void onPeer(Peer peer, long got, boolean poke);
+
+  public native long nativeCreateSessionHandle(Metadata metadata,
+                                               Observer observer);
+  private long nativeSessionHandle;
 }

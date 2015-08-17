@@ -21,7 +21,9 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "objc/public/DataStream.h"
 
+@class DataStream;
 @interface Metadata : NSObject
 
 @property(nonatomic, readonly) NSString* hash;
@@ -34,5 +36,8 @@
 @property(nonatomic, readonly) NSArray* streams;
 
 - (void)addTrackerUrl:(NSString*)url;
+
+- (bool)serialize:(DataStream*)dataStream;
+- (bool)unserialize:(DataStream*)dataStream;
 
 @end

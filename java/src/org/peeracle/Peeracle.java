@@ -23,7 +23,11 @@
 package org.peeracle;
 
 public class Peeracle {
-    public static native void Init();
-    public static native void Update();
-    public static native void Cleanup();
+  static {
+    System.loadLibrary("peeracle");
+  }
+
+  public static native void Init(Object context);
+  public static native void Update();
+  public static native void Cleanup();
 };

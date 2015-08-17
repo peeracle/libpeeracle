@@ -33,8 +33,15 @@
       'sources': [
         'public/peeracle.h',
         'peeracle.mm',
+
+        'public/DataStream.h',
+        'DataStream.mm',
+        'DataStream+Internal.h',
+
         'FileDataStream.h',
+        'FileDataStream+Internal.h',
         'FileDataStream.mm',
+
         'public/Metadata.h',
         'Metadata.mm',
         'Metadata+Internal.h',

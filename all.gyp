@@ -13,7 +13,7 @@
         'third_party/lzstringpp/lzstringpp.gyp:*'
       ],
       'conditions': [
-        ['OS == "mac"', {
+        ['OS == "ios" or OS == "mac"', {
           'dependencies': [
             'objc/peeracle_objc.gyp:*',
           ],

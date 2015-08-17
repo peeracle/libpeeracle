@@ -20,29 +20,26 @@
  * SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <string.h>
+#include <stdint.h>
 #include <algorithm>
-#include <cstring>
 #include <string>
-#include <sstream>
 #include <iostream>
 
-#include "third_party/libwebsockets/lib/libwebsockets.h"
-#include "peeracle/DataStream/MemoryDataStream.h"
-#include "peeracle/Tracker/Client/TrackerClient.h"
-#include "peeracle/Tracker/Client/TrackerClientImpl.h"
+#include "peeracle/WebSocketsClient/WebSocketsClient.h"
 #include "peeracle/Tracker/Message/TrackerMessage.h"
+#include "peeracle/DataStream/MemoryDataStream.h"
 
 namespace peeracle {
 
-int TrackerClient::TrackerClientImpl::Callback(
+static const std::string prclProtocol = "prcl-0.0.1";
+
+int WebSocketsClient::Callback(
   struct libwebsocket_context *context, struct libwebsocket *wsi,
   enum libwebsocket_callback_reasons reason, void *user, void *in, size_t len) {
   Userdata *userData =
     reinterpret_cast<Userdata *>(user);
 
-  TrackerClientImpl *client = NULL;
+  WebSocketsClient *client = NULL;
   unsigned char *buffer = NULL;
 
   if (userData) {
@@ -58,69 +55,82 @@ int TrackerClient::TrackerClientImpl::Callback(
       client->_observer->onDisconnect();
       break;
     }
-    case LWS_CALLBACK_CLIENT_CONNECTION_ERROR:
+
+    case LWS_CALLBACK_CLIENT_CONNECTION_ERROR: {
       if (!userData) {
         break;
       }
 
-      client->_observer->onConnectionError();
+      client->_observer->onError();
       return -1;
+    }
 
     case LWS_CALLBACK_CLIENT_ESTABLISHED: {
       if (!userData) {
         break;
       }
 
-      TrackerMessageInterface *msg =
+      /*TrackerMessageInterface *msg =
         new TrackerMessage(TrackerMessageInterface::kHello);
-      client->_messages.push(msg);
+      client->_messages.push(msg);*/
+
+      client->_observer->onConnect();
       lwsl_notice("Client has connected\n");
       break;
     }
 
     case LWS_CALLBACK_CLIENT_RECEIVE: {
-      int type;
-
       if (!userData) {
         break;
       }
 
-      DataStreamInit dsInit;
-      MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
-      TrackerMessageInterface *message = new TrackerMessage();
-
-      dataStream->write(reinterpret_cast<char *>(in), len);
-      dataStream->seek(0);
-      message->unserialize(dataStream);
-
-      type = message->getType();
-      std::cout << "Got message type " << static_cast<int>(type) << std::endl;
-      switch (type) {
-        case TrackerMessageInterface::kWelcome:
-        {
-          std::string id;
-
-          message->get("id", &id, "");
-
-          client->_observer->onConnect(id);
-        }
-        case TrackerMessageInterface::kPoke:
-        {
-          std::string hash;
-          std::string peer;
-          uint32_t got;
-
-          message->get("hash", &hash, "");
-          message->get("peer", &peer, "");
-          message->get("got", &got, 0);
-
-          client->_observer->onPeerConnect(hash, peer, got, true);
-        }
-        default:
-          break;
-      }
+      client->_observer->onMessage(reinterpret_cast<char *>(in), len);
       break;
     }
+
+      /*case LWS_CALLBACK_CLIENT_RECEIVE: {
+        int type;
+
+        if (!userData) {
+          break;
+        }
+
+        DataStreamInit dsInit;
+        MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
+        TrackerMessageInterface *message = new TrackerMessage();
+
+        dataStream->write(reinterpret_cast<char *>(in), len);
+        dataStream->seek(0);
+        message->unserialize(dataStream);
+
+        type = message->getType();
+        std::cout << "Got message type " << static_cast<int>(type) << std::endl;
+        switch (type) {
+          case TrackerMessageInterface::kWelcome:
+          {
+            std::string id;
+
+            message->get("id", &id, "");
+
+            client->_observer->onConnect();
+          }
+          case TrackerMessageInterface::kPoke:
+          {
+            std::string hash;
+            std::string peer;
+            uint32_t got;
+
+            message->get("hash", &hash, "");
+            message->get("peer", &peer, "");
+            message->get("got", &got, 0);
+
+            client->_observer->onPeerConnect(hash, peer, got, true);
+          }
+          default:
+            break;
+        }
+        break;
+      }*/
 
     case LWS_CALLBACK_CLIENT_WRITEABLE: {
       if (!userData || client->_messages.empty()) {
@@ -128,23 +138,18 @@ int TrackerClient::TrackerClientImpl::Callback(
       }
 
       int n;
-      DataStreamInit dsInit;
-      MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
-      TrackerMessageInterface *message = client->_messages.front();
-      std::streamsize length;
+      Message *message = client->_messages.front();
 
-      message->serialize(dataStream);
-      dataStream->seek(0);
-
-      length = dataStream->length();
-      dataStream->read(
-        reinterpret_cast<char *>(&buffer[LWS_SEND_BUFFER_PRE_PADDING]),
-        length);
+      memcpy(&buffer[LWS_SEND_BUFFER_PRE_PADDING], message->buffer,
+             message->length);
 
       n = libwebsocket_write(wsi, &buffer[LWS_SEND_BUFFER_PRE_PADDING],
-                             static_cast<size_t>(length), LWS_WRITE_BINARY);
+                             static_cast<size_t>(message->length),
+                             LWS_WRITE_BINARY);
 
       client->_messages.pop();
+
+      delete message->buffer;
       delete message;
 
       if (n < 0) {
@@ -152,7 +157,7 @@ int TrackerClient::TrackerClientImpl::Callback(
         return -1;
       }
 
-      if (n < static_cast<int>(length)) {
+      if (n < static_cast<int>(message->length)) {
         lwsl_err("Partial write\n");
         return -1;
       }
@@ -169,28 +174,19 @@ int TrackerClient::TrackerClientImpl::Callback(
   return 0;
 }
 
-TrackerClient::TrackerClientImpl::TrackerClientImpl(const std::string &url,
-                                     TrackerClientObserver *observer) :
-  _url(url), _observer(observer), _context(NULL), _wsi(NULL), _protocols(NULL) {
+WebSocketsClient::WebSocketsClient(const std::string &url,
+                                   WebSocketsClientObserver *observer) :
+  _url(url), _observer(observer) {
 #ifdef _DEBUG
   lws_set_log_level(LLL_ERR | LLL_WARN | LLL_NOTICE | LLL_INFO | LLL_DEBUG |
                     LLL_HEADER, NULL);
 #endif
 }
 
-TrackerClient::TrackerClientImpl::~TrackerClientImpl() {
-  if (_context) {
-    libwebsocket_context_destroy(_context);
-  }
-
-  if (_protocols) {
-    delete _protocols;
-  }
+WebSocketsClient::~WebSocketsClient() {
 }
 
-static const std::string prclProtocol = "prcl-0.0.1";
-
-bool TrackerClient::TrackerClientImpl::Init() {
+bool WebSocketsClient::Init() {
   struct lws_context_creation_info info;
 
   memset(&info, 0, sizeof info);
@@ -223,7 +219,7 @@ bool TrackerClient::TrackerClientImpl::Init() {
   return true;
 }
 
-bool TrackerClient::TrackerClientImpl::Connect() {
+bool WebSocketsClient::Connect() {
   char uri[256] = "/";
   int use_ssl = 0;
   std::string host;
@@ -289,15 +285,25 @@ bool TrackerClient::TrackerClientImpl::Connect() {
   return true;
 }
 
-bool TrackerClient::TrackerClientImpl::Update() {
+bool WebSocketsClient::Update() {
   if (_messages.size() > 0) {
     libwebsocket_callback_on_writable(_context, _wsi);
   }
   return libwebsocket_service(_context, 0) >= 0;
 }
 
-void TrackerClient::TrackerClientImpl::Send(TrackerMessageInterface *message) {
+bool WebSocketsClient::Send(const char *buffer, size_t length) {
+  Message *message = new Message;
+
+  message->buffer = buffer;
+  message->length = length;
+
   _messages.push(message);
+  return true;
+}
+
+bool WebSocketsClient::Disconnect() {
+  return true;
 }
 
 }  // namespace peeracle

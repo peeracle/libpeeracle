@@ -20,11 +20,20 @@
  * SOFTWARE.
  */
 
-#include <stdint.h>
-#include <string>
+#import "DataStream+Internal.h"
 
-#include "peeracle/Tracker/Client/WebSocketsClient.h"
+#include "peeracle/DataStream/DataStream.h"
 
-namespace peeracle {
+@implementation DataStream
 
-}  // namespace peeracle
+@synthesize nativeDataStream = _nativeDataStream;
+
+- (void*) nativeDataStream {
+  return _nativeDataStream;
+}
+
+- (void) setNativeDataStream:(peeracle::DataStream *)nativeDataStream {
+  _nativeDataStream = nativeDataStream;
+}
+
+@end

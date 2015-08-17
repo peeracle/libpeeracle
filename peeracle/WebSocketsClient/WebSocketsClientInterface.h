@@ -20,26 +20,22 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-
-#include <stdint.h>
-#include <string>
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
 
 namespace peeracle {
 
-class TrackerClientInterface {
+class WebSocketsClientInterface {
  public:
-  virtual ~TrackerClientInterface() {}
+  virtual ~WebSocketsClientInterface() {}
 
   virtual bool Init() = 0;
   virtual bool Connect() = 0;
   virtual bool Update() = 0;
-
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
+  virtual bool Send(const char *buffer, size_t length) = 0;
+  virtual bool Disconnect() = 0;
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_

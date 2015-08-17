@@ -20,26 +20,33 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+package org.peeracle;
 
-#include <stdint.h>
-#include <string>
+import java.lang.String;
+import java.util.ArrayList;
 
-namespace peeracle {
+public class MetadataStream {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
+  public MetadataStream(long nativeMetadataStream) {
+    this.nativeMetadataStream = nativeMetadataStream;
+  }
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
+  public native char getType();
+  public native String getMimeType();
+  public native long getBandwidth();
+  public native int getWidth();
+  public native int getHeight();
+  public native int getNumChannels();
+  public native int getSamplingFrequency();
+  public native long getChunkSize();
+  public native byte[] getInitSegment();
+  public native long getInitSegmentLength();
+  public native ArrayList<MetadataMediaSegment> getMediaSegments();
+  public native boolean unserialize(DataStream dataStream,
+                                    String hashName, Hash hash);
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
-
-}  // namespace peeracle
-
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+  public final long nativeMetadataStream;
+}

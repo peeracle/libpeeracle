@@ -103,6 +103,20 @@
       ],
     },
     {
+      'target_name': 'peeracle_websocketsclient_unittest_apk',
+      'type': 'none',
+      'variables': {
+        'test_suite_name': 'peeracle_websocketsclient_unittest',
+        'input_shlib_path': '<(SHARED_LIB_DIR)/<(SHARED_LIB_PREFIX)peeracle_websocketsclient_unittest<(SHARED_LIB_SUFFIX)',
+      },
+      'dependencies': [
+        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient_unittest',
+      ],
+      'includes': [
+        '../../third_party/webrtc/build/apk_test.gypi',
+      ],
+    },
+    {
       'target_name': 'peeracle_tracker_client_unittest_apk',
       'type': 'none',
       'variables': {

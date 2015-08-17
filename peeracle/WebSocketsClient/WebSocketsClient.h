@@ -20,43 +20,51 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTIMPL_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTIMPL_H_
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
 
-#include <queue>
 #include <string>
+#include <queue>
 
+#ifdef USE_LIBWEBSOCKETS
 #include "third_party/libwebsockets/lib/libwebsockets.h"
-#include "peeracle/Tracker/Message/TrackerMessageInterface.h"
-#include "peeracle/Tracker/Client/TrackerClientObserver.h"
+#endif
+#include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
 
 namespace peeracle {
 
 #define MAX_TRACKER_PAYLOAD 32768
 
-class TrackerClient::TrackerClientImpl {
+class WebSocketsClient : public WebSocketsClientInterface {
  public:
-  explicit TrackerClientImpl(const std::string &url,
-                             TrackerClientObserver *observer);
-  ~TrackerClientImpl();
+  WebSocketsClient(const std::string& url, WebSocketsClientObserver *observer);
+  ~WebSocketsClient();
 
   bool Init();
   bool Connect();
   bool Update();
-  void Send(TrackerMessageInterface *message);
+  bool Send(const char *buffer, size_t length);
+  bool Disconnect();
 
- protected:
-  const std::string _url;
-  TrackerClientObserver *_observer;
+ private:
+  const std::string &_url;
+  WebSocketsClientObserver *_observer;
 
+#ifdef USE_LIBWEBSOCKETS
   struct libwebsocket_context *_context;
   struct libwebsocket *_wsi;
   struct libwebsocket_protocols *_protocols;
 
-  std::queue<TrackerMessageInterface *> _messages;
+  struct Message {
+    const char *buffer;
+    size_t length;
+  };
+
+  std::queue<Message *> _messages;
 
   struct Userdata {
-    TrackerClientImpl *client;
+    WebSocketsClient *client;
     unsigned char buffer[LWS_SEND_BUFFER_PRE_PADDING +
                          MAX_TRACKER_PAYLOAD +
                          LWS_SEND_BUFFER_POST_PADDING];
@@ -66,8 +74,9 @@ class TrackerClient::TrackerClientImpl {
                       struct libwebsocket *wsi,
                       enum libwebsocket_callback_reasons reason,
                       void *user, void *in, size_t len);
+#endif
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTIMPL_H_
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_

@@ -20,20 +20,30 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/testing/gtest/include/gtest/gtest.h"
-#include "peeracle/Tracker/Client/WebSocketsClient.h"
+package org.peeracle;
 
-namespace peeracle {
+import java.util.Map;
 
-class WebSocketsClientTest : public testing::Test {
- protected:
-  virtual void SetUp() {
+public class Session {
+  static {
+    System.loadLibrary("peeracle");
   }
 
-  virtual void TearDown() {
+  public static interface Observer {
   }
 
-  WebSocketsClient *_client;
-};
+  public Session(Observer observer) {
+    nativeSession = this.nativeCreateSession(observer);
+  }
 
-}  // namespace peeracle
+  public native boolean update();
+  public native SessionHandle addMetadata(Metadata metadata,
+                                          SessionHandle.Observer observer);
+  public native void addPeer(String id, Peer peer);
+
+  public native Map<String, Peer> getPeers();
+  public native Map<String, SessionHandle> getHandles();
+
+  public native long nativeCreateSession(Observer observer);
+  private long nativeSession;
+}

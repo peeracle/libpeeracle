@@ -20,26 +20,25 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Session/SessionHandle.h"
 
-#include <stdint.h>
-#include <string>
+using namespace webrtc_jni;
 
-namespace peeracle {
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
+#define JOPSH(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_SessionHandle_##name
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
+JOPSH(jobject, getMetadata)(JNIEnv *, jobject) {
+  return NULL;
+}
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
+JOPSH(void, onPeer)(JNIEnv *, jobject, jobject, jlong, jboolean) {
+}
 
-}  // namespace peeracle
-
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#ifdef __cplusplus
+}
+#endif

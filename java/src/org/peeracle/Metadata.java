@@ -1,13 +1,56 @@
+/*
+ * Copyright (c) 2015 peeracle contributors
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.peeracle;
 
+import java.lang.String;
+import java.util.ArrayList;
+
 public class Metadata {
-    public Metadata(long nativeMetadata) {
-        this.nativeMetadata = nativeMetadata;
-    }
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-    public native void unserialize(DataStream dataStream);
+  public Metadata() {
+    this.nativeMetadata = this.nativeCreateMetadata();
+  }
 
-    public native void dispose();
+  public native String getId();
+  public native long getMagic();
+  public native long getVersion();
+  public native String getHashAlgorithm();
+  public native long getTimecodeScale();
+  public native double getDuration();
+  public native ArrayList<String> getTrackerUrls();
+  public native ArrayList<MetadataStream> getStreams();
 
-    public final long nativeMetadata;
+  public native void setHashAlgorithm(String hashAlgorithm);
+  public native void setTimecodeScale(long timecodeScale);
+  public native void setDuration(double duration);
+  public native void addTracker(String tracker);
+
+  public native boolean serialize(DataStream dataStream);
+  public native boolean unserialize(DataStream dataStream);
+
+  public native long nativeCreateMetadata();
+  public final long nativeMetadata;
 }

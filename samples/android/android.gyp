@@ -45,6 +45,8 @@
          ],
         'native_lib_target': 'libpeeracle',
         'add_to_dependents_classpaths':1,
+	'android_app_version_name%': 'Developer Build',
+	'android_app_version_code%': 1,
       },
       'includes': [ '../../third_party/webrtc/build/java_apk.gypi' ],
     },  # target PeeracleDemo

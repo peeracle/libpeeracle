@@ -20,26 +20,12 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#import <Foundation/Foundation.h>
+#import "objc/public/DataStream.h"
+#include "peeracle/DataStream/DataStream.h"
 
-#include <stdint.h>
-#include <string>
+@interface DataStream ()
 
-namespace peeracle {
+@property(nonatomic, assign) peeracle::DataStream *nativeDataStream;
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
-
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
-
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
-
-}  // namespace peeracle
-
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+@end

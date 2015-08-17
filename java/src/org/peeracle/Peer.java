@@ -20,26 +20,35 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+package org.peeracle;
 
-#include <stdint.h>
-#include <string>
+public class Peer {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-namespace peeracle {
+  public static interface Observer {
+  }
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
+  public static interface CreateSDPObserver {
+  }
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
+  public static interface SetSDPObserver {
+  }
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
+  public Peer(String id, TrackerClient tracker, Observer observer) {
+    nativePeer = this.nativeCreatePeer(id, tracker, observer);
+  }
 
-}  // namespace peeracle
+  public native void CreateOffer(CreateSDPObserver observer);
+  public native void CreateAnswer(String sdp, CreateSDPObserver observer);
+  public native void SetAnswer(String sdp, SetSDPObserver observer);
+  public native void AddICECandidate(String sdpMid, int sdpMLineIndex,
+                                     String candidate);
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+  public native String getId();
+
+  public native long nativeCreatePeer(String id, TrackerClient tracker,
+                                      Observer observer);
+  private long nativePeer;
+}

@@ -20,26 +20,35 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "third_party/webrtc/webrtc/voice_engine/include/voe_base.h"
+#include "peeracle/peeracle.h"
 
-#include <stdint.h>
-#include <string>
+using namespace webrtc_jni;
 
-namespace peeracle {
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
+#define JOPP(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Peeracle_##name
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
+JOPP(void, Init)(JNIEnv *jni, jclass, jobject context) {
+  CHECK(webrtc::VoiceEngine::SetAndroidObjects(GetJVM(), context) == 0) <<
+        "Failed to register android objects to voice engine";
+  peeracle::init();
+}
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
+JOPP(void, Update)(JNIEnv *jni, jclass) {
+  peeracle::update();
+}
 
-}  // namespace peeracle
+JOPP(void, Cleanup)(JNIEnv *jni, jclass) {
+  CHECK(webrtc::VoiceEngine::SetAndroidObjects(NULL, NULL) == 0) <<
+        "Failed to unregister android objects from voice engine";
+  peeracle::cleanup();
+}
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#ifdef __cplusplus
+}
+#endif

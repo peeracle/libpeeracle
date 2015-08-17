@@ -20,26 +20,41 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Session/Session.h"
 
-#include <stdint.h>
-#include <string>
+using namespace webrtc_jni;
 
-namespace peeracle {
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-class TrackerClientInterface {
- public:
-  virtual ~TrackerClientInterface() {}
+#define JOPS(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Session_##name
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
+JOPS(jboolean, update)(JNIEnv *, jobject) {
+  return static_cast<jboolean>(NULL);
+}
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
-  virtual const std::string &getUrl() const = 0;
-};
+JOPS(jobject, addMetadata)(JNIEnv *, jobject, jobject, jobject) {
+  return NULL;
+}
 
-}  // namespace peeracle
+JOPS(void, addPeer)(JNIEnv *, jobject, jstring, jobject) {
+}
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENTINTERFACE_H_
+JOPS(jobject, getPeers)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPS(jobject, getHandles)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPS(jlong, nativeCreateSession)(JNIEnv *, jobject, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
+#ifdef __cplusplus
+}
+#endif

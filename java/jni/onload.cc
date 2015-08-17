@@ -20,14 +20,17 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENTINTERFACE_H_
-#define PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "java/jni/classreferenceholder.h"
 
-namespace peeracle {
+using namespace webrtc_jni;
 
-class WebSocketsClientInterface {
-};
+extern "C" jint JNIEXPORT JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
+  InitGlobalJniVariables(vm);
+  LoadGlobalClassReferenceHolder();
+  return JNI_VERSION_1_6;
+}
 
-}  // namespace peeracle
-
-#endif  // PEERACLE_TRACKER_CLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+extern "C" void JNIEXPORT JNICALL JNI_OnUnLoad(JavaVM *jvm, void *reserved) {
+  FreeGlobalClassReferenceHolder();
+}
