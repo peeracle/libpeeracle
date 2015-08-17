@@ -20,28 +20,30 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_JNI_H_
-#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_JNI_H_
+package org.peeracle;
 
-#include <stddef.h>
-#include <string>
-#include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
-#include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
+import java.util.Map;
 
-namespace peeracle {
+public class Session {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-class WebSocketsClient : public WebSocketsClientInterface {
- public:
-  WebSocketsClient(const std::string& url, WebSocketsClientObserver *observer);
-  ~WebSocketsClient();
+  public static interface Observer {
+  }
 
-  bool Init();
-  bool Connect();
-  bool Update();
-  bool Send(const char *buffer, size_t length);
-  bool Disconnect();
-};
+  public Session(Observer observer) {
+    nativeSession = this.nativeCreateSession(observer);
+  }
 
-}  // namespace peeracle
+  public native boolean update();
+  public native SessionHandle addMetadata(Metadata metadata,
+                                          SessionHandle.Observer observer);
+  public native void addPeer(String id, Peer peer);
 
-#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_JNI_H_
+  public native Map<String, Peer> getPeers();
+  public native Map<String, SessionHandle> getHandles();
+
+  public native long nativeCreateSession(Observer observer);
+  private long nativeSession;
+}

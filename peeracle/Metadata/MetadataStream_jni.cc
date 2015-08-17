@@ -20,49 +20,66 @@
  * SOFTWARE.
  */
 
-#include <string>
 #include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
-#include "peeracle/WebSocketsClient/WebSocketsClient.h"
+#include "peeracle/Metadata/MetadataStream.h"
 
-namespace peeracle {
-
-WebSocketsClient::WebSocketsClient(const std::string& url,
-                                   WebSocketsClientObserver *observer)
-  : _url(url), _observer(observer) {
-}
-
-WebSocketsClient::~WebSocketsClient() {
-}
-
-bool WebSocketsClient::Init() {
-  return false;
-}
-
-bool WebSocketsClient::Connect() {
-  return false;
-}
-
-bool WebSocketsClient::Update() {
-  return false;
-}
-
-bool WebSocketsClient::Send(const char *buffer, size_t length) {
-  return false;
-}
-
-bool WebSocketsClient::Disconnect() {
-  return false;
-}
+using namespace webrtc_jni;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define JOPWSC(rettype, name) \
-  rettype JNIEXPORT JNICALL Java_org_peeracle_WebSocketsClient_##name
+#define JOPMS(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_MetadataStream_##name
+
+JOPMS(jchar, getType)(JNIEnv *, jobject) {
+  return static_cast<jchar>(NULL);
+}
+
+JOPMS(jstring, getMimeType)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPMS(jlong, getBandwidth)(JNIEnv *, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
+JOPMS(jint, getWidth)(JNIEnv *, jobject) {
+  return static_cast<jint>(NULL);
+}
+
+JOPMS(jint, getHeight)(JNIEnv *, jobject) {
+  return static_cast<jint>(NULL);
+}
+
+JOPMS(jint, getNumChannels)(JNIEnv *, jobject) {
+  return static_cast<jint>(NULL);
+}
+
+JOPMS(jint, getSamplingFrequency)(JNIEnv *, jobject) {
+  return static_cast<jint>(NULL);
+}
+
+JOPMS(jlong, getChunkSize)(JNIEnv *, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
+JOPMS(jbyteArray, getInitSegment)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPMS(jlong, getInitSegmentLength)(JNIEnv *, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
+JOPMS(jobject, getMediaSegments)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPMS(jboolean, unserialize)(JNIEnv *, jobject, jobject, jstring, jobject) {
+  return static_cast<jboolean>(NULL);
+}
 
 #ifdef __cplusplus
 }
 #endif
-
-}  // namespace peeracle

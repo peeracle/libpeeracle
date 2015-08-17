@@ -20,9 +20,35 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+package org.peeracle;
 
-#include <jni.h>
+public class Peer {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+  public static interface Observer {
+  }
+
+  public static interface CreateSDPObserver {
+  }
+
+  public static interface SetSDPObserver {
+  }
+
+  public Peer(String id, TrackerClient tracker, Observer observer) {
+    nativePeer = this.nativeCreatePeer(id, tracker, observer);
+  }
+
+  public native void CreateOffer(CreateSDPObserver observer);
+  public native void CreateAnswer(String sdp, CreateSDPObserver observer);
+  public native void SetAnswer(String sdp, SetSDPObserver observer);
+  public native void AddICECandidate(String sdpMid, int sdpMLineIndex,
+                                     String candidate);
+
+  public native String getId();
+
+  public native long nativeCreatePeer(String id, TrackerClient tracker,
+                                      Observer observer);
+  private long nativePeer;
+}

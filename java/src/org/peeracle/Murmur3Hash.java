@@ -20,9 +20,32 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+package org.peeracle;
 
-#include <jni.h>
+public class Murmur3Hash extends Hash {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+  public Murmur3Hash() {
+    nativeMurmur3Hash = this.nativeCreateMurmur3Hash();
+  }
+
+  @Override
+  public native void init();
+
+  @Override
+  public native void update(DataStream dataStream);
+
+  @Override
+  public native void update(byte[] buffer, long length);
+
+  @Override
+  public native byte[] finish();
+
+  @Override
+  public native byte[] checksum(DataStream dataStream);
+
+  public native long nativeCreateMurmur3Hash();
+  public final long nativeMurmur3Hash;
+}

@@ -20,9 +20,33 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+package org.peeracle;
 
-#include <jni.h>
+import java.lang.String;
+import java.util.ArrayList;
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+public class MetadataStream {
+  static {
+    System.loadLibrary("peeracle");
+  }
+
+  public MetadataStream(long nativeMetadataStream) {
+    this.nativeMetadataStream = nativeMetadataStream;
+  }
+
+  public native char getType();
+  public native String getMimeType();
+  public native long getBandwidth();
+  public native int getWidth();
+  public native int getHeight();
+  public native int getNumChannels();
+  public native int getSamplingFrequency();
+  public native long getChunkSize();
+  public native byte[] getInitSegment();
+  public native long getInitSegmentLength();
+  public native ArrayList<MetadataMediaSegment> getMediaSegments();
+  public native boolean unserialize(DataStream dataStream,
+                                    String hashName, Hash hash);
+
+  public final long nativeMetadataStream;
+}

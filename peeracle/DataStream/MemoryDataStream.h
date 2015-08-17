@@ -44,9 +44,9 @@ class MemoryDataStream : public DataStream {
   explicit MemoryDataStream(const DataStreamInit &dsInit);
   ~MemoryDataStream();
 
-  std::streamsize length() const;
+  std::streamsize length();
   std::streamsize seek(std::streamsize position);
-  std::streamsize tell() const;
+  std::streamsize tell();
 
  private:
   std::streamsize vread(char *buffer, std::streamsize length);

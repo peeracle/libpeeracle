@@ -20,9 +20,41 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Session/Session.h"
 
-#include <jni.h>
+using namespace webrtc_jni;
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define JOPS(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Session_##name
+
+JOPS(jboolean, update)(JNIEnv *, jobject) {
+  return static_cast<jboolean>(NULL);
+}
+
+JOPS(jobject, addMetadata)(JNIEnv *, jobject, jobject, jobject) {
+  return NULL;
+}
+
+JOPS(void, addPeer)(JNIEnv *, jobject, jstring, jobject) {
+}
+
+JOPS(jobject, getPeers)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPS(jobject, getHandles)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPS(jlong, nativeCreateSession)(JNIEnv *, jobject, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
+#ifdef __cplusplus
+}
+#endif

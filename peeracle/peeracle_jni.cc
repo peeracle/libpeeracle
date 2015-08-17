@@ -20,9 +20,35 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "third_party/webrtc/webrtc/voice_engine/include/voe_base.h"
+#include "peeracle/peeracle.h"
 
-#include <jni.h>
+using namespace webrtc_jni;
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define JOPP(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Peeracle_##name
+
+JOPP(void, Init)(JNIEnv *jni, jclass, jobject context) {
+  CHECK(webrtc::VoiceEngine::SetAndroidObjects(GetJVM(), context) == 0) <<
+        "Failed to register android objects to voice engine";
+  peeracle::init();
+}
+
+JOPP(void, Update)(JNIEnv *jni, jclass) {
+  peeracle::update();
+}
+
+JOPP(void, Cleanup)(JNIEnv *jni, jclass) {
+  CHECK(webrtc::VoiceEngine::SetAndroidObjects(NULL, NULL) == 0) <<
+        "Failed to unregister android objects from voice engine";
+  peeracle::cleanup();
+}
+
+#ifdef __cplusplus
+}
+#endif

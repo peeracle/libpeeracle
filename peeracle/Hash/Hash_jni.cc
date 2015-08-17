@@ -20,12 +20,61 @@
  * SOFTWARE.
  */
 
-package org.peeracle.DataSource;
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Hash/HashInterface.h"
 
-import java.io.IOException;
+using namespace webrtc_jni;
 
-public interface DataSource {
-  long open();
-  void close();
-  int read(byte[] buffer, int length);
+namespace peeracle {
+
+class JNIHash : public HashInterface {
+ public:
+  JNIHash(JNIEnv *jni, jobject j_Hash)
+    : _j_global(jni, j_Hash),
+      _j_class(jni, GetObjectClass(jni, j_Hash)) {
+  }
+
+  ~JNIHash() {
+  }
+
+  void init() {
+  }
+
+  void update(DataStream *dataStream) {
+  }
+
+  void update(const uint8_t *buffer, size_t length) {
+  }
+
+  void final(uint8_t *result) {
+  }
+
+  void checksum(DataStream *dataStream, uint8_t *result) {
+  }
+
+ private:
+  JNIEnv* jni() {
+    return AttachCurrentThreadIfNeeded();
+  }
+
+  const ScopedGlobalRef<jobject> _j_global;
+  const ScopedGlobalRef<jclass> _j_class;
+};
+
 }
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define JOPH(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Hash_##name
+
+JOPH(jlong, nativeCreateHash)(JNIEnv *jni, jobject j_this) {
+  peeracle::HashInterface *hash = new peeracle::JNIHash(jni, j_this);
+  return jlongFromPointer(hash);
+}
+
+#ifdef __cplusplus
+}
+#endif

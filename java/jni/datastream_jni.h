@@ -42,7 +42,7 @@ class DataStreamJava : public peeracle::DataStream {
  private:
   JNIEnv* jni() {
     void* env = NULL;
-    g_jvm->GetEnv(&env, JNI_VERSION_1_6);
+    g_JVM->GetEnv(&env, JNI_VERSION_1_6);
     return reinterpret_cast<JNIEnv *>(env);
   }
 

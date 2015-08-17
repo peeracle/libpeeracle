@@ -20,49 +20,63 @@
  * SOFTWARE.
  */
 
-#include <string>
 #include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
-#include "peeracle/WebSocketsClient/WebSocketsClient.h"
+#include "peeracle/Hash/Murmur3Hash.h"
+
+using namespace webrtc_jni;
 
 namespace peeracle {
 
-WebSocketsClient::WebSocketsClient(const std::string& url,
-                                   WebSocketsClientObserver *observer)
-  : _url(url), _observer(observer) {
-}
+class JNIMurmur3Hash : public Murmur3Hash {
+ public:
+  JNIMurmur3Hash(JNIEnv *jni, jobject j_Murmur3Hash)
+    : _j_global(jni, j_Murmur3Hash),
+      _j_class(jni, GetObjectClass(jni, j_Murmur3Hash)) {
+  }
 
-WebSocketsClient::~WebSocketsClient() {
-}
+  ~JNIMurmur3Hash() {
+  }
 
-bool WebSocketsClient::Init() {
-  return false;
-}
+ private:
+  JNIEnv* jni() {
+    return AttachCurrentThreadIfNeeded();
+  }
 
-bool WebSocketsClient::Connect() {
-  return false;
-}
+  const ScopedGlobalRef<jobject> _j_global;
+  const ScopedGlobalRef<jclass> _j_class;
+};
 
-bool WebSocketsClient::Update() {
-  return false;
-}
-
-bool WebSocketsClient::Send(const char *buffer, size_t length) {
-  return false;
-}
-
-bool WebSocketsClient::Disconnect() {
-  return false;
 }
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-#define JOPWSC(rettype, name) \
-  rettype JNIEXPORT JNICALL Java_org_peeracle_WebSocketsClient_##name
+#define JOPM(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Murmur3Hash_##name
+
+JOPM(void, init)(JNIEnv *, jobject) {
+}
+
+JOPM(void, update__Lorg_peeracle_DataStream_2)(JNIEnv *, jobject, jobject) {
+}
+
+JOPM(void, update___3BJ)(JNIEnv *, jobject, jbyteArray, jlong) {
+}
+
+JOPM(jbyteArray, finish)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPM(jbyteArray, checksum)(JNIEnv *, jobject, jobject) {
+  return NULL;
+}
+
+JOPM(jlong, nativeCreateMurmur3Hash)(JNIEnv *env, jobject j_this) {
+  peeracle::Murmur3Hash *hash = new peeracle::JNIMurmur3Hash(env, j_this);
+  return jlongFromPointer(hash);
+}
 
 #ifdef __cplusplus
 }
 #endif
-
-}  // namespace peeracle

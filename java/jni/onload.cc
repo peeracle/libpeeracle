@@ -20,24 +20,17 @@
  * SOFTWARE.
  */
 
-package org.peeracle.DataSource;
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "java/jni/classreferenceholder.h"
 
-public class FileDataSource implements DataSource {
-  public FileDataSource(String filename) {
-  }
+using namespace webrtc_jni;
 
-  @Override
-  public long open() {
-    return 0;
-  }
+extern "C" jint JNIEXPORT JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
+  InitGlobalJniVariables(vm);
+  LoadGlobalClassReferenceHolder();
+  return JNI_VERSION_1_6;
+}
 
-  @Override
-  public void close() {
-
-  }
-
-  @Override
-  public int read(byte[] buffer, int length) {
-    return 0;
-  }
+extern "C" void JNIEXPORT JNICALL JNI_OnUnLoad(JavaVM *jvm, void *reserved) {
+  FreeGlobalClassReferenceHolder();
 }

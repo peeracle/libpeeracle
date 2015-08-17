@@ -183,6 +183,9 @@ WebSocketsClient::WebSocketsClient(const std::string &url,
 #endif
 }
 
+WebSocketsClient::~WebSocketsClient() {
+}
+
 bool WebSocketsClient::Init() {
   struct lws_context_creation_info info;
 

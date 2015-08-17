@@ -55,7 +55,6 @@
         }],
         ['OS=="android"', {
           'sources': [
-            'WebSocketsClient_jni.h',
             'WebSocketsClient_jni.cc',
           ],
           'includes': [

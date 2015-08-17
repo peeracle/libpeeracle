@@ -39,6 +39,7 @@ namespace peeracle {
 class WebSocketsClient : public WebSocketsClientInterface {
  public:
   WebSocketsClient(const std::string& url, WebSocketsClientObserver *observer);
+  ~WebSocketsClient();
 
   bool Init();
   bool Connect();

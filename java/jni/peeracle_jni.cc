@@ -24,49 +24,20 @@
 #include <stdlib.h>
 #include <string.h>
 #include <jni.h>
-#include "java/jni/peeracle_jni.h"
-#include "peeracle/Session/Session.h"
-#include "peeracle/peeracle.h"
+#include "helpers.h"
 
-JavaVM *g_jvm;
+static JavaVM *g_jvm = NULL;
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 jint JNIEXPORT JNI_OnLoad(JavaVM *vm, void *reserved) {
-  printf("appel a init\n");
-  g_jvm = vm;
-  // peeracle::init();
-  return JNI_VERSION_1_6;
+  CHECK(!g_jvm, "OnLoad called more than once");
+  return JNI_VERSION_1_4;
 }
 
 void JNIEXPORT JNI_OnUnload(JavaVM *vm, void *reserved) {
-  printf("appel cleanup\n");
-  peeracle::cleanup();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Init(JNIEnv *, jclass) {
-  printf("appel a init\n");
-  peeracle::init();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Update(JNIEnv *, jclass) {
-  printf("appel update\n");
-  peeracle::update();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Peeracle_Cleanup(JNIEnv *, jclass) {
-  printf("appel cleanup\n");
-  peeracle::cleanup();
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Metadata_unserialize
-  (JNIEnv *, jobject j_this, jobject j_dataStream) {
-}
-
-JNIEXPORT void JNICALL Java_org_peeracle_Metadata_dispose
-  (JNIEnv *, jobject j_this) {
 }
 
 #ifdef __cplusplus

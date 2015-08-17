@@ -20,9 +20,25 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+package org.peeracle;
 
-#include <jni.h>
+public class WebSocketsClient {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+  public static interface Observer {
+    public void onConnect();
+    public void onMessage(byte[] buffer, long length);
+    public void onDisconnect();
+    public void onError();
+  }
+
+  public WebSocketsClient(String url, Observer observer) {
+    nativeWebSocketsClient = this.nativeCreateWebSocketsClient(url, observer);
+  }
+
+  public native long nativeCreateWebSocketsClient(String url,
+                                                  Observer observer);
+  private long nativeWebSocketsClient;
+}

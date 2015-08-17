@@ -20,9 +20,38 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Peer/Peer.h"
 
-#include <jni.h>
+using namespace webrtc_jni;
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define JOPP(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Peer_##name
+
+JOPP(void, CreateOffer)(JNIEnv *, jobject, jobject) {
+}
+
+JOPP(void, CreateAnswer)(JNIEnv *, jobject, jstring, jobject) {
+}
+
+JOPP(void, SetAnswer)(JNIEnv *, jobject, jstring, jobject) {
+}
+
+JOPP(void, AddICECandidate)(JNIEnv *, jobject, jstring, jint, jstring) {
+}
+
+JOPP(jstring, getId)(JNIEnv *, jobject) {
+  return NULL;
+}
+
+JOPP(jlong, nativeCreatePeer)(JNIEnv *, jobject, jstring, jobject, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
+#ifdef __cplusplus
+}
+#endif

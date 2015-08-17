@@ -20,9 +20,34 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+package org.peeracle;
 
-#include <jni.h>
+public class Hash {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+  public Hash() {
+    this.nativeHash = this.nativeCreateHash();
+  }
+
+  public void init() {
+  }
+
+  public void update(DataStream dataStream) {
+  }
+
+  public void update(byte[] buffer, long length) {
+  }
+
+  public byte[] finish() {
+    return null;
+  }
+
+  public byte[] checksum(DataStream dataStream) {
+    return null;
+  }
+
+  public native long nativeCreateHash();
+  public final long nativeHash;
+}

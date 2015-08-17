@@ -20,9 +20,16 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Tracker/Client/TrackerClient.h"
 
-#include <jni.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+#define JOPT(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_TrackerClient_##name
+
+#ifdef __cplusplus
+}
+#endif

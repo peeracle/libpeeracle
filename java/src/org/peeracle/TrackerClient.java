@@ -20,9 +20,31 @@
  * SOFTWARE.
  */
 
-#ifndef JAVA_JNI_PEERACLE_JNI_H_
-#define JAVA_JNI_PEERACLE_JNI_H_
+package org.peeracle;
 
-#include <jni.h>
+public class TrackerClient {
+  static {
+    System.loadLibrary("peeracle");
+  }
 
-#endif  // JAVA_JNI_PEERACLE_JNI_H_
+  public static interface Observer {
+    public void onConnect();
+    public void onPeerConnect(String hash, String peerId, long got,
+                              boolean poke);
+    public void onDisconnect();
+    public void onError();
+  }
+
+  public TrackerClient(String url, Observer observer) {
+    nativeTrackerClient = this.nativeCreateTrackerClient(url, observer);
+  }
+
+  public native boolean Init();
+  public native boolean Connect();
+  public native boolean Update();
+  public native String getUrl();
+  public native void announce(String id, long got);
+
+  public native long nativeCreateTrackerClient(String url, Observer observer);
+  private long nativeTrackerClient;
+}
