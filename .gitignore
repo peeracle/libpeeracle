@@ -8,3 +8,4 @@ atlassian-ide-plugin.xml
 java/libpeeracle.iml
 third_party/android_sdk
 third_party/android_ndk
+samples/android/app/src/main/res/raw
