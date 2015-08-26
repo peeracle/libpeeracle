@@ -21,7 +21,6 @@ android {
         main {
             java.srcDirs = ['src/main/src']
             res.srcDirs = ['src/main/res']
-            jniLibs.srcDir '../../../out/Debug/PeeracleDemo/libs'
         }
 
         androidTest {
@@ -32,4 +31,5 @@ android {
 
 dependencies {
     compile files('../../../out/Debug/libpeeracle.jar')
+    compile files('../../../java/third_party/autobanh/autobanh.jar')
 }

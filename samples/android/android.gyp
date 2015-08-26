@@ -37,16 +37,16 @@
         'resource_dir': 'app/src/main/res',
         'R_package': 'org.peeracle.peeracledemo',
         'R_package_relpath': 'org/peeracle/peeracledemo',
-        'input_jars_paths': [
-          'third_party/autobanh/autobanh.jar',
-         ],
-        'library_dexed_jars_paths': [
-          'third_party/autobanh/autobanh.jar',
-         ],
+        #'input_jars_paths': [
+        #  'third_party/autobanh/autobanh.jar',
+        # ],
+        #'library_dexed_jars_paths': [
+        #  'third_party/autobanh/autobanh.jar',
+        # ],
         'native_lib_target': 'libpeeracle',
         'add_to_dependents_classpaths':1,
-	'android_app_version_name%': 'Developer Build',
-	'android_app_version_code%': 1,
+	      'android_app_version_name%': 'Developer Build',
+	      'android_app_version_code%': 2,
       },
       'includes': [ '../../third_party/webrtc/build/java_apk.gypi' ],
     },  # target PeeracleDemo

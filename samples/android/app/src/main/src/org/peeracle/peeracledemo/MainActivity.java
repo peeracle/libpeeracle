@@ -6,10 +6,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import org.peeracle.Metadata;
+import org.peeracle.MetadataStream;
+import org.peeracle.Session;
+import org.peeracle.SessionHandle;
+
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     FileDataStream fileDataStream;
     Metadata m;
+
+    private class MySessionObserver implements Session.Observer {
+    }
+
+    private class MySessionHandleObserver implements SessionHandle.Observer {
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +31,15 @@ public class MainActivity extends Activity {
         m = new Metadata();
         m.unserialize(fileDataStream);
 
+        String id = m.getId();
+        ArrayList<String> astr = m.getTrackerUrls();
+        ArrayList<MetadataStream> mstr = m.getStreams();
+
+        final MySessionObserver sessObserver = new MySessionObserver();
+        Session sess = new Session(sessObserver);
+
+        final MySessionHandleObserver sessHandleObserver = new MySessionHandleObserver();
+        SessionHandle handle = sess.addMetadata(m, sessHandleObserver);
     }
 
     @Override

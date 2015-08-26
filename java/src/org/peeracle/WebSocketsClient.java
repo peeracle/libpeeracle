@@ -22,23 +22,55 @@
 
 package org.peeracle;
 
+import de.tavendo.autobahn.WebSocket.WebSocketConnectionObserver;
+import de.tavendo.autobahn.WebSocketConnection;
+import de.tavendo.autobahn.WebSocketException;
+
 public class WebSocketsClient {
   static {
     System.loadLibrary("peeracle");
   }
 
-  public static interface Observer {
-    public void onConnect();
-    public void onMessage(byte[] buffer, long length);
-    public void onDisconnect();
-    public void onError();
+  public class Observer {
+    public Observer(long nativeObserver) {
+      nativeWebSocketConnectionObserver = nativeObserver;
+    }
+
+    public native void onConnect();
+    public native void onMessage(byte[] buffer, long length);
+    public native void onDisconnect();
+    public native void onError();
+
+    private final long nativeWebSocketConnectionObserver;
   }
 
-  public WebSocketsClient(String url, Observer observer) {
-    nativeWebSocketsClient = this.nativeCreateWebSocketsClient(url, observer);
+  public WebSocketsClient(String url, long nativeObserver) {
+    observer = new Observer(nativeObserver);
+    ws = new WebSocketConnection();
+
+    System.out.println("wooohooo");
   }
 
-  public native long nativeCreateWebSocketsClient(String url,
-                                                  Observer observer);
-  private long nativeWebSocketsClient;
+  public boolean Init() {
+    return false;
+  }
+
+  public boolean Connect() {
+    return false;
+  }
+
+  public boolean Update() {
+    return false;
+  }
+
+  public boolean Send() {
+    return false;
+  }
+
+  public boolean Disconnect() {
+    return false;
+  }
+
+  private final Observer observer;
+  private WebSocketConnection ws;
 }

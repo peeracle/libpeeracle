@@ -33,17 +33,22 @@ public class Session {
   }
 
   public Session(Observer observer) {
-    nativeSession = this.nativeCreateSession(observer);
+    nativeSessionObserver = this.nativeCreateSessionObserver(observer);
+    nativeSession = this.nativeCreateSession(nativeSessionObserver);
   }
 
   public native boolean update();
   public native SessionHandle addMetadata(Metadata metadata,
                                           SessionHandle.Observer observer);
+
   public native void addPeer(String id, Peer peer);
 
   public native Map<String, Peer> getPeers();
   public native Map<String, SessionHandle> getHandles();
 
-  public native long nativeCreateSession(Observer observer);
+  public native long nativeCreateSession(long nativeSessionObserver);
+  public native long nativeCreateSessionObserver(Observer observer);
+
   private long nativeSession;
+  private long nativeSessionObserver;
 }

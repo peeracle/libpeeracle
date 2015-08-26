@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#ifdef USE_LIBWESOCKETS
 #include <stdint.h>
 #include <algorithm>
 #include <string>
@@ -307,3 +308,4 @@ bool WebSocketsClient::Disconnect() {
 }
 
 }  // namespace peeracle
+#endif

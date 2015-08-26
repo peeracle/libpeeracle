@@ -98,7 +98,7 @@ bool MetadataStream::unserialize(DataStream *dataStream,
     return false;
   }
 
-  hash->update(this->_initSegment, this->_initSegmentLength);
+  // hash->update(this->_initSegment, this->_initSegmentLength);
 
   if (dataStream->read(&mediaSegmentCount) == -1) {
     return false;

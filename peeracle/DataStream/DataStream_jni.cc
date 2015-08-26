@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <third_party/webrtc/webrtc/base/logging.h>
 #include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
 #include "peeracle/DataStream/DataStream.h"
 
@@ -59,14 +60,22 @@ class JNIDataStream : public DataStream {
 
  private:
   std::streamsize vread(char *buffer, std::streamsize length) {
+    LOG(LS_INFO) << "DataStream::vread: read " << length << " bytes";
     jmethodID m = GetMethodID(jni(), *_j_class, "read", "([BJ)J");
-    jbyteArray j_buffer = jni()->NewByteArray(static_cast<jsize>(length));
+    jbyteArray j_byteArray = jni()->NewByteArray(static_cast<jsize>(length));
+    jbyte *bytes = jni()->GetByteArrayElements(j_byteArray, NULL);
     jlong j_length = static_cast<jlong>(length);
 
-    jni()->GetByteArrayRegion(j_buffer, 0, static_cast<jsize>(length),
-                              reinterpret_cast<jbyte*>(buffer));
-    jlong ret = jni()->CallLongMethod(*_j_global, m, j_buffer, j_length);
-    jni()->DeleteLocalRef(j_buffer);
+    jlong ret = jni()->CallLongMethod(*_j_global, m, j_byteArray, j_length);
+    LOG(LS_INFO) << "DataStream::vread: ret = " << ret << " first byte = " <<
+                 static_cast<int>(bytes[0]);
+
+    memcpy(buffer, bytes, length);
+
+    LOG(LS_INFO) << "DataStream::vread: Release";
+    jni()->ReleaseByteArrayElements(j_byteArray, bytes, JNI_ABORT);
+    LOG(LS_INFO) << "DataStream::vread: Delete";
+    jni()->DeleteLocalRef(j_byteArray);
     return static_cast<std::streamsize>(ret);
   }
 
@@ -75,8 +84,8 @@ class JNIDataStream : public DataStream {
     jbyteArray j_buffer = jni()->NewByteArray(static_cast<jsize>(length));
     jlong j_length = static_cast<jlong>(length);
 
-    jni()->GetByteArrayRegion(j_buffer, 0, static_cast<jsize>(length),
-                              reinterpret_cast<jbyte*>(buffer));
+    jni()->SetByteArrayRegion(j_buffer, 0, static_cast<jsize>(length),
+                              reinterpret_cast<const jbyte*>(buffer));
     jlong ret = jni()->CallLongMethod(*_j_global, m, j_buffer, j_length);
     jni()->DeleteLocalRef(j_buffer);
     return static_cast<std::streamsize>(ret);

@@ -21,6 +21,7 @@
 
 {
   'includes': [
+    '../../third_party/webrtc/webrtc/build/common.gypi',
     '../../build/common.gypi'
   ],
   'targets': [
@@ -32,9 +33,10 @@
         'WebSocketsClient.h',
         'WebSocketsClientInterface.h',
         'WebSocketsClientObserver.h',
+        'WebSocketsClient.cc',
       ],
       'conditions': [
-        ['OS=="win" or OS=="mac" or OS=="linux"', {
+        ['OS!="android" and OS!="ios"', {
           'defines': [
             'USE_LIBWEBSOCKETS',
           ],
@@ -46,25 +48,10 @@
             '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
-          'sources': [
-            'WebSocketsClient.cc',
-          ],
-          'includes': [
-            '../../build/lint.gypi',
-          ],
         }],
-        ['OS=="android"', {
-          'sources': [
-            'WebSocketsClient_jni.cc',
-          ],
-          'includes': [
-            '../../build/lint.gypi',
-          ],
-        }],
-        ['OS=="ios"', {
-          'sources': [
-          ],
-        }],
+      ],
+      'includes': [
+        '../../build/lint.gypi',
       ],
     },
   ],
@@ -87,9 +74,6 @@
           ],
           'sources': [
             'WebSocketsClient_unittest.cc',
-          ],
-          'includes': [
-            '../../build/lint.gypi',
           ],
         },
       ],

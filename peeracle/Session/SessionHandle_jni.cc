@@ -39,6 +39,15 @@ JOPSH(jobject, getMetadata)(JNIEnv *, jobject) {
 JOPSH(void, onPeer)(JNIEnv *, jobject, jobject, jlong, jboolean) {
 }
 
+/*
+ * Class:     org_peeracle_SessionHandle
+ * Method:    nativeCreateSessionHandleObserver
+ * Signature: (Lorg/peeracle/SessionHandle/Observer;)J
+ */
+JOPSH(jlong, nativeCreateSessionHandleObserver)(JNIEnv *, jobject, jobject) {
+  return static_cast<jlong>(NULL);
+}
+
 #ifdef __cplusplus
 }
 #endif

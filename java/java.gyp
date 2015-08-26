@@ -66,7 +66,8 @@
         '../peeracle/Peer/Peer_jni.cc',
         '../peeracle/Session/Session_jni.cc',
         '../peeracle/Session/SessionHandle_jni.cc',
-        '../peeracle/Tracker/Client/TrackerClient_jni.cc'
+        '../peeracle/Tracker/Client/TrackerClient_jni.cc',
+        '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc'
       ],
       'conditions': [
         ['OS=="android"', {
@@ -116,12 +117,12 @@
             ['OS=="android"', {
               'variables': {
                 'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
-                'build_classpath': '<(java_src_dir):<(peeracle_root)/third_party/android_sdk/platforms/android-<(android_sdk_version)/android.jar',
+                'build_classpath': '<(java_src_dir):third_party/autobanh/autobanh.jar:<(peeracle_root)/third_party/android_sdk/platforms/android-<(android_sdk_version)/android.jar',
               },
             }, {
               'variables': {
                 'java_files': ['<@(peeracle_java_files)'],
-                'build_classpath': '<(java_src_dir)',
+                'build_classpath': '<(java_src_dir):third_party/autobanh/autobanh.jar',
               }
             }],
           ],
@@ -158,6 +159,7 @@
             'java_in_dir': '.',
             'additional_src_dirs' : [
             ],
+            'input_jars_paths': [ 'third_party/autobanh/autobanh.jar' ]
           },
           'includes': ['../third_party/webrtc/build/java.gypi'],
         },

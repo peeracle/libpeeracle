@@ -31,6 +31,10 @@
 #endif
 #include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
+#ifdef WEBRTC_ANDROID
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+using webrtc_jni::ScopedGlobalRef;
+#endif
 
 namespace peeracle {
 
@@ -74,6 +78,11 @@ class WebSocketsClient : public WebSocketsClientInterface {
                       struct libwebsocket *wsi,
                       enum libwebsocket_callback_reasons reason,
                       void *user, void *in, size_t len);
+#endif
+#ifdef WEBRTC_ANDROID
+  const ScopedGlobalRef<jclass> _j_class;
+  jmethodID _j_init;
+  const ScopedGlobalRef<jobject> _j_global;
 #endif
 };
 

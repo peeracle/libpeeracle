@@ -20,13 +20,12 @@
  * SOFTWARE.
  */
 
+#include "java/jni/classreferenceholder.h"
 #include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "third_party/webrtc/webrtc/base/logging.h"
 #include "peeracle/Metadata/Metadata.h"
 
-using webrtc_jni::AttachCurrentThreadIfNeeded;
-using webrtc_jni::GetObjectClass;
-using webrtc_jni::ScopedGlobalRef;
-using webrtc_jni::jlongFromPointer;
+using namespace webrtc_jni;
 
 namespace peeracle {
 
@@ -58,56 +57,131 @@ extern "C" {
 #define JOPM(rettype, name) \
   rettype JNIEXPORT JNICALL Java_org_peeracle_Metadata_##name
 
-JOPM(jstring, getId)(JNIEnv *, jobject) {
-  return NULL;
+static peeracle::DataStream *ExtractNativeDataStream(
+  JNIEnv* jni, jobject j_DataStream) {
+  jfieldID native_DataStream_id =
+    GetFieldID(jni, GetObjectClass(jni, j_DataStream), "nativeDataStream", "J");
+  jlong j_p = GetLongField(jni, j_DataStream, native_DataStream_id);
+  return reinterpret_cast<peeracle::DataStream*>(j_p);
 }
 
-JOPM(jlong, getMagic)(JNIEnv *, jobject) {
-  return static_cast<jlong>(NULL);
+static peeracle::Metadata *ExtractNativeMetadata(
+  JNIEnv* jni, jobject j_Metadata) {
+  jfieldID native_Metadata_id =
+    GetFieldID(jni,GetObjectClass(jni, j_Metadata), "nativeMetadata", "J");
+  jlong j_p = GetLongField(jni, j_Metadata, native_Metadata_id);
+  return reinterpret_cast<peeracle::Metadata*>(j_p);
 }
 
-JOPM(jlong, getVersion)(JNIEnv *, jobject) {
-  return static_cast<jlong>(NULL);
+JOPM(jstring, getId)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  LOG(LS_INFO) << "Metadata::getId: " << m->getId();
+  return JavaStringFromStdString(jni, m->getId());
 }
 
-JOPM(jstring, getHashAlgorithm)(JNIEnv *, jobject) {
-  return NULL;
+JOPM(jlong, getMagic)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  return static_cast<jlong>(m->getMagic());
 }
 
-JOPM(jlong, getTimecodeScale)(JNIEnv *, jobject) {
-  return static_cast<jlong>(NULL);
+JOPM(jlong, getVersion)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  return static_cast<jlong>(m->getVersion());
 }
 
-JOPM(jdouble, getDuration)(JNIEnv *, jobject) {
-  return static_cast<jdouble>(NULL);
+JOPM(jstring, getHashAlgorithm)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  return JavaStringFromStdString(jni, m->getHashAlgorithm());
 }
 
-JOPM(jobject, getTrackerUrls)(JNIEnv *, jobject) {
-  return NULL;
+JOPM(jlong, getTimecodeScale)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  return static_cast<jlong>(m->getTimecodeScale());
 }
 
-JOPM(jobject, getStreams)(JNIEnv *, jobject) {
-  return NULL;
+JOPM(jdouble, getDuration)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  return static_cast<jdouble>(m->getDuration());
 }
 
-JOPM(void, setHashAlgorithm)(JNIEnv *, jobject, jstring) {
+
+JOPM(jobject, getTrackerUrls)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  std::vector<std::string>& urls = m->getTrackerUrls();
+  jclass arraylist_class = FindClass(jni, "java/util/ArrayList");
+  jmethodID init_arraylist = GetMethodID(jni, arraylist_class, "<init>",
+                                         "()V");
+  jmethodID add_arraylist = GetMethodID(jni, arraylist_class, "add",
+                                        "(Ljava/lang/Object;)Z");
+  jobject return_obj = jni->NewObject(arraylist_class, init_arraylist);
+
+  for(std::vector<std::string>::iterator it = urls.begin(); it != urls.end();
+      ++it) {
+    jni->CallBooleanMethod(return_obj, add_arraylist, JavaStringFromStdString(
+      jni, *it));
+  }
+  return return_obj;
 }
 
-JOPM(void, setTimecodeScale)(JNIEnv *, jobject, jlong) {
+//
+JOPM(jobject, getStreams)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  std::vector<peeracle::MetadataStreamInterface*>& dataStreams =
+    m->getStreams();
+  jclass arraylist_class = FindClass(jni, "java/util/ArrayList");
+  jmethodID init_arraylist = GetMethodID(jni, arraylist_class, "<init>",
+                                         "()V");
+  jmethodID add_arraylist = GetMethodID(jni, arraylist_class, "add",
+                                        "(Ljava/lang/Object;)Z");
+  jobject return_obj = jni->NewObject(arraylist_class, init_arraylist);
+
+  for(std::vector<peeracle::MetadataStreamInterface*>::iterator it =
+    dataStreams.begin();
+      it != dataStreams.end(); ++it) {
+    jclass metadataStream_class = FindClass(jni, "org/peeracle/MetadataStream");
+    jmethodID init_metadataStream = GetMethodID(jni, arraylist_class, "<init>",
+                                           "()V");
+    jfieldID  fieldId = GetFieldID(jni, metadataStream_class,
+                                   "nativeMetadataStream", "J");
+    jobject j_MetadataStream = jni->NewObject(metadataStream_class,
+      init_metadataStream);
+    SetLongField(jni, j_MetadataStream,fieldId, jlongFromPointer(*it));
+    jni->CallBooleanMethod(return_obj, add_arraylist, j_MetadataStream);
+  }
+  return return_obj;
 }
 
-JOPM(void, setDuration)(JNIEnv *, jobject, jdouble) {
+JOPM(void, setHashAlgorithm)(JNIEnv *jni, jobject j_this, jstring
+hashAlgorithm) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  m->setHashAlgorithm(JavaToStdString(jni, hashAlgorithm));
 }
 
-JOPM(void, addTracker)(JNIEnv *, jobject, jstring) {
+JOPM(void, setTimecodeScale)(JNIEnv *jni, jobject j_this, jlong timecodeScale) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  m->setTimecodeScale(static_cast<long>(timecodeScale));
 }
 
-JOPM(jboolean, serialize)(JNIEnv *, jobject, jobject) {
-  return static_cast<jboolean>(NULL);
+JOPM(void, setDuration)(JNIEnv *jni, jobject j_this, jdouble duration) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  m->setDuration(static_cast<double>(duration));
 }
 
-JOPM(jboolean, unserialize)(JNIEnv *, jobject, jobject) {
-  return static_cast<jboolean>(NULL);
+JOPM(void, addTracker)(JNIEnv *jni, jobject j_this, jstring tracker) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  m->addTracker(JavaToStdString(jni, tracker));
+}
+
+JOPM(jboolean, serialize)(JNIEnv *jni, jobject j_this, jobject j_dataStream) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  peeracle::DataStream *dataStream = ExtractNativeDataStream(jni, j_dataStream);
+  return static_cast<jboolean>(m->serialize(dataStream));
+}
+
+JOPM(jboolean, unserialize)(JNIEnv *jni, jobject j_this, jobject j_DataStream) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  peeracle::DataStream *ds = ExtractNativeDataStream(jni, j_DataStream);
+  return static_cast<jboolean>(m->unserialize(ds));
 }
 
 JOPM(jlong, nativeCreateMetadata)(JNIEnv *jni, jobject j_this) {

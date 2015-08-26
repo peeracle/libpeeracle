@@ -56,15 +56,13 @@
           'conditions': [
             ['OS=="android"', {
               'dependencies': [
+                '<(DEPTH)/java/java.gyp:libpeeracle',
                 '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
               ],
             }],
           ],
           'sources': [
             'TrackerClient_unittest.cc',
-          ],
-          'includes': [
-            '../../../build/lint.gypi',
           ],
         },
       ],

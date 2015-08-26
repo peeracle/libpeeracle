@@ -30,14 +30,11 @@ public class SessionHandle {
   public static interface Observer {
   }
 
-  public SessionHandle(Metadata metadata, Observer observer) {
-    nativeSessionHandle = this.nativeCreateSessionHandle(metadata, observer);
-  }
-
   public native Metadata getMetadata();
   public native void onPeer(Peer peer, long got, boolean poke);
 
-  public native long nativeCreateSessionHandle(Metadata metadata,
-                                               Observer observer);
+  public native long nativeCreateSessionHandleObserver(Observer observer);
+
   private long nativeSessionHandle;
+  private long nativeSessionHandleObserver;
 }

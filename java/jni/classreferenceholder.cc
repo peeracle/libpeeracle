@@ -51,7 +51,8 @@
 
 #include "talk/app/webrtc/java/jni/jni_helpers.h"
 
-using namespace webrtc_jni;
+using webrtc_jni::GetEnv;
+using webrtc_jni::AttachCurrentThreadIfNeeded;
 
 // ClassReferenceHolder holds global reference to Java classes in app/webrtc.
 class ClassReferenceHolder {
@@ -84,8 +85,14 @@ void FreeGlobalClassReferenceHolder() {
 }
 
 ClassReferenceHolder::ClassReferenceHolder(JNIEnv* jni) {
+  LoadClass(jni, "java/util/ArrayList");
+  LoadClass(jni, "java/util/Map");
   LoadClass(jni, "org/peeracle/DataStream");
+  LoadClass(jni, "org/peeracle/MetadataStream");
+  LoadClass(jni, "org/peeracle/Peer");
   LoadClass(jni, "org/peeracle/Peeracle");
+  LoadClass(jni, "org/peeracle/SessionHandle");
+  LoadClass(jni, "org/peeracle/WebSocketsClient");
 #if defined(ANDROID)
   /*LoadClass(jni, "android/graphics/SurfaceTexture");
   jclass j_egl_base_class = GetClass("org/webrtc/EglBase");
