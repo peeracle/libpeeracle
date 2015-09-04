@@ -29,7 +29,7 @@ VLCDataStream::VLCDataStream(stream_t *stream) : _stream(stream),
                                                  _bigEndian(true) {
 }
 
-std::streamsize VLCDataStream::length() const {
+std::streamsize VLCDataStream::length() {
   return static_cast<std::streamsize>(stream_Size(this->_stream));
 }
 
@@ -37,7 +37,7 @@ std::streamsize VLCDataStream::seek(std::streamsize offset) {
   return stream_Seek(this->_stream, static_cast<uint64_t>(offset));
 }
 
-std::streamsize VLCDataStream::tell() const {
+std::streamsize VLCDataStream::tell() {
   return static_cast<std::streamsize>(stream_Tell(this->_stream));
 }
 

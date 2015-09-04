@@ -33,9 +33,9 @@ class VLCDataStream
  public:
   explicit VLCDataStream(stream_t *stream);
 
-  std::streamsize length() const;
+  std::streamsize length();
   std::streamsize seek(std::streamsize offset);
-  std::streamsize tell() const;
+  std::streamsize tell();
 
  private:
   std::streamsize vread(char *buffer, std::streamsize length);
