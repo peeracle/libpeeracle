@@ -32,6 +32,13 @@
         '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
         '../Message/TrackerMessage.gyp:peeracle_tracker_message',
       ],
+      'conditions': [
+        ['OS=="win" or OS=="mac" or OS=="linux"', {
+          'defines': [
+            'USE_LIBWEBSOCKETS',
+          ],
+        }],
+      ],
       'sources': [
         'TrackerClient.cc',
         'TrackerClient.h',
