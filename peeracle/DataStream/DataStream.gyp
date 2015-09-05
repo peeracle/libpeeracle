@@ -40,8 +40,8 @@
       # ],
       'sources': [
         'DataStream.h',
-        #'FileDataStream.cc',
-        #'FileDataStream.h',
+        'FileDataStream.cc',
+        'FileDataStream.h',
         'MemoryDataStream.cc',
         'MemoryDataStream.h',
       ],
