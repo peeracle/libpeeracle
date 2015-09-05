@@ -20,35 +20,30 @@
 # SOFTWARE.
 
 {
-  'includes': [
-    '../build/common.gypi'
-  ],
-  'targets': [
-    {
-      'target_name': 'peeracle',
-      'type': 'static_library',
-      'standalone_static_library': 1,
-      'dependencies': [
-        'DataStream/DataStream.gyp:*',
-        'Hash/Hash.gyp:*',
-        'Media/Media.gyp:*',
-        'Metadata/Metadata.gyp:*',
-        'Peer/Peer.gyp:*',
-        'Session/Session.gyp:*',
-        'Storage/Storage.gyp:*',
-        'Tracker/Tracker.gyp:*',
-        'Utils/Utils.gyp:*',
-        'WebSocketsClient/WebSocketsClient.gyp:*',
-      ],
-      'defines': [
-        'BUILD_LIBPEERACLE',
-      ],
-      'sources': [
-        'peeracle.cc',
-      ],
-      'includes': [
-        '../build/lint.gypi',
-      ],
-    },
+  'conditions': [
+    ['OS=="android"', {
+      'variables': {
+        'files': [
+        ],
+      },
+    }],
+    ['OS=="linux" or OS=="mac" or OS=="win" or OS=="android" or OS=="ios"', {
+      'variables': {
+        'files': [
+        ],
+      },
+    }],
+    ['OS=="linux" or OS=="mac" or OS=="win"', {
+      'variables': {
+        'command': [
+          '<(DEPTH)/test/test_env.py',
+          '<(PRODUCT_DIR)/peeracle_storage_unittest<(EXECUTABLE_SUFFIX)',
+        ],
+        'files': [
+          '<(DEPTH)/test/test_env.py',
+          '<(PRODUCT_DIR)/peeracle_storage_unittest<(EXECUTABLE_SUFFIX)',
+        ],
+      },
+    }],
   ],
 }

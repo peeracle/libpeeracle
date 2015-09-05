@@ -20,28 +20,56 @@
  * SOFTWARE.
  */
 
-#ifndef SAMPLES_VLC_PLUGIN_VLCSESSIONHANDLEOBSERVER_H_
-#define SAMPLES_VLC_PLUGIN_VLCSESSIONHANDLEOBSERVER_H_
+#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "peeracle/Storage/StorageInterface.h"
 
-#include "peeracle/Session/SessionHandleObserver.h"
+using namespace webrtc_jni;
 
-class VLCSessionHandleObserver
-  : public peeracle::SessionHandleObserver {
+namespace peeracle {
+
+class JNIStorage : public StorageInterface {
  public:
-  explicit VLCSessionHandleObserver();
-  ~VLCSessionHandleObserver();
+  JNIStorage(JNIEnv *jni, jobject j_Hash)
+    : _j_global(jni, j_Hash),
+      _j_class(jni, GetObjectClass(jni, j_Hash)) {
+  }
 
-  void onEnter(peeracle::PeerInterface *peer);
-  void onLeave(peeracle::PeerInterface *peer);
-  void onRequest(peeracle::PeerInterface *peer, uint32_t segment,
-                 uint32_t chunk);
-  void onChunk(peeracle::PeerInterface *peer, uint32_t segment, uint32_t chunk,
-               uint32_t offset, const char *bytes, uint32_t length);
+  ~JNIStorage() {
+  }
 
-  void setSessionHandle(peeracle::SessionHandleInterface *handle);
+  bool retrieve(const std::string &hash, uint32_t segment, uint32_t offset,
+                uint32_t length, char *dest) {
+    return false;
+  }
+
+  bool store(const std::string &hash, uint32_t segment, uint32_t offset,
+             uint32_t length, const char *src) {
+    return false;
+  }
 
  private:
-  peeracle::SessionHandleInterface *_handle;
+  JNIEnv* jni() {
+    return AttachCurrentThreadIfNeeded();
+  }
+
+  const ScopedGlobalRef<jobject> _j_global;
+  const ScopedGlobalRef<jclass> _j_class;
 };
 
-#endif  // SAMPLES_VLC_PLUGIN_VLCSESSIONHANDLEOBSERVER_H_
+}
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+#define JOPS(rettype, name) \
+  rettype JNIEXPORT JNICALL Java_org_peeracle_Storage_##name
+
+JOPS(jlong, nativeCreateStorage)(JNIEnv *jni, jobject j_this) {
+  peeracle::StorageInterface *storage = new peeracle::JNIStorage(jni, j_this);
+  return jlongFromPointer(storage);
+}
+
+#ifdef __cplusplus
+}
+#endif

@@ -36,10 +36,11 @@
         '<(DEPTH)/peeracle/Metadata/Metadata.gyp:peeracle_metadata',
         '<(DEPTH)/peeracle/Peer/Peer.gyp:peeracle_peer',
         '<(DEPTH)/peeracle/Session/Session.gyp:peeracle_session',
-        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
+        '<(DEPTH)/peeracle/Storage/Storage.gyp:peeracle_storage',
         '<(DEPTH)/peeracle/Tracker/Client/TrackerClient.gyp:peeracle_tracker_client',
         '<(DEPTH)/peeracle/Tracker/Message/TrackerMessage.gyp:peeracle_tracker_message',
         '<(DEPTH)/peeracle/Utils/Utils.gyp:peeracle_randomgenerator',
+        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
       ],
       'cflags': [
         '-fPIC'
@@ -67,7 +68,8 @@
         '../peeracle/Peer/Peer_jni.cc',
         '../peeracle/Session/Session_jni.cc',
         '../peeracle/Session/SessionHandle_jni.cc',
-        '../peeracle/Tracker/Client/TrackerClient_jni.cc',
+        '../peeracle/Storage/Storage_jni.cc',
+        '../peeracle/Tracker/Client/TrackerClient_jni.cc'
       ],
       'conditions': [
         ['OS=="android"', {
@@ -76,9 +78,6 @@
             # required symbols will be kept.
             'use_native_jni_exports': 1,
           },
-	  'sources': [
-            '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc'
-	  ],
         }],
       ],
     },

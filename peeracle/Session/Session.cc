@@ -25,6 +25,8 @@
 #include <vector>
 #include <string>
 
+#include "peeracle/DataStream/MemoryDataStream.h"
+
 #include "peeracle/Peer/Peer.h"
 #include "peeracle/Tracker/Client/TrackerClient.h"
 
@@ -35,8 +37,10 @@
 
 namespace peeracle {
 
-Session::Session(SessionObserver *observer) :
+Session::Session(StorageInterface *storage, SessionObserver *observer) :
+  _storage(storage),
   _observer(observer) {
+  (void)_observer;
 }
 
 Session::~Session() {
@@ -55,17 +59,67 @@ bool Session::update() {
 
 SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
                                              SessionHandleObserver *observer) {
+  const std::string &id = metadata->getId();
   SessionHandleInterface *handle;
-  SessionTrackerClientObserver *trackerObserver;
+  HashInterface *hash = metadata->getHashAlgorithm();
+  uint32_t hashLen = hash->getLength();
+  MetadataStreamInterface *stream = metadata->getStreams()[0];
+  std::vector<MetadataMediaSegmentInterface *> &segments =
+    stream->getMediaSegments();
 
-  if (_handles.find(metadata->getId()) != _handles.end()) {
-    return _handles[metadata->getId()];
+  std::vector<uint32_t> got;
+  uint32_t gotIndex = 0;
+  uint32_t currentGot = 0;
+
+  if (_handles.find(id) != _handles.end()) {
+    return _handles[id];
   }
 
-  handle = new SessionHandle(metadata, observer);
-  _handles[metadata->getId()] = handle;
+  for (uint32_t i = 0; i < segments.size(); ++i) {
+    MetadataMediaSegmentInterface *segment = segments[i];
+    char *bytes = new char[segment->getLength()];
+    const std::vector<uint8_t *> &chunks = segment->getChunks();
+
+    if (!_storage->retrieve(id, i, 0, segment->getLength(), bytes)) {
+      delete[] bytes;
+      continue;
+    }
+
+    for (uint32_t c = 0; c < chunks.size(); ++c) {
+      DataStreamInit init;
+      MemoryDataStream *chunkBytes = new MemoryDataStream(init);
+      std::streamsize len = stream->getChunkSize();
+      uint8_t *result = new uint8_t[hashLen];
+
+      if (c + 1 == chunks.size()) {
+        len = stream->getChunkSize() -
+          ((stream->getChunkSize() * chunks.size()) - segment->getLength());
+      }
+
+      chunkBytes->write(bytes + (stream->getChunkSize() * c), len);
+      chunkBytes->seek(0);
+
+      hash->checksum(chunkBytes, result);
+      if (!memcmp(chunks[c], result, hashLen)) {
+        currentGot |= (1 << gotIndex);
+      }
+
+      if (++gotIndex == 32) {
+        got.push_back(currentGot);
+        gotIndex = 0;
+      }
+
+      delete[] result;
+    }
+
+    delete[] bytes;
+  }
+
+  handle = new SessionHandle(this, metadata, got, observer);
+  _handles[id] = handle;
 
   std::vector<std::string> &trackers = metadata->getTrackerUrls();
+  SessionTrackerClientObserver *trackerObserver;
   for (std::vector<std::string>::iterator it = trackers.begin();
        it != trackers.end(); ++it) {
     if (_trackers.find(*it) != _trackers.end()) {
@@ -80,7 +134,6 @@ SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
     }
   }
 
-  (void) _observer;
   return handle;
 }
 

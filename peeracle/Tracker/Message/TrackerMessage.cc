@@ -22,6 +22,7 @@
 
 #include <sstream>
 #include <iostream>
+#include <vector>
 #include "peeracle/Tracker/Message/TrackerMessage.h"
 
 namespace peeracle {
@@ -144,16 +145,26 @@ bool TrackerMessage::_serializeWelcome(DataStream *dataStream) {
 
 bool TrackerMessage::_serializeAnnounce(DataStream *dataStream) {
   std::string hash;
+  std::stringstream strm;
   uint32_t got;
+  uint32_t gotCount;
 
   get("hash", &hash, "");
   if (hash == "") {
     return false;
   }
 
-  get("got", &got, 0);
   dataStream->write(hash);
-  dataStream->write(got);
+
+  get("got", &gotCount, 0);
+  dataStream->write(gotCount);
+
+  for (uint32_t i = 0; i < gotCount; ++i) {
+    strm.clear();
+    strm << "got" << i;
+    get(strm.str(), &got, 0);
+    dataStream->write(got);
+  }
   return true;
 }
 
@@ -217,12 +228,22 @@ bool TrackerMessage::_unserializeWelcome(DataStream *dataStream) {
 bool TrackerMessage::_unserializeAnnounce(DataStream *dataStream) {
   std::string hash;
   uint32_t got;
+  uint32_t gotCount;
+  std::stringstream strm;
 
   dataStream->read(&hash);
-  dataStream->read(&got);
+  dataStream->read(&gotCount);
 
   set("hash", hash);
-  set("got", got);
+  set("got", gotCount);
+
+  for (uint32_t i = 0; i < gotCount; ++i) {
+    strm.clear();
+    strm << "got" << i;
+    dataStream->read(&got);
+    set(strm.str(), got);
+  }
+
   return true;
 }
 

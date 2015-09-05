@@ -21,13 +21,17 @@
  */
 
 #include <iostream>
+#include <vector>
 #include "peeracle/Session/SessionHandle.h"
 
 namespace peeracle {
 
-SessionHandle::SessionHandle(MetadataInterface *metadata,
+SessionHandle::SessionHandle(SessionInterface *session,
+                             MetadataInterface *metadata,
+                             const std::vector<uint32_t> &got,
                              SessionHandleObserver *observer) :
-  _observer(observer), _metadata(metadata) {
+  _session(session), _observer(observer), _got(got), _metadata(metadata) {
+  (void)_session;
   (void)_observer;
 }
 
@@ -36,6 +40,10 @@ SessionHandle::~SessionHandle() {
 
 MetadataInterface *SessionHandle::getMetadata() const {
   return _metadata;
+}
+
+const std::vector<uint32_t> &SessionHandle::getGot() const {
+  return _got;
 }
 
 void SessionHandle::onPeer(PeerInterface *peer, uint32_t got, bool poke) {

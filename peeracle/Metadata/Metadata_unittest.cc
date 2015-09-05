@@ -190,7 +190,7 @@ TEST_F(MetadataTest, CorrectHeader) {
 
   magic = _metadata->getMagic();
   version = _metadata->getVersion();
-  const std::string &hashName = _metadata->getHashAlgorithm();
+  const std::string &hashName = _metadata->getHashAlgorithmName();
   timecodeScale = _metadata->getTimecodeScale();
   duration = _metadata->getDuration();
 
@@ -219,7 +219,7 @@ TEST_F(MetadataTest, Serialize) {
   std::streamsize s;
   peeracle::MemoryDataStream *expectedDs;
 
-  _metadata->setHashAlgorithm("crc32");
+  _metadata->setHashAlgorithmName("crc32");
   _metadata->setTimecodeScale(1000000);
   _metadata->setDuration(794000.0);
   _metadata->addTracker("ws://127.0.0.1:8080");

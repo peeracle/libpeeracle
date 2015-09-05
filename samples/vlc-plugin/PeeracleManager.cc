@@ -27,6 +27,7 @@
 #include "samples/vlc-plugin/PeeracleStream.h"
 #include "samples/vlc-plugin/VLCDataStream.h"
 #include "samples/vlc-plugin/VLCSessionHandleObserver.h"
+#include "samples/vlc-plugin/VLCStorage.h"
 
 PeeracleManager::PeeracleManager(demux_t *demux) : _stream(NULL),
                                                    _initialized(false),
@@ -50,6 +51,10 @@ PeeracleManager::~PeeracleManager() {
 
   if (_session) {
     delete _session;
+  }
+
+  if (_storage) {
+    delete _storage;
   }
 }
 
@@ -150,7 +155,8 @@ int PeeracleManager::Demux() {
   if (!_session) {
     msg_Dbg(this->_vlc, "[PeeracleManager::Demux] Initialize a session");
     _sessionObserver = new peeracle::SessionObserver();
-    _session = new peeracle::Session(_sessionObserver);
+    _storage = new VLCStorage();
+    _session = new peeracle::Session(_storage, _sessionObserver);
     _handleObserver = new VLCSessionHandleObserver();
     _session->addMetadata(this->_metadata, _handleObserver);
     return VLC_DEMUXER_SUCCESS;

@@ -43,7 +43,7 @@ bool Metadata::serialize(DataStream *dataStream) {
 
   dataStream->write("PRCL", 4);
   dataStream->write(static_cast<int32_t>(2));
-  dataStream->write(_hashAlgorithm);
+  dataStream->write(_hashAlgorithmName);
   dataStream->write(_timeCodeScale);
   dataStream->write(_duration);
   dataStream->write(trackersSize);
@@ -57,7 +57,6 @@ bool Metadata::serialize(DataStream *dataStream) {
 }
 
 bool Metadata::unserialize(DataStream *dataStream) {
-  HashInterface *hash;
   uint8_t id[16];
   uint32_t trackerCount;
   uint32_t streamCount;
@@ -67,19 +66,19 @@ bool Metadata::unserialize(DataStream *dataStream) {
 
   if (dataStream->read(&_magic) == -1 ||
     dataStream->read(&_version) == -1 ||
-    dataStream->read(&_hashAlgorithm) == -1 ||
+    dataStream->read(&_hashAlgorithmName) == -1 ||
     dataStream->read(&_timeCodeScale) == -1 ||
     dataStream->read(&_duration) == -1 ||
     dataStream->read(&trackerCount) == -1) {
     return false;
   }
 
-  if (_hashAlgorithm != "murmur3_x86_128") {
+  if (_hashAlgorithmName != "murmur3_x86_128") {
     return false;
   }
 
-  hash = new Murmur3Hash();
-  hash->init();
+  _hash = new Murmur3Hash();
+  _hash->init();
 
   for (size_t i = 0; i < trackerCount; ++i) {
     if (dataStream->read(&tracker) == -1) {
@@ -94,13 +93,13 @@ bool Metadata::unserialize(DataStream *dataStream) {
 
   for (size_t i = 0; i < streamCount; ++i) {
     stream = new MetadataStream();
-    if (!stream->unserialize(dataStream, _hashAlgorithm, hash)) {
+    if (!stream->unserialize(dataStream, _hashAlgorithmName, _hash)) {
       return false;
     }
     _streams.push_back(stream);
   }
 
-  hash->final(id);
+  _hash->final(id);
   for (int i = 0; i < 16; ++i) {
     buffer << std::hex << std::setfill('0');
     buffer << std::setw(2)  << static_cast<unsigned>(id[i]);
@@ -122,8 +121,12 @@ uint32_t Metadata::getVersion() {
   return _version;
 }
 
-const std::string &Metadata::getHashAlgorithm() {
-  return _hashAlgorithm;
+const std::string &Metadata::getHashAlgorithmName() {
+  return _hashAlgorithmName;
+}
+
+HashInterface *Metadata::getHashAlgorithm() {
+  return _hash;
 }
 
 uint32_t Metadata::getTimecodeScale() {
@@ -142,8 +145,8 @@ std::vector<MetadataStreamInterface *> &Metadata::getStreams() {
   return _streams;
 }
 
-void Metadata::setHashAlgorithm(const std::string &hashAlgorithm) {
-  _hashAlgorithm = hashAlgorithm;
+void Metadata::setHashAlgorithmName(const std::string &hashAlgorithm) {
+  _hashAlgorithmName = hashAlgorithm;
 }
 
 void Metadata::setTimecodeScale(uint32_t timecodeScale) {

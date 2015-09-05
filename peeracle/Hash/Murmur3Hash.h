@@ -52,6 +52,7 @@ class Murmur3Hash
   void update(const uint8_t *buffer, size_t length);
   void final(uint8_t *result);
   void checksum(DataStream *dataStream, uint8_t *result);
+  uint32_t getLength();
 
   static void serialize(uint8_t *in, DataStream *out);
   static void unserialize(DataStream *in, uint8_t *out);

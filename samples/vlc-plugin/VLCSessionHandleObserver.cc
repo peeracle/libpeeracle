@@ -27,3 +27,24 @@ VLCSessionHandleObserver::VLCSessionHandleObserver() {
 
 VLCSessionHandleObserver::~VLCSessionHandleObserver() {
 }
+
+void VLCSessionHandleObserver::onEnter(peeracle::PeerInterface *peer) {
+}
+
+void VLCSessionHandleObserver::onLeave(peeracle::PeerInterface *peer) {
+}
+
+void VLCSessionHandleObserver::onRequest(peeracle::PeerInterface *peer,
+                                         uint32_t segment, uint32_t chunk) {
+}
+
+void VLCSessionHandleObserver::onChunk(peeracle::PeerInterface *peer,
+                                       uint32_t segment, uint32_t chunk,
+                                       uint32_t offset, const char *bytes,
+                                       uint32_t length) {
+}
+
+void VLCSessionHandleObserver::setSessionHandle
+  (peeracle::SessionHandleInterface *handle) {
+  _handle = handle;
+}

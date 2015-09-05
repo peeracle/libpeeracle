@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 #include "peeracle/Tracker/Client/TrackerClientInterface.h"
 #include "peeracle/Tracker/Client/TrackerClientObserver.h"
@@ -45,7 +46,7 @@ class TrackerClient
   bool Connect();
   bool Update();
   const std::string &getUrl() const;
-  void announce(const std::string id, uint32_t got);
+  void announce(const std::string id, const std::vector<uint32_t> &got);
   void send(TrackerMessageInterface *message);
 
   void _send(TrackerMessageInterface *message);

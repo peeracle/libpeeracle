@@ -27,6 +27,7 @@
 #include "peeracle/Metadata/Metadata.h"
 #include "peeracle/Session/SessionInterface.h"
 #include "peeracle/Session/SessionObserver.h"
+#include "peeracle/Storage/StorageInterface.h"
 #include "samples/vlc-plugin/PeeracleManagerInterface.h"
 #include "samples/vlc-plugin/plugin.h"
 #include "PeeracleStreamInterface.h"
@@ -50,6 +51,7 @@ class PeeracleManager : public PeeracleManagerInterface {
   peeracle::SessionInterface *_session;
   peeracle::SessionObserver *_sessionObserver;
   peeracle::SessionHandleObserver *_handleObserver;
+  peeracle::StorageInterface *_storage;
 };
 
 #endif  // SAMPLES_VLC_PLUGIN_PEERACLEMANAGER_H_

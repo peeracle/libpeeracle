@@ -72,6 +72,7 @@ void Murmur3Hash::final(uint8_t *result) {
 }
 
 void Murmur3Hash::checksum(DataStream *dataStream, uint8_t *result) {
+  this->init();
   this->update(dataStream);
   this->final(result);
 }
@@ -82,6 +83,10 @@ void Murmur3Hash::serialize(uint8_t *in, DataStream *out) {
 
 void Murmur3Hash::unserialize(DataStream *in, uint8_t *out) {
   in->read(reinterpret_cast<char *>(out), 16);
+}
+
+uint32_t Murmur3Hash::getLength() {
+  return 16;
 }
 
 }  // namespace peeracle

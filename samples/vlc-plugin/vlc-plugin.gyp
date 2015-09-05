@@ -51,6 +51,7 @@
             'PeeracleStreamInterface.h',
             'VLCDataStream.cc',
             'VLCSessionHandleObserver.cc',
+            'VLCStorage.cc',
           ],
           'includes': [
             '../../build/lint.gypi',

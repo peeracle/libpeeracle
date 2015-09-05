@@ -21,94 +21,75 @@
  */
 
 #include <iostream>
-#include "peeracle/Tracker/Client/TrackerClient.h"
+
 #include "peeracle/DataStream/FileDataStream.h"
 #include "peeracle/Metadata/Metadata.h"
+#include "peeracle/Session/SessionHandleInterface.h"
+#include "peeracle/Session/SessionHandleObserver.h"
+#include "peeracle/Session/SessionObserver.h"
 #include "peeracle/Session/Session.h"
-#include "peeracle/Session/SessionHandle.h"
-#include "peeracle/WebSocketsClient/WebSocketsClient.h"
+#include "peeracle/Storage/MemoryStorage.h"
 #include "peeracle/peeracle.h"
 
 peeracle::Metadata metadata;
 peeracle::Session *session;
-peeracle::SessionHandle *sessionHandle;
+peeracle::SessionHandleInterface *sessionHandle;
+peeracle::StorageInterface *storage;
 
-class MySessionObserver : public peeracle::SessionObserver {
+class MySessionObserver
+  : public peeracle::SessionObserver {
 };
 
-class MySessionHandleObserver : public peeracle::SessionHandleObserver {
+class MySessionHandleObserver
+  : public peeracle::SessionHandleObserver {
+ public:
+  MySessionHandleObserver() {
+  }
+
+  ~MySessionHandleObserver() {
+  }
+
+  void onEnter(peeracle::PeerInterface *peer) {
+  }
+
+  void onLeave(peeracle::PeerInterface *peer) {
+  }
+
+  void onRequest(peeracle::PeerInterface *peer, uint32_t segment,
+                 uint32_t chunk) {
+  }
+
+  void onChunk(peeracle::PeerInterface *peer, uint32_t segment, uint32_t chunk,
+               uint32_t offset, const char *bytes, uint32_t length) {
+  }
+
+  void setSessionHandle(peeracle::SessionHandleInterface *handle) {
+    _handle = handle;
+  }
+
+ private:
+  peeracle::SessionHandleInterface *_handle;
 };
 
 MySessionObserver sessionObserver;
-MySessionHandleObserver sessionHandleObserver;
+MySessionHandleObserver *sessionHandleObserver;
 
-int load_metadata(const std::string &fileName) {
-  bool result;
+bool load_metadata(const std::string &fileName) {
   peeracle::DataStreamInit init;
-  peeracle::FileDataStream *file;
-
   init.path = fileName;
-  file = new peeracle::FileDataStream(init);
 
-  if (!file->open()) {
+  peeracle::FileDataStream file(init);
+
+  if (!file.open()) {
     std::cout << "Can't open the file." << std::endl;
+    return false;
   }
-  result = metadata.unserialize(file);
-  delete file;
 
-  return result;
+  return metadata.unserialize(&file);
 }
-
-class TrackerWebSocketsClientObserver :
-  public peeracle::WebSocketsClientObserver {
- public:
-  TrackerWebSocketsClientObserver() {
-  }
-
-  void onConnect() {
-  }
-
-  void onMessage(const char *buffer, size_t length) {
-  }
-
-  void onDisconnect() {
-  }
-
-  void onError() {
-  }
-};
-
-class MyTrackerClientObserver : public peeracle::TrackerClientObserver {
- public:
-  void onConnect(const std::string &id) {
-  }
-
-  void onDisconnect() {
-  }
-
-  void onConnectionError() {
-  }
-
-  void onPeerConnect(const std::string &hash, const std::string &peerId,
-                             uint32_t got, bool poke) {
-  }
-
- protected:
-  ~MyTrackerClientObserver() { }
-};
 
 int main(int argc, char **argv) {
   peeracle::init();
-
-  /*MyTrackerClientObserver *trackerObserver = new MyTrackerClientObserver();
-  peeracle::TrackerClientInterface *tracker =
-    new peeracle::TrackerClient("ws://127.0.0.1:8080", trackerObserver);
-
-  tracker->Init();
-  tracker->Connect();
-
-  while (tracker->Update()) {
-  }*/
 
   if (!load_metadata(argv[1])) {
     std::cout << "Unable to load the metadata file." << std::endl;
@@ -116,8 +97,12 @@ int main(int argc, char **argv) {
     return EXIT_FAILURE;
   }
 
-  session = new peeracle::Session(&sessionObserver);
-  session->addMetadata(&metadata, &sessionHandleObserver);
+  storage = new peeracle::MemoryStorage();
+  session = new peeracle::Session(storage, &sessionObserver);
+  sessionHandleObserver = new MySessionHandleObserver();
+
+  sessionHandle = session->addMetadata(&metadata, sessionHandleObserver);
+  sessionHandleObserver->setSessionHandle(sessionHandle);
 
   while (session->update()) {
   }

@@ -30,6 +30,7 @@
 #include "peeracle/Session/SessionInterface.h"
 #include "peeracle/Session/SessionHandleInterface.h"
 #include "peeracle/Session/SessionObserver.h"
+#include "peeracle/Storage/StorageInterface.h"
 #include "peeracle/Tracker/Client/TrackerClientInterface.h"
 
 namespace peeracle {
@@ -37,7 +38,7 @@ namespace peeracle {
 class Session
   : public SessionInterface {
  public:
-  explicit Session(SessionObserver *observer);
+  explicit Session(StorageInterface *storage, SessionObserver *observer);
   ~Session();
 
   bool update();
@@ -48,6 +49,7 @@ class Session
   std::map<std::string, SessionHandleInterface *> &getHandles();
 
  private:
+  StorageInterface *_storage;
   SessionObserver *_observer;
   std::map<std::string, PeerInterface *> _peers;
   std::map<std::string, SessionHandleInterface *> _handles;

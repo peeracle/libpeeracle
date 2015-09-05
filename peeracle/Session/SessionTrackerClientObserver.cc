@@ -53,7 +53,7 @@ void SessionTrackerClientObserver::onConnect(const std::string &id) {
     for (std::vector<std::string>::iterator it = trackers.begin();
          it != trackers.end(); ++it) {
       if (_tracker->getUrl() == (*it)) {
-        _tracker->announce(metadata->getId(), 0);
+        _tracker->announce(metadata->getId(), (*mit).second->getGot());
         break;
       }
     }

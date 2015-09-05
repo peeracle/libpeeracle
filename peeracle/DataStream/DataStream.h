@@ -240,7 +240,7 @@ class DataStream {
    */
   std::streamsize write(const std::string &value) {
     const char *str = value.c_str();
-    return _write(str, strlen(str));
+    return _write(str, strlen(str) + 1);
   }
 
   virtual ~DataStream() { }

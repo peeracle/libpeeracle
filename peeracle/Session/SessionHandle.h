@@ -23,24 +23,32 @@
 #ifndef PEERACLE_SESSION_SESSIONHANDLE_H_
 #define PEERACLE_SESSION_SESSIONHANDLE_H_
 
+#include <vector>
 #include "peeracle/Peer/PeerInterface.h"
 #include "peeracle/Metadata/MetadataInterface.h"
 #include "peeracle/Session/SessionHandleInterface.h"
-#include "SessionHandleObserver.h"
+#include "peeracle/Session/SessionHandleObserver.h"
+#include "peeracle/Session/SessionInterface.h"
 
 namespace peeracle {
 
 class SessionHandle
   : public SessionHandleInterface {
  public:
-  SessionHandle(MetadataInterface *metadata, SessionHandleObserver *observer);
+  SessionHandle(SessionInterface *session, MetadataInterface *metadata,
+                const std::vector<uint32_t> &got,
+                SessionHandleObserver *observer);
   ~SessionHandle();
 
   MetadataInterface *getMetadata() const;
+  const std::vector<uint32_t> &getGot() const;
+
   void onPeer(PeerInterface *peer, uint32_t got, bool poke);
 
  private:
+  SessionInterface *_session;
   SessionHandleObserver *_observer;
+  std::vector<uint32_t> _got;
   MetadataInterface *_metadata;
 };
 

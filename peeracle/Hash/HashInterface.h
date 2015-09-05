@@ -70,6 +70,8 @@ class HashInterface {
    */
   virtual void checksum(DataStream *dataStream, uint8_t *result) = 0;
 
+  virtual uint32_t getLength() = 0;
+
  protected:
   virtual ~HashInterface() {}
 };

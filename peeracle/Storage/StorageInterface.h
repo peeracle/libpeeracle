@@ -20,37 +20,38 @@
  * SOFTWARE.
  */
 
-package org.peeracle;
+#ifndef PEERACLE_STORAGE_STORAGEINTERFACE_H_
+#define PEERACLE_STORAGE_STORAGEINTERFACE_H_
 
-import java.lang.String;
-import java.util.ArrayList;
+#include <stdint.h>
+#include <string>
 
-public class Metadata {
-  static {
-    System.loadLibrary("peeracle");
-  }
+/**
+ * \addtogroup peeracle
+ * @{
+ * @namespace peeracle
+ * @brief peeracle namespace
+ */
 
-  public Metadata() {
-    this.nativeMetadata = this.nativeCreateMetadata();
-  }
+namespace peeracle {
 
-  public native String getId();
-  public native long getMagic();
-  public native long getVersion();
-  public native String getHashAlgorithmName();
-  public native long getTimecodeScale();
-  public native double getDuration();
-  public native ArrayList<String> getTrackerUrls();
-  public native ArrayList<MetadataStream> getStreams();
+/**
+ * Storage module interface.
+ * \addtogroup Storage
+ */
+class StorageInterface {
+ public:
+  virtual bool retrieve(const std::string &hash, uint32_t segment,
+                        uint32_t offset, uint32_t length, char *dest) = 0;
+  virtual bool store(const std::string &hash, uint32_t segment,
+                     uint32_t offset, uint32_t length, const char *src) = 0;
 
-  public native void setHashAlgorithmName(String hashAlgorithm);
-  public native void setTimecodeScale(long timecodeScale);
-  public native void setDuration(double duration);
-  public native void addTracker(String tracker);
+  virtual ~StorageInterface() {}
+};
 
-  public native boolean serialize(DataStream dataStream);
-  public native boolean unserialize(DataStream dataStream);
+/**
+ * @}
+ */
+}  // namespace peeracle
 
-  public native long nativeCreateMetadata();
-  public final long nativeMetadata;
-}
+#endif  // PEERACLE_STORAGE_STORAGEINTERFACE_H_

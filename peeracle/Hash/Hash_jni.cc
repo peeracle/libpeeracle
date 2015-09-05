@@ -52,6 +52,10 @@ class JNIHash : public HashInterface {
   void checksum(DataStream *dataStream, uint8_t *result) {
   }
 
+  uint32_t getLength() {
+    return 0;
+  }
+
  private:
   JNIEnv* jni() {
     return AttachCurrentThreadIfNeeded();

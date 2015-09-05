@@ -127,12 +127,20 @@ const std::string &TrackerClient::getUrl() const {
   return _url;
 }
 
-void TrackerClient::announce(const std::string id, uint32_t got) {
+void TrackerClient::announce(const std::string id,
+                             const std::vector<uint32_t> &got) {
+  std::stringstream strm;
   TrackerMessageInterface *msg = new TrackerMessage(
     TrackerMessageInterface::kAnnounce);
 
   msg->set("hash", id);
-  msg->set("got", got);
+  msg->set("got", static_cast<uint32_t>(got.size()));
+
+  for (uint32_t i = 0; i < got.size(); ++i) {
+    strm.clear();
+    strm << "got" << i;
+    msg->set(strm.str(), got[i]);
+  }
 
   this->send(msg);
   delete msg;

@@ -25,6 +25,7 @@
 
 #include <string>
 #include <vector>
+#include "peeracle/Hash/HashInterface.h"
 #include "peeracle/Metadata/MetadataInterface.h"
 
 namespace peeracle {
@@ -36,13 +37,14 @@ class Metadata : public MetadataInterface {
   const std::string &getId();
   uint32_t getMagic();
   uint32_t getVersion();
-  const std::string &getHashAlgorithm();
+  const std::string &getHashAlgorithmName();
+  HashInterface *getHashAlgorithm();
   uint32_t getTimecodeScale();
   double getDuration();
   std::vector<std::string> &getTrackerUrls();
   std::vector<MetadataStreamInterface *> &getStreams();
 
-  void setHashAlgorithm(const std::string &hashAlgorithm);
+  void setHashAlgorithmName(const std::string &hashAlgorithm);
   void setTimecodeScale(uint32_t timecodeScale);
   void setDuration(double duration);
   void addTracker(const std::string &tracker);
@@ -54,7 +56,8 @@ class Metadata : public MetadataInterface {
   std::string _id;
   uint32_t _magic;
   uint32_t _version;
-  std::string _hashAlgorithm;
+  std::string _hashAlgorithmName;
+  HashInterface *_hash;
   uint32_t _timeCodeScale;
   double _duration;
   uint32_t _trackersNumber;

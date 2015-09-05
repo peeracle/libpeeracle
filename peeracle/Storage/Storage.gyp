@@ -21,35 +21,21 @@
 
 {
   'includes': [
-    '../../third_party/webrtc/webrtc/build/common.gypi',
     '../../build/common.gypi'
   ],
   'targets': [
     {
-      'target_name': 'peeracle_session',
+      'target_name': 'peeracle_storage',
       'type': 'static_library',
       'standalone_static_library': 1,
       'dependencies': [
-        '../Peer/Peer.gyp:peeracle_peer',
-        '../Storage/Storage.gyp:peeracle_storage',
-        '../Tracker/Client/TrackerClient.gyp:peeracle_tracker_client'
-      ],
-      'defines': [
-        'BUILD_LIBPEERACLE',
+        '../DataStream/DataStream.gyp:peeracle_datastream',
+        '<(DEPTH)/third_party/murmur3/murmur3.gyp:murmur3',
       ],
       'sources': [
-        'SessionInterface.h',
-        'Session.cc',
-        'Session.h',
-        'SessionHandle.cc',
-        'SessionHandle.h',
-        'SessionHandleInterface.h',
-        'SessionHandleObserver.h',
-        'SessionObserver.h',
-        'SessionPeerObserver.cc',
-        'SessionPeerObserver.h',
-        'SessionTrackerClientObserver.cc',
-        'SessionTrackerClientObserver.h',
+        'StorageInterface.h',
+        'MemoryStorage.cc',
+        'MemoryStorage.h',
       ],
       'includes': [
         '../../build/lint.gypi',
@@ -60,26 +46,21 @@
     ['build_tests == 1', {
       'targets': [
         {
-          'target_name': 'peeracle_session_unittest',
+          'target_name': 'peeracle_storage_unittest',
           'type': '<(gtest_target_type)',
           'dependencies': [
-            'peeracle_session',
+            'peeracle_storage',
             '<(DEPTH)/test/test.gyp:peeracle_tests_utils',
           ],
           'conditions': [
             ['OS=="android"', {
               'dependencies': [
-                '<(DEPTH)/java/java.gyp:libpeeracle',
                 '<(webrtc_depth)/testing/android/native_test.gyp:native_test_native_code',
               ],
             }],
           ],
-          'defines': [
-            'BUILD_LIBPEERACLE',
-          ],
           'sources': [
-            '../peeracle.cc',
-            'Session_unittest.cc',
+            'MemoryStorage_unittest.cc',
           ],
           'includes': [
             '../../build/lint.gypi',
@@ -90,10 +71,10 @@
         ['OS=="android"', {
           'targets': [
             {
-              'target_name': 'peeracle_session_unittest_apk_target',
+              'target_name': 'peeracle_storage_unittest_apk_target',
               'type': 'none',
               'dependencies': [
-                '<(apk_tests_path):peeracle_session_unittest_apk',
+                '<(apk_tests_path):peeracle_storage_unittest_apk',
               ],
             },
           ],
@@ -101,16 +82,16 @@
         ['test_isolation_mode != "noop"', {
           'targets': [
             {
-              'target_name': 'peeracle_session_unittest_run',
+              'target_name': 'peeracle_storage_unittest_run',
               'type': 'none',
               'dependencies': [
-                'peeracle_session_unittest',
+                'peeracle_storage_unittest',
               ],
               'includes': [
                 '../../build/isolate.gypi',
               ],
               'sources': [
-                'peeracle_session_unittest.isolate',
+                'peeracle_storage_unittest.isolate',
               ],
             },
           ],

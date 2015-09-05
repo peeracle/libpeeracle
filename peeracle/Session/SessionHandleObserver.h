@@ -23,9 +23,21 @@
 #ifndef PEERACLE_SESSION_SESSIONHANDLEOBSERVER_H_
 #define PEERACLE_SESSION_SESSIONHANDLEOBSERVER_H_
 
+#include "peeracle/Peer/PeerInterface.h"
+#include "peeracle/Session/SessionHandleInterface.h"
+
 namespace peeracle {
 
 class SessionHandleObserver {
+ public:
+  virtual void onEnter(PeerInterface *peer) = 0;
+  virtual void onLeave(PeerInterface *peer) = 0;
+  virtual void onRequest(PeerInterface *peer, uint32_t segment,
+                         uint32_t chunk) = 0;
+  virtual void onChunk(PeerInterface *peer, uint32_t segment, uint32_t chunk,
+               uint32_t offset, const char *bytes, uint32_t length) = 0;
+
+  virtual ~SessionHandleObserver() { }
 };
 
 }  // namespace peeracle

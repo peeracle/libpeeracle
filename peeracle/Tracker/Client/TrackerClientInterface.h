@@ -25,6 +25,7 @@
 
 #include <stdint.h>
 #include <string>
+#include <vector>
 
 namespace peeracle {
 
@@ -36,7 +37,8 @@ class TrackerClientInterface {
   virtual bool Connect() = 0;
   virtual bool Update() = 0;
 
-  virtual void announce(const std::string id, uint32_t got) = 0;
+  virtual void announce(const std::string id,
+                        const std::vector<uint32_t> &got) = 0;
   virtual const std::string &getUrl() const = 0;
 };
 
