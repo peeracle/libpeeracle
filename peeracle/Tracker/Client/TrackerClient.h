@@ -46,6 +46,7 @@ class TrackerClient
   bool Update();
   const std::string &getUrl() const;
   void announce(const std::string id, uint32_t got);
+  void send(TrackerMessageInterface *message);
 
   void _send(TrackerMessageInterface *message);
 
