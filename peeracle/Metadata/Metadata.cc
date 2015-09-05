@@ -79,6 +79,7 @@ bool Metadata::unserialize(DataStream *dataStream) {
   }
 
   hash = new Murmur3Hash();
+  hash->init();
 
   for (size_t i = 0; i < trackerCount; ++i) {
     if (dataStream->read(&tracker) == -1) {
