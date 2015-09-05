@@ -201,35 +201,35 @@ class DataStream {
   }
 
   std::streamsize write(int8_t value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(uint8_t value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(int16_t value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(uint16_t value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(int32_t value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(uint32_t value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(float value) {
-    return _write(value);
+    return _write(&value);
   }
 
   std::streamsize write(double value) {
-    return _write(value);
+    return _write(&value);
   }
 
   /**
@@ -301,8 +301,8 @@ class DataStream {
                                  std::streamsize length) = 0;
 
   template<typename T>
-  std::streamsize _write(T value, std::streamsize length = sizeof(T)) {
-    return vwrite(reinterpret_cast<const char*>(&value), length);
+  std::streamsize _write(T *value, std::streamsize length = sizeof(T)) {
+    return vwrite(reinterpret_cast<const char*>(value), length);
   }
 
   template<typename T>
