@@ -54,11 +54,13 @@ class WebSocketsClient : public WebSocketsClientInterface {
  private:
   const std::string &_url;
   WebSocketsClientObserver *_observer;
+  bool _connected;
 
 #ifdef USE_LIBWEBSOCKETS
-  struct libwebsocket_context *_context;
   struct libwebsocket *_wsi;
-  struct libwebsocket_protocols *_protocols;
+  struct libwebsocket_context *_context;
+  struct lws_context_creation_info _info;
+  struct libwebsocket_protocols _protocols[2];
 
   struct Message {
     const char *buffer;

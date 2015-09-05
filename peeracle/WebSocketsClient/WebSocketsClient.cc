@@ -32,13 +32,10 @@
 
 namespace peeracle {
 
-static const std::string prclProtocol = "prcl-0.0.1";
-
 int WebSocketsClient::Callback(
   struct libwebsocket_context *context, struct libwebsocket *wsi,
   enum libwebsocket_callback_reasons reason, void *user, void *in, size_t len) {
-  Userdata *userData =
-    reinterpret_cast<Userdata *>(user);
+  Userdata *userData = reinterpret_cast<Userdata *>(user);
 
   WebSocketsClient *client = NULL;
   unsigned char *buffer = NULL;
@@ -53,6 +50,7 @@ int WebSocketsClient::Callback(
       if (!userData) {
         break;
       }
+      client->_connected = false;
       client->_observer->onDisconnect();
       break;
     }
@@ -71,12 +69,9 @@ int WebSocketsClient::Callback(
         break;
       }
 
-      /*TrackerMessageInterface *msg =
-        new TrackerMessage(TrackerMessageInterface::kHello);
-      client->_messages.push(msg);*/
-
-      client->_observer->onConnect();
       lwsl_notice("Client has connected\n");
+      client->_connected = true;
+      client->_observer->onConnect();
       break;
     }
 
@@ -177,7 +172,7 @@ int WebSocketsClient::Callback(
 
 WebSocketsClient::WebSocketsClient(const std::string &url,
                                    WebSocketsClientObserver *observer) :
-  _url(url), _observer(observer) {
+  _url(url), _observer(observer), _connected(false) {
 #ifdef _DEBUG
   lws_set_log_level(LLL_ERR | LLL_WARN | LLL_NOTICE | LLL_INFO | LLL_DEBUG |
                     LLL_HEADER, NULL);
@@ -188,14 +183,11 @@ WebSocketsClient::~WebSocketsClient() {
 }
 
 bool WebSocketsClient::Init() {
-  struct lws_context_creation_info info;
+  memset(&_info, 0, sizeof(_info));
 
-  memset(&info, 0, sizeof info);
-
-  info.port = CONTEXT_PORT_NO_LISTEN;
-  // info.iface = interface;
-  _protocols = new libwebsocket_protocols[2];
-  _protocols[0].name = prclProtocol.c_str();
+  _info.port = CONTEXT_PORT_NO_LISTEN;
+  // _info.iface = interface;
+  _protocols[0].name = strdup("prcl-0.0.1");
   _protocols[0].callback = Callback;
   _protocols[0].per_session_data_size = sizeof(struct Userdata);
 
@@ -203,14 +195,14 @@ bool WebSocketsClient::Init() {
   _protocols[1].callback = NULL;
   _protocols[1].per_session_data_size = 0;
 
-  info.protocols = _protocols;
-  info.ssl_cert_filepath = NULL;
-  info.ssl_private_key_filepath = NULL;
-  info.gid = -1;
-  info.uid = -1;
-  info.options = 0;
+  _info.protocols = _protocols;
+  _info.ssl_cert_filepath = NULL;
+  _info.ssl_private_key_filepath = NULL;
+  _info.gid = -1;
+  _info.uid = -1;
+  _info.options = 0;
 
-  _context = libwebsocket_create_context(&info);
+  _context = libwebsocket_create_context(&_info);
   if (_context == NULL) {
     lwsl_err("libwebsocket init failed\n");
     return false;
@@ -283,13 +275,19 @@ bool WebSocketsClient::Connect() {
     return false;
   }
 
+  _connected = true;
   return true;
 }
 
 bool WebSocketsClient::Update() {
+  if (!_connected) {
+    return false;
+  }
+
   if (_messages.size() > 0) {
     libwebsocket_callback_on_writable(_context, _wsi);
   }
+
   return libwebsocket_service(_context, 0) >= 0;
 }
 
