@@ -24,6 +24,7 @@
 #define PEERACLE_TRACKER_CLIENT_TRACKERCLIENTOBSERVER_H_
 
 #include <string>
+#include <vector>
 
 namespace peeracle {
 
@@ -32,8 +33,15 @@ class TrackerClientObserver {
   virtual void onConnect(const std::string &id) = 0;
   virtual void onDisconnect() = 0;
   virtual void onConnectionError() = 0;
-  virtual void onPeerConnect(const std::string &hash, const std::string &peerId,
-                             uint32_t got, bool poke) = 0;
+
+  virtual void onEnter(const std::string &hash, const std::string &peerId,
+                       const std::vector<uint32_t> &got) = 0;
+  virtual void onSdp(const std::string &id, const std::string &hash,
+                     const std::string &type, const std::string &sdp) = 0;
+  virtual void onIceCandidate(const std::string &id, const std::string &hash,
+                              const std::string &candidate,
+                              const std::string &sdpMid,
+                              uint32_t sdpMLineIndex) = 0;
 
  protected:
   virtual ~TrackerClientObserver() { }

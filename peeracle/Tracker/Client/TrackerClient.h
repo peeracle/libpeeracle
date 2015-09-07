@@ -46,7 +46,13 @@ class TrackerClient
   bool Connect();
   bool Update();
   const std::string &getUrl() const;
-  void announce(const std::string id, const std::vector<uint32_t> &got);
+  void announce(const std::string &id, const std::vector<uint32_t> &got);
+  void sendSdp(const std::string &id, const std::string &hash,
+               const std::string &sdp, const std::string &type);
+  void sendIceCandidate(const std::string &id, const std::string &hash,
+                        const std::string &sdpMid, uint32_t sdpMLineIndex,
+                        const std::string &candidate);
+
   void send(TrackerMessageInterface *message);
 
   void _send(TrackerMessageInterface *message);

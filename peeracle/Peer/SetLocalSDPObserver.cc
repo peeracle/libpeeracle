@@ -38,11 +38,11 @@ void Peer::PeerImpl::SetLocalSDPObserver::OnSuccess() {
   std::string sdp;
 
   _desc->ToString(&sdp);
-  _createSDPObserver->onSuccess(sdp, type);
+  _createSDPObserver->onCreateSDPSuccess(sdp, type);
 }
 
 void Peer::PeerImpl::SetLocalSDPObserver::OnFailure(const std::string &error) {
-  _createSDPObserver->onFailure(error);
+  _createSDPObserver->onCreateSDPFailure(error);
 }
 
 }  // namespace peeracle

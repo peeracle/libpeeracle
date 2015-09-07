@@ -78,7 +78,7 @@ SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
   for (uint32_t i = 0; i < segments.size(); ++i) {
     MetadataMediaSegmentInterface *segment = segments[i];
     char *bytes = new char[segment->getLength()];
-    const std::vector<uint8_t *> &chunks = segment->getChunks();
+    const std::vector<const char *> &chunks = segment->getChunks();
 
     if (!_storage->retrieve(id, i, 0, segment->getLength(), bytes)) {
       delete[] bytes;
@@ -89,7 +89,7 @@ SessionHandleInterface *Session::addMetadata(MetadataInterface *metadata,
       DataStreamInit init;
       MemoryDataStream *chunkBytes = new MemoryDataStream(init);
       std::streamsize len = stream->getChunkSize();
-      uint8_t *result = new uint8_t[hashLen];
+      char *result = new char[hashLen];
 
       if (c + 1 == chunks.size()) {
         len = stream->getChunkSize() -

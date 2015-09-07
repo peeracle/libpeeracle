@@ -26,6 +26,7 @@
 #include <string>
 
 #include "peeracle/Peer/PeerInterface.h"
+#include "peeracle/Peer/PeerMessageInterface.h"
 #include "peeracle/Session/SessionInterface.h"
 
 namespace peeracle {
@@ -35,12 +36,13 @@ class SessionPeerObserver
  public:
   explicit SessionPeerObserver(SessionInterface *session);
   ~SessionPeerObserver();
-  void onIceCandidate(const std::string &sdpMid, int sdpMLineIndex,
-                      const std::string &candidate);
-  void onSignalingChange(int state);
-  void onStateChange(int state);
-  void onIceConnectionChange(int state);
-  void onIceGatheringChange(int state);
+
+  void onConnect();
+  void onDisconnect();
+  void onChunk(const std::string &hash, uint32_t segment, uint32_t chunk,
+               uint32_t offset, uint32_t length, const char *bytes);
+  void onMessage(PeerMessageInterface *message);
+
   void setPeer(PeerInterface *peer);
 
  private:

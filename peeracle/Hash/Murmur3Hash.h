@@ -50,12 +50,17 @@ class Murmur3Hash
   void init();
   void update(DataStream *dataStream);
   void update(const uint8_t *buffer, size_t length);
+  void update(const char *buffer, size_t length);
   void final(uint8_t *result);
+  void final(char *result);
   void checksum(DataStream *dataStream, uint8_t *result);
+  void checksum(DataStream *dataStream, char *result);
   uint32_t getLength();
 
   static void serialize(uint8_t *in, DataStream *out);
+  static void serialize(const char *in, DataStream *out);
   static void unserialize(DataStream *in, uint8_t *out);
+  static void unserialize(DataStream *in, char *out);
 
  private:
   MemoryDataStream *_dataStream;

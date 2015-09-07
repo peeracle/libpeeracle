@@ -37,7 +37,7 @@ class MetadataMediaSegmentInterface {
  public:
   virtual uint32_t getTimecode() = 0;
   virtual uint32_t getLength() = 0;
-  virtual const std::vector<uint8_t *> &getChunks() = 0;
+  virtual const std::vector<const char *> &getChunks() = 0;
 
   virtual bool unserialize(DataStream *dataStream,
                            const std::string &hashName,

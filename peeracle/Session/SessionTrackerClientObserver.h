@@ -24,6 +24,7 @@
 #define PEERACLE_SESSION_SESSIONTRACKERCLIENTOBSERVER_H_
 
 #include <string>
+#include <vector>
 
 #include "peeracle/Session/SessionInterface.h"
 #include "peeracle/Tracker/Client/TrackerClientInterface.h"
@@ -40,8 +41,15 @@ class SessionTrackerClientObserver
   void onConnect(const std::string &id);
   void onDisconnect();
   void onConnectionError();
-  void onPeerConnect(const std::string &hash, const std::string &peerId,
-                     uint32_t got, bool poke);
+  void onEnter(const std::string &hash, const std::string &peerId,
+               const std::vector<uint32_t> &got);
+
+  void onSdp(const std::string &id, const std::string &hash,
+             const std::string &type, const std::string &sdp);
+  void onIceCandidate(const std::string &id, const std::string &hash,
+                      const std::string &candidate, const std::string &sdpMid,
+                      uint32_t sdpMLineIndex);
+
   void setTrackerClient(TrackerClientInterface *tracker);
 
  private:

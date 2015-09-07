@@ -23,13 +23,30 @@
 #ifndef PEERACLE_PEER_PEERINTERFACE_H_
 #define PEERACLE_PEER_PEERINTERFACE_H_
 
+#include <map>
 #include <string>
+#include <vector>
+#include "peeracle/Peer/PeerMessageInterface.h"
+#include "peeracle/Session/SessionHandleInterface.h"
 
 namespace peeracle {
 
 class PeerInterface {
  public:
   class Observer {
+   public:
+    virtual void onConnect() = 0;
+    virtual void onDisconnect() = 0;
+    virtual void onChunk(const std::string &hash, uint32_t segment,
+                         uint32_t chunk, uint32_t offset, uint32_t length,
+                         const char *bytes) = 0;
+    virtual void onMessage(PeerMessageInterface *message) = 0;
+
+   protected:
+    virtual ~Observer() {}
+  };
+
+  class PeerConnectionObserver {
    public:
     virtual void onIceCandidate(const std::string &sdpMid,
                                 int sdpMLineIndex,
@@ -38,16 +55,18 @@ class PeerInterface {
     virtual void onStateChange(int state) = 0;
     virtual void onIceConnectionChange(int state) = 0;
     virtual void onIceGatheringChange(int state) = 0;
+    virtual void onMessage(PeerMessageInterface *message,
+                           DataStream *dataStream) = 0;
 
    protected:
-    virtual ~Observer() {}
+    virtual ~PeerConnectionObserver() {}
   };
 
   class CreateSDPObserver {
    public:
-    virtual void onSuccess(const std::string &sdp,
+    virtual void onCreateSDPSuccess(const std::string &sdp,
                            const std::string &type) = 0;
-    virtual void onFailure(const std::string &error) = 0;
+    virtual void onCreateSDPFailure(const std::string &error) = 0;
 
    protected:
     ~CreateSDPObserver() {}
@@ -55,14 +74,25 @@ class PeerInterface {
 
   class SetSDPObserver {
    public:
-    virtual void onSuccess() = 0;
-    virtual void onFailure(const std::string &error) = 0;
+    virtual void onSetSDPSuccess() = 0;
+    virtual void onSetSDPFailure(const std::string &error) = 0;
 
    protected:
     ~SetSDPObserver() {}
   };
 
+  virtual void addHash(const std::string &hash,
+                       const std::vector<uint32_t> &got) = 0;
+  virtual const std::map<std::string, std::vector<uint32_t>> &getHashes()
+    const = 0;
   virtual const std::string &getId() const = 0;
+  virtual SessionHandleInterface::Request *getRequest() const = 0;
+  virtual void sendRequest(SessionHandleInterface::Request *request) = 0;
+
+  virtual void processSdp(const std::string &type, const std::string &sdp) = 0;
+  virtual void processIceCandidate(const std::string &candidate,
+                                   const std::string &sdpMid,
+                                   uint32_t sdpMLineIndex) = 0;
 
   virtual ~PeerInterface() {}
 };

@@ -21,13 +21,19 @@
  */
 
 #include <iostream>
+
+#include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Peer/Peer.h"
 #include "peeracle/Peer/PeerImpl.h"
+#include "peeracle/Peer/PeerMessage.h"
 
 namespace peeracle {
 
 Peer::PeerImpl::DataChannelObserver::DataChannelObserver(
-  webrtc::DataChannelInterface *dataChannel) : _dataChannel(dataChannel) {
+  PeerInterface::PeerConnectionObserver *observer,
+  webrtc::DataChannelInterface *dataChannel)
+    : _observer(observer), _dataChannel(dataChannel) {
+  (void)_observer;
 }
 
 void Peer::PeerImpl::DataChannelObserver::OnStateChange() {
@@ -35,7 +41,7 @@ void Peer::PeerImpl::DataChannelObserver::OnStateChange() {
   this->_dataChannel->state() << std::endl;
 
   if (this->_dataChannel->state() == webrtc::DataChannelInterface::kOpen) {
-    uint8_t data[] = {0, 16, 32, 64};
+    uint8_t data[] = {0};
     rtc::Buffer buffer(data, sizeof(data));
     webrtc::DataBuffer dataBuffer(buffer, true);
 
@@ -46,11 +52,23 @@ void Peer::PeerImpl::DataChannelObserver::OnStateChange() {
 
 void Peer::PeerImpl::DataChannelObserver::OnMessage(
   const webrtc::DataBuffer& buffer) {
-  std::cout << "GOT MSG!!!" << std::endl;
-  std::cout << "size = " << buffer.size() << std::endl;
-  for (size_t i = 0; i < buffer.size(); ++i) {
-    printf("data[%zu] = %d\n", i, buffer.data.data()[i]);
+  DataStreamInit init;
+  init.bigEndian = true;
+  MemoryDataStream *dataStream = new MemoryDataStream(init);
+  PeerMessageInterface *message = new PeerMessage();
+
+  std::cout << "received " << buffer.size() << " bytes" << std::endl;
+  dataStream->write(reinterpret_cast<const char*>(buffer.data.data()),
+               buffer.size());
+  dataStream->seek(0);
+
+  if (!message->unserialize(dataStream)) {
+    delete dataStream;
+    return;
   }
+
+  _observer->onMessage(message, dataStream);
+  delete dataStream;
 }
 
 }  // namespace peeracle

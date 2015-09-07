@@ -23,7 +23,9 @@
 #ifndef PEERACLE_SESSION_SESSIONHANDLE_H_
 #define PEERACLE_SESSION_SESSIONHANDLE_H_
 
+#include <string>
 #include <vector>
+
 #include "peeracle/Peer/PeerInterface.h"
 #include "peeracle/Metadata/MetadataInterface.h"
 #include "peeracle/Session/SessionHandleInterface.h"
@@ -43,13 +45,25 @@ class SessionHandle
   MetadataInterface *getMetadata() const;
   const std::vector<uint32_t> &getGot() const;
 
-  void onPeer(PeerInterface *peer, uint32_t got, bool poke);
+  void onPeerEntered(PeerInterface *peer, const std::vector<uint32_t> &got);
+  void onPeerConnected(PeerInterface *peer);
+  void onPeerChunk(PeerInterface *peer, const std::string &hash,
+                   uint32_t segment, uint32_t chunk, uint32_t offset,
+                   uint32_t length, const char *bytes);
+
+  void requestSegment(uint32_t segment);
 
  private:
   SessionInterface *_session;
   SessionHandleObserver *_observer;
   std::vector<uint32_t> _got;
   MetadataInterface *_metadata;
+  std::vector<Request *> _requests;
+
+  void _processRequests();
+  void _processRequest(Request *request);
+  bool _checkGot(const std::vector<uint32_t> &got, uint32_t segment,
+                 uint32_t chunk);
 };
 
 }  // namespace peeracle

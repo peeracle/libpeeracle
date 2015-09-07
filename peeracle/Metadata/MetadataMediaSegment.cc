@@ -42,7 +42,7 @@ uint32_t MetadataMediaSegment::getLength() {
   return _length;
 }
 
-const std::vector<uint8_t *> &MetadataMediaSegment::getChunks() {
+const std::vector<const char *> &MetadataMediaSegment::getChunks() {
   return _chunks;
 }
 
@@ -61,7 +61,7 @@ bool MetadataMediaSegment::unserialize(DataStream *dataStream,
   }
 
   for (uint32_t c = 0; c < chunkCount; ++c) {
-    uint8_t *chunk = new uint8_t[16];
+    char *chunk = new char[16];
 
     Murmur3Hash::unserialize(dataStream, chunk);
     _chunks.push_back(chunk);

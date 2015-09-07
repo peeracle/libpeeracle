@@ -21,6 +21,9 @@
  */
 
 #include <string>
+#include <iostream>
+#include <vector>
+#include <map>
 
 #include "peeracle/Session/SessionPeerObserver.h"
 
@@ -34,21 +37,72 @@ SessionPeerObserver::SessionPeerObserver(SessionInterface *session) :
 SessionPeerObserver::~SessionPeerObserver() {
 }
 
-void SessionPeerObserver::onIceCandidate(const std::string &sdpMid,
-                                         int sdpMLineIndex,
-                                         const std::string &candidate) {
+void SessionPeerObserver::onConnect() {
+  std::cout << "[SessionPeerObserver::onConnect]" << std::endl;
+
+  if (!_peer) {
+    return;
+  }
+
+  std::map<std::string, PeerInterface *> &peers = _session->getPeers();
+
+  if (peers.find(_peer->getId()) == peers.end()) {
+    return;
+  }
+
+  std::map<std::string, SessionHandleInterface *> &handles =
+    _session->getHandles();
+  const std::map<std::string, std::vector<uint32_t>> &hashes =
+    _peer->getHashes();
+  std::map<std::string, std::vector<uint32_t>>::const_iterator it;
+
+  for (it = hashes.begin(); it != hashes.end(); ++it) {
+    if (handles.find((*it).first) == handles.end()) {
+      continue;
+    }
+
+    handles[(*it).first]->onPeerConnected(_peer);
+  }
 }
 
-void SessionPeerObserver::onSignalingChange(int state) {
+void SessionPeerObserver::onDisconnect() {
+  std::cout << "[SessionPeerObserver::onDisconnect]" << std::endl;
 }
 
-void SessionPeerObserver::onStateChange(int state) {
+void SessionPeerObserver::onChunk(const std::string &hash, uint32_t segment,
+                                  uint32_t chunk, uint32_t offset,
+                                  uint32_t length, const char *bytes) {
+  std::cout << "[SessionPeerObserver::onChunk] " << segment << " " <<
+    chunk << " " << offset << " " << length << std::endl;
+
+  if (!_peer) {
+    return;
+  }
+
+  std::map<std::string, PeerInterface *> &peers = _session->getPeers();
+
+  if (peers.find(_peer->getId()) == peers.end()) {
+    return;
+  }
+
+  std::map<std::string, SessionHandleInterface *> &handles =
+    _session->getHandles();
+  const std::map<std::string, std::vector<uint32_t>> &hashes =
+    _peer->getHashes();
+  std::map<std::string, std::vector<uint32_t>>::const_iterator it;
+
+  for (it = hashes.begin(); it != hashes.end(); ++it) {
+    if (handles.find((*it).first) == handles.end()) {
+      continue;
+    }
+
+    handles[(*it).first]->onPeerChunk(_peer, hash, segment, chunk, offset,
+                                      length, bytes);
+  }
 }
 
-void SessionPeerObserver::onIceConnectionChange(int state) {
-}
-
-void SessionPeerObserver::onIceGatheringChange(int state) {
+void SessionPeerObserver::onMessage(PeerMessageInterface *message) {
+  std::cout << "[SessionPeerObserver::onMessage]" << std::endl;
 }
 
 void SessionPeerObserver::setPeer(PeerInterface *peer) {

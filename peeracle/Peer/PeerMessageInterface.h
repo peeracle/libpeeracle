@@ -20,8 +20,8 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
-#define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
+#ifndef PEERACLE_PEER_PEERMESSAGEINTERFACE_H_
+#define PEERACLE_PEER_PEERMESSAGEINTERFACE_H_
 
 #include <string>
 #include "peeracle/DataStream/DataStream.h"
@@ -35,23 +35,16 @@
 namespace peeracle {
 
 /**
- * \addtogroup Tracker
+ * \addtogroup Peer
  * @{
- * A class that deals with messages sent to and received from the Tracker.
+ * A class that deals with messages sent to and received from the Peer.
  */
-class TrackerMessageInterface {
+class PeerMessageInterface {
  public:
   enum Type {
-    kKeepAlive,
-    kHello,
-    kWelcome,
-    kAnnounce,
-    kDenounce,
-    kEnter,
-    kLeave,
-    kSdp,
+    kPing,
     kRequest,
-    kPoke
+    kChunk
   };
 
   virtual uint8_t getType() const = 0;
@@ -137,7 +130,7 @@ class TrackerMessageInterface {
   virtual bool serialize(DataStream *dataStream) = 0;
   virtual bool unserialize(DataStream *dataStream) = 0;
 
-  virtual ~TrackerMessageInterface() {}
+  virtual ~PeerMessageInterface() {}
 };
 
 /**
@@ -145,4 +138,4 @@ class TrackerMessageInterface {
  */
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGEINTERFACE_H_
+#endif  // PEERACLE_PEER_PEERMESSAGEINTERFACE_H_

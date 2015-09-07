@@ -37,7 +37,7 @@ class MetadataMediaSegment
 
   uint32_t getTimecode();
   uint32_t getLength();
-  const std::vector<uint8_t *> &getChunks();
+  const std::vector<const char *> &getChunks();
 
   bool unserialize(DataStream *dataStream,
                    const std::string &hashName, HashInterface *hash);
@@ -45,7 +45,7 @@ class MetadataMediaSegment
  private:
   uint32_t _timecode;
   uint32_t _length;
-  std::vector<uint8_t *> _chunks;
+  std::vector<const char *> _chunks;
 };
 
 }  // namespace peeracle

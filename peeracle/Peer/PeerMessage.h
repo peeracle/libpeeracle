@@ -20,20 +20,20 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
-#define PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
+#ifndef PEERACLE_PEER_PEERMESSAGE_H_
+#define PEERACLE_PEER_PEERMESSAGE_H_
 
 #include <map>
 #include <string>
 #include "peeracle/DataStream/DataStream.h"
-#include "peeracle/Tracker/Message/TrackerMessageInterface.h"
+#include "peeracle/Peer/PeerMessageInterface.h"
 
 namespace peeracle {
 
-class TrackerMessage : public TrackerMessageInterface {
+class PeerMessage : public PeerMessageInterface {
  public:
-  explicit TrackerMessage(uint8_t type = kKeepAlive);
-  ~TrackerMessage();
+  explicit PeerMessage(uint8_t type = kPing);
+  ~PeerMessage();
 
   uint8_t getType() const;
 
@@ -68,19 +68,15 @@ class TrackerMessage : public TrackerMessageInterface {
   template<typename T>
   void _set(const std::string &key, T value);
 
-  bool _serializeWelcome(DataStream *dataStream);
-  bool _serializeAnnounce(DataStream *dataStream);
-  bool _serializeEnter(DataStream *dataStream);
-  bool _serializePoke(DataStream *dataStream);
-  bool _serializeSdp(DataStream *dataStream);
+  bool _serializeFunc(DataStream *dataStream);
+  bool _serializeRequest(DataStream *dataStream);
+  bool _serializeChunk(DataStream *dataStream);
 
-  bool _unserializeWelcome(DataStream *dataStream);
-  bool _unserializeAnnounce(DataStream *dataStream);
-  bool _unserializeEnter(DataStream *dataStream);
-  bool _unserializePoke(DataStream *dataStream);
-  bool _unserializeSdp(DataStream *dataStream);
+  bool _unserializeFunc(DataStream *dataStream);
+  bool _unserializeRequest(DataStream *dataStream);
+  bool _unserializeChunk(DataStream *dataStream);
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_MESSAGE_TRACKERMESSAGE_H_
+#endif  // PEERACLE_PEER_PEERMESSAGE_H_

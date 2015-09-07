@@ -46,7 +46,8 @@ void Peer::PeerImpl::OnDataChannel(webrtc::DataChannelInterface *data_channel) {
   std::cout << "Peer::PeerImpl::OnDataChannel " << data_channel->label() <<
   std::endl;
   this->_dataChannel = data_channel;
-  this->_dataChannelObserver = new PeerImpl::DataChannelObserver(data_channel);
+  this->_dataChannelObserver = new PeerImpl::DataChannelObserver(_observer,
+                                                                 data_channel);
   this->_dataChannel->RegisterObserver(this->_dataChannelObserver);
 }
 

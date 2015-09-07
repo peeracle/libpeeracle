@@ -27,7 +27,8 @@
 namespace peeracle {
 
 MemoryDataStream::MemoryDataStream(const DataStreamInit &dsInit) :
-  _bigEndian(dsInit.bigEndian), _cursor(0) {
+  _cursor(0) {
+  _bigEndian = dsInit.bigEndian;
 }
 
 MemoryDataStream::~MemoryDataStream() {

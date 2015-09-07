@@ -32,12 +32,12 @@ Peer::PeerImpl::SetRemoteSDPObserver::SetRemoteSDPObserver(
 }
 
 void Peer::PeerImpl::SetRemoteSDPObserver::OnSuccess() {
-  _setSDPObserver->onSuccess();
+  _setSDPObserver->onSetSDPSuccess();
 }
 
 void Peer::PeerImpl::SetRemoteSDPObserver::OnFailure(
   const std::string &error) {
-  _setSDPObserver->onFailure(error);
+  _setSDPObserver->onSetSDPFailure(error);
 }
 
 }  // namespace peeracle

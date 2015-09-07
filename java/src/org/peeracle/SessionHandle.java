@@ -31,7 +31,7 @@ public class SessionHandle {
   }
 
   public native Metadata getMetadata();
-  public native void onPeer(Peer peer, long got, boolean poke);
+  public native void onPeerEntered(Peer peer, long got, boolean poke);
 
   public native long nativeCreateSessionHandleObserver(Observer observer);
 

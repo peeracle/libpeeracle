@@ -63,6 +63,9 @@ class MySessionHandleObserver
                uint32_t offset, const char *bytes, uint32_t length) {
   }
 
+  void onSegment(uint32_t segment, const char *bytes, uint32_t length) {
+  }
+
   void setSessionHandle(peeracle::SessionHandleInterface *handle) {
     _handle = handle;
   }
@@ -104,7 +107,8 @@ int main(int argc, char **argv) {
   sessionHandle = session->addMetadata(&metadata, sessionHandleObserver);
   sessionHandleObserver->setSessionHandle(sessionHandle);
 
-  while (session->update()) {
+  sessionHandle->requestSegment(0);
+  while (peeracle::update() && session->update()) {
   }
 
   peeracle::cleanup();

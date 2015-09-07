@@ -37,6 +37,10 @@ Murmur3Hash::~Murmur3Hash() {
 }
 
 void Murmur3Hash::init() {
+  DataStreamInit init;
+
+  delete this->_dataStream;
+  this->_dataStream = new MemoryDataStream(init);
 }
 
 void Murmur3Hash::update(DataStream *dataStream) {
@@ -51,7 +55,31 @@ void Murmur3Hash::update(const uint8_t *buffer, size_t length) {
   this->_dataStream->write(reinterpret_cast<const char *>(buffer), length);
 }
 
+void Murmur3Hash::update(const char *buffer, size_t length) {
+  this->_dataStream->write(buffer, length);
+}
+
 void Murmur3Hash::final(uint8_t *result) {
+  const std::streamsize length = this->_dataStream->length();
+  char *buffer = new char[length];
+  uint8_t output[16];
+
+  this->_dataStream->seek(0);
+  this->_dataStream->read(buffer, length);
+
+  MurmurHash3_x86_128(buffer, static_cast<int>(length), 0x5052434C, output);
+
+  for (int i = 0; i < 16; i += 4) {
+    result[i + 0] = output[i + 3];
+    result[i + 1] = output[i + 2];
+    result[i + 2] = output[i + 1];
+    result[i + 3] = output[i + 0];
+  }
+
+  delete[] buffer;
+}
+
+void Murmur3Hash::final(char *result) {
   const std::streamsize length = this->_dataStream->length();
   char *buffer = new char[length];
   uint8_t output[16];
@@ -77,12 +105,26 @@ void Murmur3Hash::checksum(DataStream *dataStream, uint8_t *result) {
   this->final(result);
 }
 
+void Murmur3Hash::checksum(DataStream *dataStream, char *result) {
+  this->init();
+  this->update(dataStream);
+  this->final(result);
+}
+
 void Murmur3Hash::serialize(uint8_t *in, DataStream *out) {
   out->write(reinterpret_cast<char*>(in), 16);
 }
 
+void Murmur3Hash::serialize(const char *in, DataStream *out) {
+  out->write(in, 16);
+}
+
 void Murmur3Hash::unserialize(DataStream *in, uint8_t *out) {
   in->read(reinterpret_cast<char *>(out), 16);
+}
+
+void Murmur3Hash::unserialize(DataStream *in, char *out) {
+  in->read(out, 16);
 }
 
 uint32_t Murmur3Hash::getLength() {

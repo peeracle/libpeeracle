@@ -54,7 +54,6 @@ class MemoryDataStream : public DataStream {
   std::streamsize vwrite(const char *buffer, std::streamsize length);
 
  protected:
-  bool _bigEndian;
   std::streampos _cursor;
   std::vector<uint8_t> _buffer;
 };

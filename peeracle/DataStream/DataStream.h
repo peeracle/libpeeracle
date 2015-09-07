@@ -128,9 +128,14 @@ class DataStream {
     std::stringstream strm;
 
     for (i = 0; i < 32768; ++i) {
-      if (_read(&c, 1) < 1 || c == '\0') {
+      if (_read(&c, 1) < 1) {
         break;
       }
+
+      if (c == '\0') {
+        break;
+      }
+
       strm << c;
     }
 

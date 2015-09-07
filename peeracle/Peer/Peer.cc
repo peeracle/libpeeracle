@@ -28,68 +28,33 @@
 #include "third_party/webrtc/talk/app/webrtc/test/fakeconstraints.h"
 #include "third_party/webrtc/talk/app/webrtc/peerconnectioninterface.h"
 
+#include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Peer/Peer.h"
 #include "peeracle/Peer/PeerImpl.h"
+#include "peeracle/Peer/PeerMessage.h"
 #include "peeracle/peeracle.h"
 
 namespace peeracle {
 
-Peer::Peer(const std::string &id, TrackerClientInterface *tracker,
-           PeerInterface::Observer *observer) :
-  _peer(new Peer::PeerImpl(observer)), _id(id), _tracker(tracker),
-  _observer(observer) {
+Peer::Peer(PeerInterface::Observer *observer, const std::string &id,
+           TrackerClientInterface *tracker) :
+  _peer(new Peer::PeerImpl(this)),
+  _observer(observer),
+  _id(id),
+  _tracker(tracker),
+  _request(NULL),
+  _state(State::Disconnected) {
   webrtc::PeerConnectionInterface::IceServers iceServers;
-  webrtc::PeerConnectionInterface::IceServer amazonIceServer;
   webrtc::PeerConnectionInterface::IceServer googleIceServer;
-  webrtc::PeerConnectionInterface::IceServer ekigaIceServer;
-  webrtc::PeerConnectionInterface::IceServer ideasipIceServer;
-  webrtc::PeerConnectionInterface::IceServer rixtelecomIceServer;
-  webrtc::PeerConnectionInterface::IceServer schlundIceServer;
-  webrtc::PeerConnectionInterface::IceServer stunprotocolIceServer;
-  webrtc::PeerConnectionInterface::IceServer voiparoundIceServer;
-  webrtc::PeerConnectionInterface::IceServer voipbusterIceServer;
-  webrtc::PeerConnectionInterface::IceServer voipstuntIceServer;
-  webrtc::PeerConnectionInterface::IceServer voipgratiaIceServer;
 
-  amazonIceServer.uri = "stun:23.21.150.121";
   googleIceServer.uri = "stun:stun.l.google.com:19302";
-  ekigaIceServer.uri = "stun:stun.ekiga.net";
-  ideasipIceServer.uri = "stun:stun.ideasip.com";
-  rixtelecomIceServer.uri = "stun:stun.rixtelecom.se";
-  schlundIceServer.uri = "stun:stun.schlund.de";
-  stunprotocolIceServer.uri = "stun:stun.stunprotocol.org:3478";
-  voiparoundIceServer.uri = "stun:stun.voiparound.com";
-  voipbusterIceServer.uri = "stun:stun.voipbuster.com";
-  voipstuntIceServer.uri = "stun:stun.voipstunt.com";
-  voipgratiaIceServer.uri = "stun:stun.voxgratia.org";
-
-  amazonIceServer.urls.push_back("stun:23.21.150.121");
   googleIceServer.urls.push_back("stun:stun.l.google.com:19302");
   googleIceServer.urls.push_back("stun:stun1.l.google.com:19302");
   googleIceServer.urls.push_back("stun:stun2.l.google.com:19302");
   googleIceServer.urls.push_back("stun:stun3.l.google.com:19302");
   googleIceServer.urls.push_back("stun:stun4.l.google.com:19302");
-  ekigaIceServer.urls.push_back("stun:stun.ekiga.net");
-  ideasipIceServer.urls.push_back("stun:stun.ideasip.com");
-  rixtelecomIceServer.urls.push_back("stun:stun.rixtelecom.se");
-  schlundIceServer.urls.push_back("stun:stun.schlund.de");
-  stunprotocolIceServer.urls.push_back("stun:stun.stunprotocol.org:3478");
-  voiparoundIceServer.urls.push_back("stun:stun.voiparound.com");
-  voipbusterIceServer.urls.push_back("stun:stun.voipbuster.com");
-  voipstuntIceServer.urls.push_back("stun:stun.voipstunt.com");
-  voipgratiaIceServer.urls.push_back("stun:stun.voxgratia.org");
 
-  iceServers.push_back(amazonIceServer);
   iceServers.push_back(googleIceServer);
-  iceServers.push_back(ekigaIceServer);
-  iceServers.push_back(ideasipIceServer);
-  iceServers.push_back(rixtelecomIceServer);
-  iceServers.push_back(schlundIceServer);
-  iceServers.push_back(stunprotocolIceServer);
-  iceServers.push_back(voiparoundIceServer);
-  iceServers.push_back(voipbusterIceServer);
-  iceServers.push_back(voipstuntIceServer);
-  iceServers.push_back(voipgratiaIceServer);
 
   _peer->_peerConnection = peeracle::getPeerConnectionFactory()->
     CreatePeerConnection(iceServers, &this->_peer->_mediaConstraints,
@@ -115,9 +80,9 @@ void Peer::CreateOffer(PeerInterface::CreateSDPObserver
 
   init.reliable = true;
   _peer->_dataChannel =
-    _peer->_peerConnection->CreateDataChannel("signal", &init);
+    _peer->_peerConnection->CreateDataChannel("prcl", &init);
   _peer->_dataChannelObserver = new PeerImpl::DataChannelObserver
-    (_peer->_dataChannel);
+    (this, _peer->_dataChannel);
   _peer->_dataChannel->RegisterObserver(_peer->_dataChannelObserver);
 
   _peer->_peerConnection->CreateOffer(createOfferObserver,
@@ -136,6 +101,8 @@ void Peer::CreateAnswer(const std::string &sdp,
 
   desc = webrtc::CreateSessionDescription("offer", sdp, &error);
   if (!desc) {
+    LOG(WARNING) << "Can't parse received session description message. "
+                 << "SdpParseError was: " << error.description;
     return;
   }
 
@@ -149,6 +116,8 @@ void Peer::SetAnswer(const std::string &sdp,
     webrtc::CreateSessionDescription("answer", sdp, &error);
 
   if (!desc) {
+    LOG(WARNING) << "Can't parse received session description message. "
+                 << "SdpParseError was: " << error.description;
     return;
   }
 
@@ -160,8 +129,7 @@ void Peer::SetAnswer(const std::string &sdp,
   _peer->_peerConnection->SetRemoteDescription(setAnswerObserver, desc);
 }
 
-void Peer::AddICECandidate(const std::string &sdpMid,
-                           int sdpMLineIndex,
+void Peer::AddICECandidate(const std::string &sdpMid, int sdpMLineIndex,
                            const std::string &candidate) {
   webrtc::SdpParseError error;
   rtc::scoped_ptr<webrtc::IceCandidateInterface> iceCandidate(
@@ -169,14 +137,169 @@ void Peer::AddICECandidate(const std::string &sdpMid,
                                &error));
 
   if (!iceCandidate) {
+    LOG(WARNING) << "Can't parse received session description message. "
+                 << "SdpParseError was: " << error.description;
     return;
   }
 
   _peer->_peerConnection->AddIceCandidate(iceCandidate.get());
 }
 
+void Peer::onCreateSDPSuccess(const std::string &sdp, const std::string &type) {
+  if (!_request) {
+    return;
+  }
+
+  _state = State::Connecting;
+  _tracker->sendSdp(_id, _request->hash, sdp, type);
+}
+
+void Peer::onCreateSDPFailure(const std::string &error) {
+  _state = State::Disconnected;
+}
+
+void Peer::onSetSDPSuccess() {
+  _state = State::Connecting;
+}
+
+void Peer::onSetSDPFailure(const std::string &error) {
+  _state = State::Disconnected;
+}
+
+void Peer::onIceCandidate(const std::string &sdpMid, int sdpMLineIndex,
+                          const std::string &candidate) {
+  _tracker->sendIceCandidate(_id, _request->hash, sdpMid,
+                             static_cast<uint32_t>(sdpMLineIndex), candidate);
+}
+
+void Peer::onSignalingChange(int state) {
+}
+
+void Peer::onStateChange(int state) {
+}
+
+void Peer::onIceConnectionChange(int state) {
+}
+
+void Peer::onIceGatheringChange(int state) {
+}
+
+void Peer::onMessage(PeerMessageInterface *message, DataStream *dataStream) {
+  std::cout << "got message" << std::endl;
+
+  int type = message->getType();
+
+  switch (type) {
+    case PeerMessageInterface::kPing:
+    {
+      if (_state == State::Connecting) {
+        _state = State::Connected;
+        std::cout << "PING RECEIVED" << std::endl;
+        _observer->onConnect();
+      }
+      break;
+    }
+    case PeerMessageInterface::kChunk:
+    {
+      std::string hash;
+      uint32_t segment;
+      uint32_t chunk;
+      uint32_t offset;
+      uint32_t length;
+
+      message->get("hash", &hash, "");
+      message->get("segment", &segment, 0);
+      message->get("chunk", &chunk, 0);
+      message->get("offset", &offset, 0);
+      message->get("length", &length, 0);
+
+      char *bytes = new char[length];
+      dataStream->read(bytes, length);
+
+      _observer->onChunk(hash, segment, chunk, offset, length, bytes);
+      delete[] bytes;
+      break;
+    }
+    default:
+      break;
+  }
+}
+
+void Peer::addHash(const std::string &hash, const std::vector<uint32_t> &got) {
+  _hashes[hash] = got;
+}
+
+const std::map<std::string, std::vector<uint32_t>> &Peer::getHashes() const {
+  return _hashes;
+}
+
 const std::string &Peer::getId() const {
   return _id;
+}
+
+SessionHandleInterface::Request *Peer::getRequest() const {
+  return _request;
+}
+
+void Peer::sendRequest(SessionHandleInterface::Request *request) {
+  std::cout << "[Peer::sendRequest]" << std::endl;
+  _request = request;
+
+  if (_state == State::Disconnected) {
+    CreateOffer(this);
+    return;
+  }
+
+  std::cout << "[Peer::sendRequest] Send the request NOW " << request->hash <<
+  " " << request->segment << " " << request->chunk << std::endl;
+
+  PeerMessageInterface *message =
+    new PeerMessage(PeerMessageInterface::kRequest);
+
+  message->set("hash", request->hash);
+  message->set("segment", request->segment);
+  message->set("chunk", request->chunk);
+
+  _sendMessage(message);
+}
+
+void Peer::_sendMessage(PeerMessageInterface *message) {
+  char *bytes;
+  DataStreamInit dsInit;
+  dsInit.bigEndian = true;
+  MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
+  std::streamsize length;
+
+  message->serialize(dataStream);
+  dataStream->seek(0);
+
+  length = dataStream->length();
+  bytes = new char[length];
+
+  std::cout << "send " << length << " bytes" << std::endl;
+  dataStream->read(bytes, length);
+  rtc::Buffer buffer(bytes, length);
+  webrtc::DataBuffer dataBuffer(buffer, true);
+  _peer->_dataChannel->Send(dataBuffer);
+
+  delete dataStream;
+  delete bytes;
+}
+
+void Peer::processSdp(const std::string &type, const std::string &sdp) {
+  std::cout << "[Peer::processSdp] " << type << std::endl;
+  if (type == "offer") {
+    CreateAnswer(sdp, this);
+  } else if (type == "answer") {
+    SetAnswer(sdp, this);
+  }
+}
+
+void Peer::processIceCandidate(const std::string &candidate,
+                               const std::string &sdpMid,
+                               uint32_t sdpMLineIndex) {
+  AddICECandidate(sdpMid, sdpMLineIndex, candidate);
+  std::cout << "[Peer::processIceCandidate]" << std::endl;
 }
 
 }  // namespace peeracle

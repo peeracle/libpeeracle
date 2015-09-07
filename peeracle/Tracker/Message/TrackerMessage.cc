@@ -23,6 +23,10 @@
 #include <sstream>
 #include <iostream>
 #include <vector>
+
+#include "third_party/webrtc/third_party/jsoncpp/source/include/json/reader.h"
+#include "third_party/webrtc/third_party/jsoncpp/source/include/json/writer.h"
+
 #include "peeracle/Tracker/Message/TrackerMessage.h"
 
 namespace peeracle {
@@ -161,6 +165,7 @@ bool TrackerMessage::_serializeAnnounce(DataStream *dataStream) {
 
   for (uint32_t i = 0; i < gotCount; ++i) {
     strm.clear();
+    strm.str("");
     strm << "got" << i;
     get(strm.str(), &got, 0);
     dataStream->write(got);
@@ -169,13 +174,11 @@ bool TrackerMessage::_serializeAnnounce(DataStream *dataStream) {
 }
 
 bool TrackerMessage::_serializeEnter(DataStream *dataStream) {
-  return false;
-}
-
-bool TrackerMessage::_serializePoke(DataStream *dataStream) {
   std::string hash;
   std::string peer;
   uint32_t got;
+  uint32_t gotCount;
+  std::stringstream strm;
 
   get("hash", &hash, "");
   if (hash == "") {
@@ -187,11 +190,84 @@ bool TrackerMessage::_serializePoke(DataStream *dataStream) {
     return false;
   }
 
-  get("got", &got, 0);
+  get("got", &gotCount, 0);
 
   dataStream->write(hash);
   dataStream->write(peer);
-  dataStream->write(got);
+  dataStream->write(gotCount);
+
+  for (uint32_t i = 0; i < gotCount; ++i) {
+    strm.clear();
+    strm.str("");
+    strm << "got" << i;
+    get(strm.str(), &got, 0);
+    dataStream->write(got);
+  }
+
+  return true;
+}
+
+bool TrackerMessage::_serializePoke(DataStream *dataStream) {
+  return _serializeEnter(dataStream);
+}
+
+bool TrackerMessage::_serializeSdp(DataStream *dataStream) {
+  std::string id;
+  std::string hash;
+  std::string type;
+
+  get("id", &id, "");
+  if (id == "") {
+    return false;
+  }
+
+  dataStream->write(id);
+
+  get("hash", &hash, "");
+  if (hash == "") {
+    return false;
+  }
+
+  dataStream->write(hash);
+
+  get("type", &type, "");
+  if (type == "") {
+    return false;
+  }
+
+  Json::FastWriter writer;
+  Json::Value jmessage;
+
+  if (type == "ice") {
+    std::string sdpMid;
+    uint32_t sdpMLineIndex;
+    std::string candidate;
+    get("sdpMid", &sdpMid, "");
+    get("sdpMLineIndex", &sdpMLineIndex, 0);
+    get("candidate", &candidate, "");
+
+    jmessage["sdpMid"] = sdpMid;
+    jmessage["sdpMLineIndex"] = sdpMLineIndex;
+    jmessage["candidate"] = candidate;
+
+    dataStream->write(writer.write(jmessage));
+    return true;
+  } else if (type != "offer" && type != "answer") {
+    return false;
+  }
+
+  std::string sdp;
+
+  jmessage["type"] = type;
+
+  get("sdp", &sdp, "");
+  if (sdp == "") {
+    return false;
+  }
+
+  jmessage["sdp"] = sdp;
+
+  dataStream->write(writer.write(jmessage));
   return true;
 }
 
@@ -201,7 +277,7 @@ bool TrackerMessage::serialize(DataStream *dataStream) {
   switch (_type) {
     case kKeepAlive:
     case kHello:
-      break;
+      return true;
     case kWelcome:
       return _serializeWelcome(dataStream);
     case kAnnounce:
@@ -210,6 +286,8 @@ bool TrackerMessage::serialize(DataStream *dataStream) {
       return _serializeEnter(dataStream);
     case kPoke:
       return _serializePoke(dataStream);
+    case kSdp:
+      return _serializeSdp(dataStream);
     default:
       break;
   }
@@ -239,6 +317,7 @@ bool TrackerMessage::_unserializeAnnounce(DataStream *dataStream) {
 
   for (uint32_t i = 0; i < gotCount; ++i) {
     strm.clear();
+    strm.str("");
     strm << "got" << i;
     dataStream->read(&got);
     set(strm.str(), got);
@@ -248,22 +327,103 @@ bool TrackerMessage::_unserializeAnnounce(DataStream *dataStream) {
 }
 
 bool TrackerMessage::_unserializeEnter(DataStream *dataStream) {
-  return false;
-}
-
-bool TrackerMessage::_unserializePoke(DataStream *dataStream) {
   std::string hash;
   std::string peer;
   uint32_t got;
+  uint32_t gotCount;
+  std::stringstream strm;
 
   dataStream->read(&hash);
   dataStream->read(&peer);
-  dataStream->read(&got);
+  dataStream->read(&gotCount);
 
   set("hash", hash);
   set("peer", peer);
-  set("got", got);
+  set("got", gotCount);
+
+  std::cout << "unserializeEnter " << hash << " " << peer << " " <<
+  reinterpret_cast<void*>(gotCount) << std::endl;
+
+  for (uint32_t i = 0; i < gotCount; ++i) {
+    strm.clear();
+    strm.str("");
+    strm << "got" << i;
+    dataStream->read(&got);
+    set(strm.str(), got);
+  }
+
   return true;
+}
+
+bool TrackerMessage::_unserializePoke(DataStream *dataStream) {
+  return _unserializeEnter(dataStream);
+}
+
+bool TrackerMessage::_unserializeSdp(DataStream *dataStream) {
+  std::string id;
+  std::string hash;
+  std::string jsdp;
+
+  dataStream->read(&id);
+  dataStream->read(&hash);
+  dataStream->read(&jsdp);
+
+  Json::Reader reader;
+  Json::Value jmessage;
+
+  if (!reader.parse(jsdp, jmessage) || !jmessage.isObject()) {
+    return false;
+  }
+
+  set("id", id);
+  set("hash", hash);
+
+  if (jmessage.isMember("type") && jmessage.isMember("sdp")) {
+    Json::Value vtype;
+    Json::Value vsdp;
+
+    vtype = jmessage["type"];
+    if (!vtype.isString()) {
+      return false;
+    }
+
+    vsdp = jmessage["sdp"];
+    if (!vsdp.isString()) {
+      return false;
+    }
+
+    set("type", vtype.asString());
+    set("sdp", vsdp.asString());
+    return true;
+  } else if (jmessage.isMember("candidate") && jmessage.isMember("sdpMid") &&
+    jmessage.isMember("sdpMLineIndex")) {
+    Json::Value vcandidate;
+    Json::Value vsdpMid;
+    Json::Value vsdpMLineIndex;
+
+    vcandidate = jmessage["candidate"];
+    if (!vcandidate.isString()) {
+      return false;
+    }
+
+    vsdpMid = jmessage["sdpMid"];
+    if (!vsdpMid.isString()) {
+      return false;
+    }
+
+    vsdpMLineIndex = jmessage["sdpMLineIndex"];
+    if (!vsdpMLineIndex.isInt()) {
+      return false;
+    }
+
+    set("type", "ice");
+    set("candidate", vcandidate.asString());
+    set("sdpMid", vsdpMid.asString());
+    set("sdpMLineIndex", vsdpMLineIndex.asInt());
+    return true;
+  }
+
+  return false;
 }
 
 bool TrackerMessage::unserialize(DataStream *dataStream) {
@@ -272,7 +432,7 @@ bool TrackerMessage::unserialize(DataStream *dataStream) {
   switch (_type) {
     case kKeepAlive:
     case kHello:
-      break;
+      return true;
     case kWelcome:
       return _unserializeWelcome(dataStream);
     case kAnnounce:
@@ -281,6 +441,8 @@ bool TrackerMessage::unserialize(DataStream *dataStream) {
       return _unserializeEnter(dataStream);
     case kPoke:
       return _unserializePoke(dataStream);
+    case kSdp:
+      return _unserializeSdp(dataStream);
     default:
       break;
   }

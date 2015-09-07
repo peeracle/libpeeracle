@@ -89,15 +89,18 @@ class Peer::PeerImpl :
   class DataChannelObserver :
     public webrtc::DataChannelObserver {
    public:
-    explicit DataChannelObserver(webrtc::DataChannelInterface *);
+    explicit DataChannelObserver(
+      PeerInterface::PeerConnectionObserver *observer,
+      webrtc::DataChannelInterface *dataChannel);
     void OnStateChange();
     void OnMessage(const webrtc::DataBuffer& buffer);
 
    private:
+    PeerInterface::PeerConnectionObserver *_observer;
     webrtc::DataChannelInterface *_dataChannel;
   };
 
-  explicit PeerImpl(PeerInterface::Observer *observer);
+  explicit PeerImpl(PeerInterface::PeerConnectionObserver *observer);
   virtual ~PeerImpl();
 
   void OnSignalingChange(
@@ -114,7 +117,7 @@ class Peer::PeerImpl :
   void OnIceCandidate(const webrtc::IceCandidateInterface* candidate);
   void OnIceComplete();
 
-  PeerInterface::Observer *_observer;
+  PeerInterface::PeerConnectionObserver *_observer;
   rtc::scoped_refptr<webrtc::PeerConnectionInterface> _peerConnection;
   webrtc::FakeConstraints _mediaConstraints;
   rtc::scoped_refptr<webrtc::DataChannelInterface> _dataChannel;

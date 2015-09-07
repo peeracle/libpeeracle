@@ -30,6 +30,7 @@
       'standalone_static_library': 1,
       'dependencies': [
         '<(DEPTH)/third_party/lzstringpp/lzstringpp.gyp:lzstringpp',
+        '<(webrtc_depth)/third_party/jsoncpp/jsoncpp.gyp:jsoncpp',
         '../../DataStream/DataStream.gyp:peeracle_datastream',
       ],
       'sources': [

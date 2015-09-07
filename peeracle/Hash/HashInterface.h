@@ -55,12 +55,16 @@ class HashInterface {
 
   virtual void update(const uint8_t *buffer, size_t length) = 0;
 
+  virtual void update(const char *buffer, size_t length) = 0;
+
   /**
    * Execute the hash operation from the bytes provided by the #update calls,
    * and store the \p result.
    * @param result a pointer to the buffer which will receive the checksum.
    */
   virtual void final(uint8_t *result) = 0;
+
+  virtual void final(char *result) = 0;
 
   /**
    * Execute #init, #update and #final methods at once.
@@ -69,6 +73,8 @@ class HashInterface {
    * @param result a pointer to the buffer which will receive the checksum.
    */
   virtual void checksum(DataStream *dataStream, uint8_t *result) = 0;
+
+  virtual void checksum(DataStream *dataStream, char *result) = 0;
 
   virtual uint32_t getLength() = 0;
 

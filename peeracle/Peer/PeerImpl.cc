@@ -32,7 +32,7 @@
 
 namespace peeracle {
 
-Peer::PeerImpl::PeerImpl(PeerInterface::Observer *observer) :
+Peer::PeerImpl::PeerImpl(PeerInterface::PeerConnectionObserver *observer) :
   _observer(observer) {
   this->_mediaConstraints.AddOptional(
     webrtc::MediaConstraintsInterface::kEnableDtlsSrtp,
@@ -69,7 +69,59 @@ void Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver::OnSuccess() {
 
 void Peer::PeerImpl::SetRemoteSDPAndCreateAnswerObserver::OnFailure(
   const std::string &error) {
-  _createSDPObserver->onFailure(error);
+  _createSDPObserver->onCreateSDPFailure(error);
+}
+
+void Peer::PeerImpl::OnSignalingChange(
+  webrtc::PeerConnectionInterface::SignalingState new_state) {
+  _observer->onSignalingChange(new_state);
+}
+
+void Peer::PeerImpl::OnStateChange(
+  webrtc::PeerConnectionObserver::StateType state_changed) {
+  _observer->onStateChange(state_changed);
+}
+
+void Peer::PeerImpl::OnAddStream(webrtc::MediaStreamInterface* stream) {
+}
+
+void Peer::PeerImpl::OnRemoveStream(webrtc::MediaStreamInterface* stream) {
+}
+
+void Peer::PeerImpl::OnDataChannel(webrtc::DataChannelInterface* data_channel) {
+  _dataChannel = data_channel;
+  _dataChannelObserver = new PeerImpl::DataChannelObserver(_observer,
+                                                           data_channel);
+  _dataChannel->RegisterObserver(_dataChannelObserver);
+  std::cout << "PeerImpl::OnDataChannel " << _dataChannel->state() << std::endl;
+}
+
+void Peer::PeerImpl::OnRenegotiationNeeded() {
+}
+
+void Peer::PeerImpl::OnIceConnectionChange(
+  webrtc::PeerConnectionInterface::IceConnectionState new_state) {
+  _observer->onIceConnectionChange(new_state);
+}
+
+void Peer::PeerImpl::OnIceGatheringChange(
+  webrtc::PeerConnectionInterface::IceGatheringState new_state) {
+  _observer->onIceGatheringChange(new_state);
+}
+
+void Peer::PeerImpl::OnIceCandidate(
+  const webrtc::IceCandidateInterface* candidate) {
+  std::string sdp;
+  if (!candidate->ToString(&sdp)) {
+    LOG(LS_ERROR) << "Failed to serialize candidate";
+    return;
+  }
+
+  _observer->onIceCandidate(candidate->sdp_mid(), candidate->sdp_mline_index(),
+                            sdp);
+}
+
+void Peer::PeerImpl::OnIceComplete() {
 }
 
 }  // namespace peeracle

@@ -47,12 +47,16 @@ class TrackerWebSocketsClientObserver : public WebSocketsClientObserver {
   void onMessage(const char *buffer, size_t length) {
     int type;
     DataStreamInit dsInit;
+    dsInit.bigEndian = true;
     MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
     TrackerMessageInterface *message = new TrackerMessage();
 
     dataStream->write(buffer, length);
     dataStream->seek(0);
-    message->unserialize(dataStream);
+    if (!message->unserialize(dataStream)) {
+      delete dataStream;
+      return;
+    }
     delete dataStream;
 
     type = message->getType();
@@ -67,17 +71,58 @@ class TrackerWebSocketsClientObserver : public WebSocketsClientObserver {
         _observer->onConnect(id);
         break;
       }
+      case TrackerMessageInterface::kEnter:
       case TrackerMessageInterface::kPoke:
       {
         std::string hash;
         std::string peer;
-        uint32_t got;
+        std::vector<uint32_t> got;
+        uint32_t value;
+        uint32_t gotCount;
+        std::stringstream strm;
 
         message->get("hash", &hash, "");
         message->get("peer", &peer, "");
-        message->get("got", &got, 0);
+        message->get("got", &gotCount, 0);
 
-        _observer->onPeerConnect(hash, peer, got, true);
+        for (uint32_t i = 0; i < gotCount; ++i) {
+          strm.clear();
+          strm.str("");
+          strm << "got" << i;
+          message->get(strm.str(), &value, 0);
+          got.push_back(value);
+        }
+
+        _observer->onEnter(hash, peer, got);
+        break;
+      }
+      case TrackerMessageInterface::kSdp:
+      {
+        std::string id;
+        std::string hash;
+        std::string stype;
+
+        message->get("id", &id, "");
+        message->get("hash", &hash, "");
+        message->get("type", &stype, "");
+
+        if (stype == "offer" || stype == "answer") {
+          std::string sdp;
+
+          message->get("sdp", &sdp, "");
+
+          _observer->onSdp(id, hash, stype, sdp);
+        } else if (stype == "ice") {
+          std::string candidate;
+          std::string sdpMid;
+          uint32_t sdpMLineIndex;
+
+          message->get("candidate", &candidate, "");
+          message->get("sdpMid", &sdpMid, "");
+          message->get("sdpMLineIndex", &sdpMLineIndex, 0);
+
+          _observer->onIceCandidate(id, hash, candidate, sdpMid, sdpMLineIndex);
+        }
         break;
       }
       default:
@@ -127,7 +172,7 @@ const std::string &TrackerClient::getUrl() const {
   return _url;
 }
 
-void TrackerClient::announce(const std::string id,
+void TrackerClient::announce(const std::string &id,
                              const std::vector<uint32_t> &got) {
   std::stringstream strm;
   TrackerMessageInterface *msg = new TrackerMessage(
@@ -138,6 +183,7 @@ void TrackerClient::announce(const std::string id,
 
   for (uint32_t i = 0; i < got.size(); ++i) {
     strm.clear();
+    strm.str("");
     strm << "got" << i;
     msg->set(strm.str(), got[i]);
   }
@@ -146,9 +192,44 @@ void TrackerClient::announce(const std::string id,
   delete msg;
 }
 
+void TrackerClient::sendSdp(const std::string &id, const std::string &hash,
+                            const std::string &sdp, const std::string &type) {
+  TrackerMessageInterface *msg = new TrackerMessage(
+    TrackerMessageInterface::kSdp);
+
+  msg->set("id", id);
+  msg->set("hash", hash);
+  msg->set("type", type);
+  msg->set("sdp", sdp);
+
+  this->send(msg);
+  delete msg;
+}
+
+
+void TrackerClient::sendIceCandidate(const std::string &id,
+                                     const std::string &hash,
+                                     const std::string &sdpMid,
+                                     uint32_t sdpMLineIndex,
+                                     const std::string &candidate) {
+  TrackerMessageInterface *msg = new TrackerMessage(
+    TrackerMessageInterface::kSdp);
+
+  msg->set("id", id);
+  msg->set("hash", hash);
+  msg->set("type", "ice");
+  msg->set("sdpMid", sdpMid);
+  msg->set("sdpMLineIndex", sdpMLineIndex);
+  msg->set("candidate", candidate);
+
+  this->send(msg);
+  delete msg;
+}
+
 void TrackerClient::send(TrackerMessageInterface *message) {
   char *buffer;
   DataStreamInit dsInit;
+  dsInit.bigEndian = true;
   MemoryDataStream *dataStream = new MemoryDataStream(dsInit);
   std::streamsize length;
 

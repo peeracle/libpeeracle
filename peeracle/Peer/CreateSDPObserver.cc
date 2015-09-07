@@ -44,7 +44,7 @@ void Peer::PeerImpl::CreateSDPObserver::OnSuccess(
 
 void Peer::PeerImpl::CreateSDPObserver::OnFailure(
   const std::string &error) {
-  _createSDPObserver->onFailure(error);
+  _createSDPObserver->onCreateSDPFailure(error);
 }
 
 }  // namespace peeracle

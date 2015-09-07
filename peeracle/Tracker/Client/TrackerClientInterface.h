@@ -37,8 +37,15 @@ class TrackerClientInterface {
   virtual bool Connect() = 0;
   virtual bool Update() = 0;
 
-  virtual void announce(const std::string id,
+  virtual void announce(const std::string &id,
                         const std::vector<uint32_t> &got) = 0;
+  virtual void sendSdp(const std::string &id, const std::string &hash,
+                       const std::string &sdp, const std::string &type) = 0;
+  virtual void sendIceCandidate(const std::string &id, const std::string &hash,
+                                const std::string &sdpMid,
+                                uint32_t sdpMLineIndex,
+                                const std::string &candidate) = 0;
+
   virtual const std::string &getUrl() const = 0;
 };
 

@@ -68,28 +68,52 @@ void SessionTrackerClientObserver::onConnectionError() {
   std::cout << "[Session] Error while connecting to the tracker" << std::endl;
 }
 
-void SessionTrackerClientObserver::onPeerConnect(const std::string &hash,
-                                                 const std::string &peerId,
-                                                 uint32_t got, bool poke) {
+void SessionTrackerClientObserver::onEnter(const std::string &hash,
+                                           const std::string &peerId,
+                                           const std::vector<uint32_t> &got) {
   std::map<std::string, PeerInterface *> &peers = _session->getPeers();
+  std::map<std::string, SessionHandleInterface *> &handles =
+    _session->getHandles();
 
-  if (peers.find(peerId) != peers.end()) {
+  if (peers.find(peerId) != peers.end() ||
+    handles.find(hash) == handles.end()) {
     return;
   }
 
   SessionPeerObserver *observer = new SessionPeerObserver(_session);
-  PeerInterface *peer = new Peer(peerId, _tracker, observer);
+  PeerInterface *peer = new Peer(observer, peerId, _tracker);
   observer->setPeer(peer);
+  peer->addHash(hash, got);
 
-  std::map<std::string, SessionHandleInterface *> &handles =
-    _session->getHandles();
+  _session->addPeer(peerId, peer);
+  handles[hash]->onPeerEntered(peer, got);
+}
 
-  if (handles.find(hash) == handles.end()) {
+void SessionTrackerClientObserver::onSdp(const std::string &id,
+                                         const std::string &hash,
+                                         const std::string &type,
+                                         const std::string &sdp) {
+  std::map<std::string, PeerInterface *> &peers = _session->getPeers();
+
+  if (peers.find(id) == peers.end()) {
     return;
   }
 
-  _session->addPeer(peerId, peer);
-  handles[hash]->onPeer(peer, got, poke);
+  peers[id]->processSdp(type, sdp);
+}
+
+void SessionTrackerClientObserver::onIceCandidate(const std::string &id,
+                                                  const std::string &hash,
+                                                  const std::string &candidate,
+                                                  const std::string &sdpMid,
+                                                  uint32_t sdpMLineIndex) {
+  std::map<std::string, PeerInterface *> &peers = _session->getPeers();
+
+  if (peers.find(id) == peers.end()) {
+    return;
+  }
+
+  peers[id]->processIceCandidate(candidate, sdpMid, sdpMLineIndex);
 }
 
 void SessionTrackerClientObserver::setTrackerClient(
