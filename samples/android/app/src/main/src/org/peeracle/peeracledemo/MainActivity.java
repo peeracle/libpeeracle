@@ -2,6 +2,7 @@ package org.peeracle.peeracledemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -10,6 +11,7 @@ import org.peeracle.MetadataStream;
 import org.peeracle.Session;
 import org.peeracle.SessionHandle;
 
+import java.io.File;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity {
@@ -27,13 +29,16 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        fileDataStream = new FileDataStream(getResources());
+        File f = new File(Environment.getExternalStorageDirectory() + "tears_of_steel_1920x856_4000K.peeracle");
+        fileDataStream = new FileDataStream(f);
         m = new Metadata();
         m.unserialize(fileDataStream);
 
         String id = m.getId();
         ArrayList<String> astr = m.getTrackerUrls();
         ArrayList<MetadataStream> mstr = m.getStreams();
+
+        byte initSegment[] = mstr.get(0).getInitSegment();
 
         final MySessionObserver sessObserver = new MySessionObserver();
         Session sess = new Session(sessObserver);

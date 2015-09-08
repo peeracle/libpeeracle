@@ -1,73 +1,98 @@
 package org.peeracle.peeracledemo;
 
 import android.content.res.Resources;
+import android.os.Environment;
 
 import org.peeracle.DataStream;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.RandomAccessFile;
 import java.util.Arrays;
 
 public class FileDataStream extends DataStream {
-    long cursor = 0;
-    byte[] bytes;
+    private RandomAccessFile file;
 
-    public FileDataStream(Resources resources) {
+    public FileDataStream(File f) {
         super();
-        InputStream in_s = resources.openRawResource(R.raw.tears);
+
         try {
-            bytes = new byte[in_s.available()];
-            in_s.read(bytes);
-        } catch (IOException e) {
+            file = new RandomAccessFile(f, "rw");
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
+            return;
         }
-        System.out.println("FileDataStream: constructor: " + bytes.length);
     }
 
     @Override
     public long length() {
         System.out.println("FileDataStream: length");
-        return bytes.length;
+        try {
+            return file.length();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     @Override
     public long seek(long position) {
-        System.out.println("FileDataStream: seek position: " + position );
-        if (position < 0 || cursor + position > bytes.length)
-            return -1;
-        cursor = position;
-        return cursor;
+        try {
+            file.seek(position);
+            return file.getFilePointer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     @Override
     public long tell() {
         System.out.println("FileDataStream: tell");
-        return cursor;
+        try {
+            return file.getFilePointer();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return -1;
     }
 
     @Override
     public long read(byte[] buffer, long length) {
-        if (cursor + length > bytes.length) {
-            return -1;
+        try {
+            if (file.getFilePointer() + length > file.length()) {
+                return -1;
+            }
+            System.arraycopy(file, (int) file.getFilePointer(), buffer, 0, (int) length);
+            return length;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.arraycopy(bytes, (int) cursor, buffer, 0, (int) length);
-        cursor += length;
-        return length;
+
+        return -1;
     }
 
     @Override
     public long peek(byte[] buffer, long length) {
-        if (cursor + length > bytes.length) {
-        return -1;
+        try {
+            if (file.getFilePointer() + length > file.length()) {
+                return -1;
+            }
+            System.arraycopy(file, (int) file.getFilePointer(), buffer, 0, (int) length);
+            file.seek(length);
+            return length;
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-        System.arraycopy(bytes, (int) cursor, buffer, 0, (int) length);
-        return length;
+
+        return -1;
     }
 
     @Override
     public long write(byte[] buffer, long length) {
-        System.arraycopy(buffer, 0, bytes, (int) cursor, (int) length);
-        cursor += length;
-        return length;
+        return 0;
     }
 }

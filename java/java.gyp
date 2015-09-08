@@ -36,6 +36,7 @@
         '<(DEPTH)/peeracle/Metadata/Metadata.gyp:peeracle_metadata',
         '<(DEPTH)/peeracle/Peer/Peer.gyp:peeracle_peer',
         '<(DEPTH)/peeracle/Session/Session.gyp:peeracle_session',
+        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
         '<(DEPTH)/peeracle/Tracker/Client/TrackerClient.gyp:peeracle_tracker_client',
         '<(DEPTH)/peeracle/Tracker/Message/TrackerMessage.gyp:peeracle_tracker_message',
         '<(DEPTH)/peeracle/Utils/Utils.gyp:peeracle_randomgenerator',
@@ -48,7 +49,7 @@
         '<(java_home)/include/linux',
       ],
       'defines': [
-        'BUILD_LIBPEERACLE',
+        'BUILD_LIBPEERACLE'
       ],
       'sources': [
         '<(webrtc_depth)/talk/app/webrtc/java/jni/jni_helpers.cc',
@@ -67,7 +68,6 @@
         '../peeracle/Session/Session_jni.cc',
         '../peeracle/Session/SessionHandle_jni.cc',
         '../peeracle/Tracker/Client/TrackerClient_jni.cc',
-        '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc'
       ],
       'conditions': [
         ['OS=="android"', {
@@ -76,6 +76,9 @@
             # required symbols will be kept.
             'use_native_jni_exports': 1,
           },
+	  'sources': [
+            '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc'
+	  ],
         }],
       ],
     },

@@ -20,7 +20,10 @@
  * SOFTWARE.
  */
 
+#ifdef WEBRTC_ANDROID
 #include <android/log.h>
+#endif
+
 #include <string>
 
 #include "java/jni/classreferenceholder.h"
@@ -64,24 +67,35 @@ WebSocketsClient::WebSocketsClient(const std::string &url,
       "(Ljava/lang/String;J)V")),
     _j_global(GetEnv(), GetEnv()->NewObject(*_j_class, _j_init,
       JavaStringFromStdString(GetEnv(), url), jlongFromPointer(observer))){
+  
+#ifdef WEBRTC_ANDROID
   __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "ctor");
+#endif
 }
 
 WebSocketsClient::~WebSocketsClient() {
+#ifdef WEBRTC_ANDROID
   __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "dtor");
+#endif
 }
 
 bool WebSocketsClient::Init() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "init",
                             "()B");
+
+#ifdef WEBRTC_ANDROID
   __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Init");
+#endif
   return GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
 bool WebSocketsClient::Connect() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "connect",
                             "()B");
+
+#ifdef WEBRTC_ANDROID
   __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Connect");
+#endif
   return  GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
@@ -94,14 +108,19 @@ bool WebSocketsClient::Update() {
 bool WebSocketsClient::Send(const char *buffer, size_t length) {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "send",
                             "(C;I)B");
+#ifdef WEBRTC_ANDROID
   __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Send");
+#endif
   return GetEnv()->CallBooleanMethod(*_j_global, m, buffer, length);
 }
 
 bool WebSocketsClient::Disconnect() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "disconnect",
                             "()B");
+  
+#ifdef WEBRTC_ANDROID
   __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Disconnect");
+#endif
   return GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
