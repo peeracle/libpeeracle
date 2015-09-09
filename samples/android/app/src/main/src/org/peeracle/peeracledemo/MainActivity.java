@@ -29,7 +29,7 @@ public class MainActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        File f = new File(Environment.getExternalStorageDirectory() + "tears_of_steel_1920x856_4000K.peeracle");
+        File f = new File(Environment.getExternalStorageDirectory() + "/tears_of_steel_1920x856_4000K.peeracle");
         fileDataStream = new FileDataStream(f);
         m = new Metadata();
         m.unserialize(fileDataStream);

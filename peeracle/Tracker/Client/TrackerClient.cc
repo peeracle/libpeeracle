@@ -39,6 +39,11 @@ class TrackerWebSocketsClientObserver : public WebSocketsClientObserver {
   }
 
   void onConnect() {
+    TrackerMessageInterface *msg = new TrackerMessage(
+      TrackerMessageInterface::kHello);
+
+    _client->_send(msg);
+    delete msg;
   }
 
   void onMessage(const char *buffer, size_t length) {

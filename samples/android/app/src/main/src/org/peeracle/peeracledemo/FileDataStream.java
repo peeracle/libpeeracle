@@ -2,8 +2,10 @@ package org.peeracle.peeracledemo;
 
 import android.content.res.Resources;
 import android.os.Environment;
+import android.util.Log;
 
 import org.peeracle.DataStream;
+import org.peeracle.WebSocketsClient;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -29,7 +31,6 @@ public class FileDataStream extends DataStream {
 
     @Override
     public long length() {
-        System.out.println("FileDataStream: length");
         try {
             return file.length();
         } catch (IOException e) {
@@ -51,7 +52,6 @@ public class FileDataStream extends DataStream {
 
     @Override
     public long tell() {
-        System.out.println("FileDataStream: tell");
         try {
             return file.getFilePointer();
         } catch (IOException e) {
@@ -66,7 +66,7 @@ public class FileDataStream extends DataStream {
             if (file.getFilePointer() + length > file.length()) {
                 return -1;
             }
-            System.arraycopy(file, (int) file.getFilePointer(), buffer, 0, (int) length);
+            file.read(buffer);
             return length;
         } catch (IOException e) {
             e.printStackTrace();
@@ -81,8 +81,7 @@ public class FileDataStream extends DataStream {
             if (file.getFilePointer() + length > file.length()) {
                 return -1;
             }
-            System.arraycopy(file, (int) file.getFilePointer(), buffer, 0, (int) length);
-            file.seek(length);
+            file.readFully(buffer, (int) file.getFilePointer(), (int) length);
             return length;
         } catch (IOException e) {
             e.printStackTrace();

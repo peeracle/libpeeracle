@@ -47,14 +47,14 @@ class TrackerClient
   const std::string &getUrl() const;
   void announce(const std::string id, uint32_t got);
 
+  void _send(TrackerMessageInterface *message);
+
  private:
   const std::string _url;
 
   TrackerClientObserver *_observer;
   WebSocketsClientObserver *_webSocketsClientObserver;
   WebSocketsClientInterface *_webSocketsClient;
-
-  void _send(TrackerMessageInterface *message);
 };
 
 }  // namespace peeracle

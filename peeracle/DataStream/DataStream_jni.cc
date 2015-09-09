@@ -60,21 +60,16 @@ class JNIDataStream : public DataStream {
 
  private:
   std::streamsize vread(char *buffer, std::streamsize length) {
-    LOG(LS_INFO) << "DataStream::vread: read " << length << " bytes";
     jmethodID m = GetMethodID(jni(), *_j_class, "read", "([BJ)J");
     jbyteArray j_byteArray = jni()->NewByteArray(static_cast<jsize>(length));
     jbyte *bytes = jni()->GetByteArrayElements(j_byteArray, NULL);
     jlong j_length = static_cast<jlong>(length);
 
     jlong ret = jni()->CallLongMethod(*_j_global, m, j_byteArray, j_length);
-    LOG(LS_INFO) << "DataStream::vread: ret = " << ret << " first byte = " <<
-                 static_cast<int>(bytes[0]);
 
     memcpy(buffer, bytes, length);
 
-    LOG(LS_INFO) << "DataStream::vread: Release";
     jni()->ReleaseByteArrayElements(j_byteArray, bytes, JNI_ABORT);
-    LOG(LS_INFO) << "DataStream::vread: Delete";
     jni()->DeleteLocalRef(j_byteArray);
     return static_cast<std::streamsize>(ret);
   }
