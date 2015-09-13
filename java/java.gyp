@@ -121,7 +121,7 @@
             ['OS=="android"', {
               'variables': {
                 'java_files': ['<@(peeracle_java_files)', '<@(android_java_files)'],
-                'build_classpath': '<(java_src_dir):third_party/autobanh/autobanh.jar:<(peeracle_root)/third_party/android_sdk/platforms/android-<(android_sdk_version)/android.jar',
+                'build_classpath': '<(java_src_dir):third_party/autobanh/autobanh.jar:<(peeracle_root)/third_party/android_tools/sdk/platforms/android-<(android_sdk_version)/android.jar',
               },
             }, {
               'variables': {
