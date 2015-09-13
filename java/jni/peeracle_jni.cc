@@ -24,7 +24,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <jni.h>
-#include "helpers.h"
+#include "java/jni/jni_helpers.h"
 
 static JavaVM *g_jvm = NULL;
 

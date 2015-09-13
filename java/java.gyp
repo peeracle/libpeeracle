@@ -53,7 +53,8 @@
         'BUILD_LIBPEERACLE'
       ],
       'sources': [
-        '<(webrtc_depth)/talk/app/webrtc/java/jni/jni_helpers.cc',
+        'jni/jni_helpers.cc',
+        'jni/jni_helpers.h',
         'jni/classreferenceholder.cc',
         'jni/classreferenceholder.h',
         'jni/onload.cc',
@@ -69,7 +70,8 @@
         '../peeracle/Session/Session_jni.cc',
         '../peeracle/Session/SessionHandle_jni.cc',
         '../peeracle/Storage/Storage_jni.cc',
-        '../peeracle/Tracker/Client/TrackerClient_jni.cc'
+        '../peeracle/Tracker/Client/TrackerClient_jni.cc',
+        '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc'
       ],
       'conditions': [
         ['OS=="android"', {

@@ -28,7 +28,6 @@ import de.tavendo.autobahn.WebSocketConnection;
 import de.tavendo.autobahn.WebSocketException;
 import de.tavendo.autobahn.WebSocketConnectionHandler;
 import de.tavendo.autobahn.WebSocketOptions;
-import sun.rmi.runtime.Log;
 
 import java.net.MalformedURLException;
 import java.net.URI;

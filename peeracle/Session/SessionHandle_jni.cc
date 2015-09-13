@@ -20,10 +20,8 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "java/jni/jni_helpers.h"
 #include "peeracle/Session/SessionHandle.h"
-
-using namespace webrtc_jni;
 
 #ifdef __cplusplus
 extern "C" {

@@ -21,11 +21,9 @@
  */
 
 #include "java/jni/classreferenceholder.h"
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "java/jni/jni_helpers.h"
 #include "third_party/webrtc/webrtc/base/logging.h"
 #include "peeracle/Metadata/Metadata.h"
-
-using namespace webrtc_jni;
 
 namespace peeracle {
 

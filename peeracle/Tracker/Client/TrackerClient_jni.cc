@@ -20,7 +20,7 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "java/jni/jni_helpers.h"
 #include "peeracle/Tracker/Client/TrackerClient.h"
 
 #ifdef __cplusplus

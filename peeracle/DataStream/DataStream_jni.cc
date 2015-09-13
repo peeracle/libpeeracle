@@ -20,15 +20,9 @@
  * SOFTWARE.
  */
 
-#include <third_party/webrtc/webrtc/base/logging.h>
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "third_party/webrtc/webrtc/base/logging.h"
+#include "java/jni/jni_helpers.h"
 #include "peeracle/DataStream/DataStream.h"
-
-using webrtc_jni::AttachCurrentThreadIfNeeded;
-using webrtc_jni::GetObjectClass;
-using webrtc_jni::GetMethodID;
-using webrtc_jni::ScopedGlobalRef;
-using webrtc_jni::jlongFromPointer;
 
 namespace peeracle {
 

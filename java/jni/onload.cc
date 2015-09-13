@@ -20,10 +20,8 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
+#include "java/jni/jni_helpers.h"
 #include "java/jni/classreferenceholder.h"
-
-using namespace webrtc_jni;
 
 extern "C" jint JNIEXPORT JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
   InitGlobalJniVariables(vm);

@@ -20,11 +20,9 @@
  * SOFTWARE.
  */
 
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
 #include "third_party/webrtc/webrtc/voice_engine/include/voe_base.h"
+#include "java/jni/jni_helpers.h"
 #include "peeracle/peeracle.h"
-
-using namespace webrtc_jni;
 
 #ifdef __cplusplus
 extern "C" {

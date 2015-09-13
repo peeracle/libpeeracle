@@ -48,11 +48,7 @@
  */
 
 #include "java/jni/classreferenceholder.h"
-
-#include "talk/app/webrtc/java/jni/jni_helpers.h"
-
-using webrtc_jni::GetEnv;
-using webrtc_jni::AttachCurrentThreadIfNeeded;
+#include "java/jni/jni_helpers.h"
 
 // ClassReferenceHolder holds global reference to Java classes in app/webrtc.
 class ClassReferenceHolder {

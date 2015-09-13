@@ -32,8 +32,7 @@
 #include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
 #ifdef WEBRTC_ANDROID
-#include "third_party/webrtc/talk/app/webrtc/java/jni/jni_helpers.h"
-using webrtc_jni::ScopedGlobalRef;
+#include "java/jni/jni_helpers.h"
 #endif
 
 namespace peeracle {
