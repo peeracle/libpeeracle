@@ -123,9 +123,6 @@ void SessionHandle::onPeerChunk(PeerInterface *peer, const std::string &hash,
       continue;
     }
 
-    std::cout << reinterpret_cast<void*>(bytes[0]) << " " <<
-      reinterpret_cast<void*>(bytes[1]) << std::endl;
-
     memcpy(request->buffer + request->offset + offset, bytes, length);
     request->completed += length;
 
@@ -133,28 +130,43 @@ void SessionHandle::onPeerChunk(PeerInterface *peer, const std::string &hash,
       break;
     }
 
-    std::cout << "chunk complete!" << std::endl;
-
     MetadataMediaSegmentInterface *seg =
-      _metadata->getStreams()[0]->getMediaSegments()[request->segment];
-    const char *ch = seg->getChunks()[request->chunk];
+      _metadata->getStreams()[0]->getMediaSegments()[segment];
+    const char *ch = seg->getChunks()[chunk];
 
     HashInterface *hashAlgorithm = _metadata->getHashAlgorithm();
     uint32_t hashLength = hashAlgorithm->getLength();
     char *result = new char[hashLength];
 
     hashAlgorithm->init();
-    hashAlgorithm->update(request->buffer, request->length);
+    hashAlgorithm->update(request->buffer + request->offset, request->length);
     hashAlgorithm->final(result);
+
+    char *buffer = request->buffer;
+    peer->clearRequest();
 
     if (!memcmp(ch, result, hashLength)) {
       delete[] result;
-      std::cout << "checksum is valid" << std::endl;
-      return;
+      delete request;
+      _requests.erase(reqIt);
+      if (_done.find(segment) != _done.end() &&
+        --_done[segment] == 0) {
+        _done.erase(segment);
+        _session->getStorage()->store(hash, segment, 0, seg->getLength(),
+                                      buffer);
+        _observer->onMediaSegment(segment, buffer, seg->getLength());
+        delete[] buffer;
+      }
+
+      _processRequests();
+      break;
     }
 
     std::cout << "checksum is invalid" << std::endl;
     delete[] result;
+    request->completed = 0;
+    request->peer = 0;
+    _processRequests();
     break;
   }
 }
@@ -189,13 +201,12 @@ void SessionHandle::requestSegment(uint32_t segment) {
     request->offset = i * stream->getChunkSize();
     request->length = length;
     request->completed = 0;
-
-    std::cout << "Add segment " << segment << " chunk " << i << " " <<
-    request->length << std::endl;
+    request->peer = NULL;
 
     _requests.push_back(request);
   }
 
+  _done[segment] = static_cast<uint32_t>(chunks.size());
   _processRequests();
 }
 
@@ -203,7 +214,6 @@ void SessionHandle::_processRequests() {
   std::vector<Request *>::iterator reqIt;
   Request *request;
 
-  std::cout << "_processRequests" << std::endl;
   for (reqIt = _requests.begin(); reqIt != _requests.end(); ++reqIt) {
     request = (*reqIt);
 
@@ -222,16 +232,17 @@ bool SessionHandle::_checkGot(const std::vector<uint32_t> &got,
   MetadataMediaSegmentInterface *seg;
 
   if (segment > segmentCount || !got.size()) {
+    std::cout << "segment > segmentCount || !got.size()" << std::endl;
     return false;
   }
 
-  seg = stream->getMediaSegments()[segment];
-  size_t chunkCount = seg->getChunks().size();
-
+  size_t chunkCount;
   uint32_t gotIndex = 0;
   int gotOffset = 0;
 
   for (uint32_t si = 0; si < segmentCount; ++si) {
+    seg = stream->getMediaSegments()[si];
+    chunkCount = seg->getChunks().size();
     for (uint32_t ci = 0; ci < chunkCount; ++ci) {
       if (si == segment && ci == chunk) {
         return (got[gotIndex] & (1 << gotOffset)) != 0;
@@ -244,6 +255,7 @@ bool SessionHandle::_checkGot(const std::vector<uint32_t> &got,
       }
     }
   }
+  std::cout << "out of loop" << std::endl;
   return false;
 }
 
@@ -252,13 +264,9 @@ void SessionHandle::_processRequest(Request *request) {
   std::map<std::string, PeerInterface*> &peers = _session->getPeers();
   std::map<std::string, PeerInterface*>::iterator peerIt;
 
-  std::cout << "_processRequest " << request->segment << " " <<
-  request->chunk << std::endl;
   for (peerIt = peers.begin(); peerIt != peers.end(); ++peerIt) {
     peer = (*peerIt).second;
     if (peer->getRequest()) {
-      std::cout << "peer " << peer->getId() << " has already a request" <<
-      std::endl;
       continue;
     }
 
@@ -279,7 +287,6 @@ void SessionHandle::_processRequest(Request *request) {
       continue;
     }
 
-    std::cout << "peer " << peer->getId() << " call sendRequest" << std::endl;
     peer->sendRequest(request);
   }
 }

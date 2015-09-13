@@ -35,7 +35,9 @@ class SessionHandleObserver {
   virtual void onRequest(PeerInterface *peer, uint32_t segment,
                          uint32_t chunk) = 0;
   virtual void onChunk(PeerInterface *peer, uint32_t segment, uint32_t chunk,
-               uint32_t offset, const char *bytes, uint32_t length) = 0;
+                       uint32_t offset, const char *bytes, uint32_t length) = 0;
+  virtual void onMediaSegment(uint32_t segment, const char *bytes,
+                              uint32_t length) = 0;
 
   virtual ~SessionHandleObserver() { }
 };

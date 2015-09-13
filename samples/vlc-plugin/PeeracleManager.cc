@@ -36,7 +36,8 @@ PeeracleManager::PeeracleManager(demux_t *demux) : _stream(NULL),
                                                    _metadataDataStream(NULL),
                                                    _session(NULL),
                                                    _sessionObserver(NULL),
-                                                   _handleObserver(NULL) {
+                                                   _handleObserver(NULL),
+                                                   _storage(NULL) {
 }
 
 PeeracleManager::~PeeracleManager() {
@@ -61,14 +62,18 @@ PeeracleManager::~PeeracleManager() {
 bool PeeracleManager::Init() {
   stream_t *metadataStream = this->_vlc->s;
 
+  msg_Dbg(this->_vlc, "[PeeracleManager::Init] Loading metadata");
   this->_metadataDataStream = new VLCDataStream(metadataStream);
   this->_metadata = new peeracle::Metadata();
 
+  msg_Dbg(this->_vlc, "[PeeracleManager::Init] Unserializing");
   if (!this->_metadata->unserialize(this->_metadataDataStream)) {
     return false;
   }
 
+  msg_Dbg(this->_vlc, "[PeeracleManager::Init] Create stream");
   this->_stream = new PeeracleStream(this->_vlc, this->_metadata);
+  msg_Dbg(this->_vlc, "[PeeracleManager::Init] Init stream");
   return this->_stream->init();
 }
 
@@ -143,6 +148,37 @@ int PeeracleManager::Control(int i_query, va_list args) {
 
 #define DEMUX_INCREMENT (CLOCK_FREQ / 20)
 
+void PeeracleManager::onEnter(peeracle::PeerInterface *peer) {
+}
+
+void PeeracleManager::onLeave(peeracle::PeerInterface *peer) {
+}
+
+void PeeracleManager::onRequest(peeracle::PeerInterface *peer,
+                                         uint32_t segment, uint32_t chunk) {
+}
+
+void PeeracleManager::onChunk(peeracle::PeerInterface *peer,
+                                       uint32_t segment, uint32_t chunk,
+                                       uint32_t offset, const char *bytes,
+                                       uint32_t length) {
+}
+
+void PeeracleManager::onMediaSegment(uint32_t segment,
+                                              const char *bytes,
+                                              uint32_t length) {
+  msg_Dbg(this->_vlc, "[onMediaSegment] Received segment %d", segment);
+
+  block_t *block = block_Alloc(length);
+  memcpy(block->p_buffer, bytes, length);
+  block->i_buffer = static_cast<size_t>(length);
+  _stream->PushBlock(block);
+
+  if (segment < 90) {
+    _sessionHandle->requestSegment(segment + 1);
+  }
+}
+
 int PeeracleManager::Demux() {
   if (!_initialized) {
     if (!peeracle::init()) {
@@ -158,7 +194,16 @@ int PeeracleManager::Demux() {
     _storage = new VLCStorage();
     _session = new peeracle::Session(_storage, _sessionObserver);
     _handleObserver = new VLCSessionHandleObserver();
-    _session->addMetadata(this->_metadata, _handleObserver);
+    _sessionHandle = _session->addMetadata(this->_metadata, this
+      /*_handleObserver*/);
+
+    peeracle::MetadataStreamInterface *stream = _metadata->getStreams()[0];
+    uint32_t initLength = stream->getInitSegmentLength();
+    block_t *block = block_Alloc(initLength);
+    memcpy(block->p_buffer, stream->getInitSegment(), initLength);
+    block->i_buffer = static_cast<size_t>(initLength);
+    _stream->PushBlock(block);
+    _sessionHandle->requestSegment(0);
     return VLC_DEMUXER_SUCCESS;
   }
 
@@ -172,10 +217,10 @@ int PeeracleManager::Demux() {
     case Status::STATUS_EOF:
       return VLC_DEMUXER_EOF;
     case Status::STATUS_DEMUXED:
-      /*_vlc->p_sys->currentTime += DEMUX_INCREMENT;
+      _vlc->p_sys->currentTime += DEMUX_INCREMENT;
       int group = _stream->GetGroup();
       es_out_Control(_vlc->out, ES_OUT_SET_GROUP_PCR, group,
-                     VLC_TS_0 + _vlc->p_sys->currentTime);*/
+                     VLC_TS_0 + _vlc->p_sys->currentTime);
       break;
   }
   return VLC_DEMUXER_SUCCESS;

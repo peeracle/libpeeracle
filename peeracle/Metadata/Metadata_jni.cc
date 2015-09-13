@@ -89,10 +89,15 @@ JOPM(jlong, getVersion)(JNIEnv *jni, jobject j_this) {
   return static_cast<jlong>(m->getVersion());
 }
 
-JOPM(jstring, getHashAlgorithm)(JNIEnv *jni, jobject j_this) {
+JOPM(jstring, getHashAlgorithmName)(JNIEnv *jni, jobject j_this) {
+  peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
+  return JavaStringFromStdString(jni, m->getHashAlgorithmName());
+}
+
+/*JOPM(jstring, getHashAlgorithm)(JNIEnv *jni, jobject j_this) {
   peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
   return JavaStringFromStdString(jni, m->getHashAlgorithm());
-}
+}*/
 
 JOPM(jlong, getTimecodeScale)(JNIEnv *jni, jobject j_this) {
   peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
@@ -140,12 +145,12 @@ JOPM(jobject, getStreams)(JNIEnv *jni, jobject j_this) {
       it != dataStreams.end(); ++it) {
     jclass metadataStream_class = FindClass(jni, "org/peeracle/MetadataStream");
     jmethodID init_metadataStream = GetMethodID(jni, arraylist_class, "<init>",
-                                           "()V");
+                                                "()V");
     jfieldID  fieldId = GetFieldID(jni, metadataStream_class,
                                    "nativeMetadataStream", "J");
     jobject j_MetadataStream = jni->NewObject(metadataStream_class,
-      init_metadataStream);
-    SetLongField(jni, j_MetadataStream,fieldId, jlongFromPointer(*it));
+                                              init_metadataStream);
+    jni->SetLongField(j_MetadataStream,fieldId, jlongFromPointer(*it));
     jni->CallBooleanMethod(return_obj, add_arraylist, j_MetadataStream);
   }
   return return_obj;
@@ -154,7 +159,7 @@ JOPM(jobject, getStreams)(JNIEnv *jni, jobject j_this) {
 JOPM(void, setHashAlgorithm)(JNIEnv *jni, jobject j_this, jstring
 hashAlgorithm) {
   peeracle::Metadata *m = ExtractNativeMetadata(jni, j_this);
-  m->setHashAlgorithm(JavaToStdString(jni, hashAlgorithm));
+  m->setHashAlgorithmName(JavaToStdString(jni, hashAlgorithm));
 }
 
 JOPM(void, setTimecodeScale)(JNIEnv *jni, jobject j_this, jlong timecodeScale) {

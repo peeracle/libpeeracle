@@ -23,6 +23,7 @@
 #ifndef SAMPLES_VLC_PLUGIN_PEERACLESTREAM_H_
 #define SAMPLES_VLC_PLUGIN_PEERACLESTREAM_H_
 
+#include <list>
 #include "peeracle/Metadata/MetadataInterface.h"
 #include "samples/vlc-plugin/plugin.h"
 #include "samples/vlc-plugin/PeeracleStreamInterface.h"
@@ -38,9 +39,12 @@ class PeeracleStream :
   PeeracleManagerInterface::Status Demux(mtime_t deadline);
   int64_t GetDuration();
   int GetGroup();
+  mtime_t GetPCR() const;
   bool IsLive();
   bool IsSeekable();
   bool SetPosition(int64_t time);
+
+  void PushBlock(block_t *block);
 
  private:
   demux_t *_vlc;
@@ -51,6 +55,19 @@ class PeeracleStream :
 
   mtime_t _pcr;
   int _group;
+
+  class Demuxed {
+    friend class PeeracleStream;
+    Demuxed();
+    ~Demuxed();
+    void drop();
+    es_out_id_t *es_id;
+    block_t  *p_queue;
+    block_t **pp_queue_last;
+  };
+  std::list<Demuxed *> queues;
+
+  void sendToDecoderUnlocked(mtime_t nzdeadline);
 
   static es_out_id_t *esOutAdd(es_out_t *es, const es_format_t *fmt);
   static int esOutSend(es_out_t *es, es_out_id_t *id, block_t *block);

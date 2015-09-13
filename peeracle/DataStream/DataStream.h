@@ -214,27 +214,27 @@ class DataStream {
   }
 
   std::streamsize write(int16_t value) {
-    return _write(&value);
+    return _writeSwap(&value);
   }
 
   std::streamsize write(uint16_t value) {
-    return _write(&value);
+    return _writeSwap(&value);
   }
 
   std::streamsize write(int32_t value) {
-    return _write(&value);
+    return _writeSwap(&value);
   }
 
   std::streamsize write(uint32_t value) {
-    return _write(&value);
+    return _writeSwap(&value);
   }
 
   std::streamsize write(float value) {
-    return _write(&value);
+    return _writeSwap(&value);
   }
 
   std::streamsize write(double value) {
-    return _write(&value);
+    return _writeSwap(&value);
   }
 
   /**
@@ -308,6 +308,14 @@ class DataStream {
   template<typename T>
   std::streamsize _write(T *value, std::streamsize length = sizeof(T)) {
     return vwrite(reinterpret_cast<const char*>(value), length);
+  }
+
+  template<typename T>
+  std::streamsize _writeSwap(T *buffer, std::streamsize length = sizeof(T)) {
+    T data = *buffer;
+    _swap(&data, length);
+    std::streamsize result = _write(&data, length);
+    return result;
   }
 
   template<typename T>

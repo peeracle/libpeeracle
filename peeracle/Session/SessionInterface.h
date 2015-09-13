@@ -25,6 +25,7 @@
 
 #include <map>
 #include <string>
+#include "peeracle/Storage/StorageInterface.h"
 #include "peeracle/Metadata/MetadataInterface.h"
 #include "peeracle/Session/SessionHandleInterface.h"
 #include "peeracle/Session/SessionHandleObserver.h"
@@ -41,6 +42,8 @@ class SessionInterface {
 
   virtual std::map<std::string, PeerInterface *> &getPeers() = 0;
   virtual std::map<std::string, SessionHandleInterface *> &getHandles() = 0;
+
+  virtual StorageInterface *getStorage() = 0;
 
   virtual ~SessionInterface() {}
 };

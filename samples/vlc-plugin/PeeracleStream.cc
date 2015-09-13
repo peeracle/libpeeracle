@@ -47,6 +47,7 @@ bool PeeracleStream::init() {
   _pcr = VLC_TS_0;
   _group = 0;
 
+
   _esOut->pf_add = esOutAdd;
   _esOut->pf_control = esOutControl;
   _esOut->pf_del = esOutDel;
@@ -56,6 +57,10 @@ bool PeeracleStream::init() {
 
   _demuxStream = stream_DemuxNew(_vlc, "mkv", _esOut);
   return _demuxStream != NULL;
+}
+
+void PeeracleStream::PushBlock(block_t *block) {
+  stream_DemuxSend(_demuxStream, block);
 }
 
 PeeracleManagerInterface::Status PeeracleStream::Demux(mtime_t deadline) {
@@ -74,11 +79,29 @@ PeeracleManagerInterface::Status PeeracleStream::Demux(mtime_t deadline) {
     return PeeracleManagerInterface::Status::STATUS_DEMUXED;
   }*/
 
-  return PeeracleManagerInterface::Status::STATUS_BUFFERING;
+  if (deadline + VLC_TS_0 > GetPCR()) {
+    /* need to read, demuxer still buffering, ... */
+    /*if(read(connManager) <= 0)
+      return Stream::status_eof;*/
+
+    if (deadline + VLC_TS_0 > GetPCR()) {
+      return PeeracleManagerInterface::Status::STATUS_BUFFERING;
+    }
+  }
+
+  vlc_mutex_lock(&_lock);
+  sendToDecoderUnlocked(deadline);
+  vlc_mutex_unlock(&_lock);
+
+  return PeeracleManagerInterface::Status::STATUS_DEMUXED;
 }
 
 int64_t PeeracleStream::GetDuration() {
   return static_cast<int64_t>(_metadata->getDuration());
+}
+
+mtime_t PeeracleStream::GetPCR() const {
+  return _pcr;
 }
 
 int PeeracleStream::GetGroup() {
@@ -94,6 +117,17 @@ bool PeeracleStream::IsSeekable() {
 }
 
 bool PeeracleStream::SetPosition(int64_t time) {
+  vlc_mutex_lock(&_lock);
+  std::list<Demuxed *>::const_iterator it;
+  for (it = queues.begin(); it != queues.end(); ++it) {
+    Demuxed *pair = *it;
+    if (pair->p_queue && pair->p_queue->i_dts > VLC_TS_0 + time) {
+      pair->drop();
+    }
+  }
+  _pcr = VLC_TS_0;
+  vlc_mutex_unlock(&_lock);
+  es_out_Control(_vlc->out, ES_OUT_SET_NEXT_DISPLAY_TIME, VLC_TS_0 + time);
   return true;
 }
 
@@ -102,7 +136,7 @@ es_out_id_t *PeeracleStream::esOutAdd(es_out_t *es,
   PeeracleStream *me = reinterpret_cast<PeeracleStream *>(es->p_sys);
   msg_Dbg(me->_vlc, "[Peeracle::esOutAdd] start");
   es_out_id_t *p_es = me->_vlc->out->pf_add(me->_vlc->out, fmt);
-  /*if (p_es) {
+  if (p_es) {
     vlc_mutex_lock(&me->_lock);
     Demuxed *pair = new(std::nothrow) Demuxed();
     if (pair) {
@@ -110,7 +144,7 @@ es_out_id_t *PeeracleStream::esOutAdd(es_out_t *es,
       me->queues.push_back(pair);
     }
     vlc_mutex_unlock(&me->_lock);
-  }*/
+  }
   msg_Dbg(me->_vlc, "[Peeracle::esOutAdd] end");
   return p_es;
 }
@@ -118,38 +152,53 @@ es_out_id_t *PeeracleStream::esOutAdd(es_out_t *es,
 int PeeracleStream::esOutSend(es_out_t *es, es_out_id_t *id, block_t *block) {
   PeeracleStream *me = reinterpret_cast<PeeracleStream *>(es->p_sys);
   msg_Dbg(me->_vlc, "[Peeracle::esOutSend] start");
-  /*vlc_mutex_lock(&me->_lock);
+  vlc_mutex_lock(&me->_lock);
   std::list<Demuxed *>::const_iterator it;
-  for(it=me->queues.begin(); it!=me->queues.end();++it)
-  {
+  for (it = me->queues.begin(); it != me->queues.end(); ++it) {
     Demuxed *pair = *it;
-    if(pair->es_id == p_es)
-    {
-      block_ChainLastAppend(&pair->pp_queue_last, p_block);
+    if (pair->es_id == id) {
+      block_ChainLastAppend(&pair->pp_queue_last, block);
       break;
     }
   }
-  vlc_mutex_unlock(&me->_lock);*/
+  vlc_mutex_unlock(&me->_lock);
   msg_Dbg(me->_vlc, "[Peeracle::esOutSend] end");
   return VLC_SUCCESS;
+}
+
+
+void PeeracleStream::sendToDecoderUnlocked(mtime_t nzdeadline) {
+  std::list<Demuxed *>::const_iterator it;
+  for (it=queues.begin(); it !=queues.end(); ++it) {
+    Demuxed *pair = *it;
+    while (pair->p_queue && pair->p_queue->i_dts <= VLC_TS_0 + nzdeadline) {
+      block_t *p_block = pair->p_queue;
+      pair->p_queue = pair->p_queue->p_next;
+      p_block->p_next = NULL;
+
+      if (pair->pp_queue_last == &p_block->p_next) {
+        pair->pp_queue_last = &pair->p_queue;
+      }
+
+      _vlc->out->pf_send(_vlc->out, pair->es_id, p_block);
+    }
+  }
 }
 
 void PeeracleStream::esOutDel(es_out_t *es, es_out_id_t *id) {
   PeeracleStream *me = reinterpret_cast<PeeracleStream *>(es->p_sys);
   msg_Dbg(me->_vlc, "[Peeracle::esOutDel] start");
-  /*vlc_mutex_lock(&me->lock);
+  vlc_mutex_lock(&me->_lock);
   std::list<Demuxed *>::iterator it;
-  for(it=me->queues.begin(); it!=me->queues.end();++it)
-  {
-    if((*it)->es_id == p_es)
-    {
+  for (it=me->queues.begin(); it != me->queues.end(); ++it) {
+    if ((*it)->es_id == id) {
       me->sendToDecoderUnlocked(INT64_MAX - VLC_TS_0);
       delete *it;
       me->queues.erase(it);
       break;
     }
   }
-  vlc_mutex_unlock(&me->lock);*/
+  vlc_mutex_unlock(&me->_lock);
   me->_vlc->out->pf_del(me->_vlc->out, id);
   msg_Dbg(me->_vlc, "[Peeracle::esOutDel] end");
 }
@@ -175,4 +224,20 @@ void PeeracleStream::esOutDestroy(es_out_t *es) {
   PeeracleStream *me = reinterpret_cast<PeeracleStream *>(es->p_sys);
   msg_Dbg(me->_vlc, "[Peeracle::esOutDestroy]");
   me->_vlc->out->pf_destroy(me->_vlc->out);
+}
+
+PeeracleStream::Demuxed::Demuxed() {
+  p_queue = NULL;
+  pp_queue_last = &p_queue;
+  es_id = NULL;
+}
+
+PeeracleStream::Demuxed::~Demuxed() {
+  drop();
+}
+
+void PeeracleStream::Demuxed::drop() {
+  block_ChainRelease(p_queue);
+  p_queue = NULL;
+  pp_queue_last = &p_queue;
 }

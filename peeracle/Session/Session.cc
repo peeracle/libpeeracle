@@ -149,4 +149,8 @@ std::map<std::string, PeerInterface *> &Session::getPeers() {
   return _peers;
 }
 
+StorageInterface *Session::getStorage() {
+  return _storage;
+}
+
 }  // namespace peeracle

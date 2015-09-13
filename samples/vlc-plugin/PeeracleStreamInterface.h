@@ -31,9 +31,12 @@ class PeeracleStreamInterface {
   virtual PeeracleManagerInterface::Status Demux(mtime_t deadline) = 0;
   virtual int64_t GetDuration() = 0;
   virtual int GetGroup() = 0;
+  virtual mtime_t GetPCR() const = 0;
   virtual bool IsLive() = 0;
   virtual bool IsSeekable() = 0;
   virtual bool SetPosition(int64_t time) = 0;
+
+  virtual void PushBlock(block_t *block) = 0;
 
   virtual ~PeeracleStreamInterface() { }
 };

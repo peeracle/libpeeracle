@@ -20,6 +20,7 @@
  * SOFTWARE.
  */
 
+#include <string.h>
 #include "peeracle/Storage/MemoryStorage.h"
 
 namespace peeracle {
@@ -32,12 +33,30 @@ MemoryStorage::~MemoryStorage() {
 
 bool MemoryStorage::retrieve(const std::string &hash, uint32_t segment,
                              uint32_t offset, uint32_t length, char *dest) {
-  return false;
+  if (_entries.find(hash) == _entries.end()) {
+    return false;
+  }
+
+  if (_entries[hash].find(segment) == _entries[hash].end()) {
+    return false;
+  }
+
+  memcpy(dest, _entries[hash][segment] + offset, length);
+  return true;
 }
 
 bool MemoryStorage::store(const std::string &hash, uint32_t segment,
                           uint32_t offset, uint32_t length, const char *src) {
-  return false;
+  if (_entries.find(hash) == _entries.end()) {
+    _entries[hash] = std::map<uint32_t, char*>();
+  }
+
+  if (_entries[hash].find(segment) == _entries[hash].end()) {
+    _entries[hash][segment] = new char[length];
+  }
+
+  memcpy(_entries[hash][segment] + offset, src, length);
+  return true;
 }
 
 }  // namespace peeracle

@@ -39,7 +39,6 @@
       'sources': [
         'CreateSDPObserver.cc',
         'DataChannelObserver.cc',
-        'Observer.cc',
         'PeerInterface.h',
         'Peer.cc',
         'Peer.h',

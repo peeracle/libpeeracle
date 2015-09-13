@@ -45,7 +45,6 @@ void Peer::PeerImpl::DataChannelObserver::OnStateChange() {
     rtc::Buffer buffer(data, sizeof(data));
     webrtc::DataBuffer dataBuffer(buffer, true);
 
-    std::cout << "SEND MSG NOW" << std::endl;
     this->_dataChannel->Send(dataBuffer);
   }
 }
@@ -57,17 +56,18 @@ void Peer::PeerImpl::DataChannelObserver::OnMessage(
   MemoryDataStream *dataStream = new MemoryDataStream(init);
   PeerMessageInterface *message = new PeerMessage();
 
-  std::cout << "received " << buffer.size() << " bytes" << std::endl;
   dataStream->write(reinterpret_cast<const char*>(buffer.data.data()),
                buffer.size());
   dataStream->seek(0);
 
   if (!message->unserialize(dataStream)) {
+    delete message;
     delete dataStream;
     return;
   }
 
   _observer->onMessage(message, dataStream);
+  delete message;
   delete dataStream;
 }
 

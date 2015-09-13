@@ -47,6 +47,7 @@ class Session
 
   std::map<std::string, PeerInterface *> &getPeers();
   std::map<std::string, SessionHandleInterface *> &getHandles();
+  StorageInterface *getStorage();
 
  private:
   StorageInterface *_storage;

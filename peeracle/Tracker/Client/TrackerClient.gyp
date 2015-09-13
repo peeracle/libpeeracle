@@ -28,16 +28,16 @@
       'target_name': 'peeracle_tracker_client',
       'type': 'static_library',
       'standalone_static_library': 1,
-      'dependencies': [
-        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
-        '../Message/TrackerMessage.gyp:peeracle_tracker_message',
-      ],
       'conditions': [
         ['OS=="win" or OS=="mac" or OS=="linux"', {
           'defines': [
             'USE_LIBWEBSOCKETS',
           ],
         }],
+      ],
+      'dependencies': [
+        '<(DEPTH)/peeracle/WebSocketsClient/WebSocketsClient.gyp:peeracle_websocketsclient',
+        '../Message/TrackerMessage.gyp:peeracle_tracker_message',
       ],
       'sources': [
         'TrackerClient.cc',

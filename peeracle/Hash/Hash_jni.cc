@@ -46,10 +46,19 @@ class JNIHash : public HashInterface {
   void update(const uint8_t *buffer, size_t length) {
   }
 
+  void update(const char *buffer, size_t length) {
+  }
+
   void final(uint8_t *result) {
   }
 
+  void final(char *result) {
+  }
+
   void checksum(DataStream *dataStream, uint8_t *result) {
+  }
+
+  void checksum(DataStream *dataStream, char *result) {
   }
 
   uint32_t getLength() {

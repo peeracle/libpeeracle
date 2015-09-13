@@ -47,7 +47,6 @@ class VLCDataStream
 
  protected:
   stream_t *_stream;
-  bool _bigEndian;
 };
 
 #endif  // SAMPLES_VLC_PLUGIN_VLCDATASTREAM_H_

@@ -24,7 +24,10 @@
 #define PEERACLE_STORAGE_MEMORYSTORAGE_H_
 
 #include <stdint.h>
+
+#include <map>
 #include <string>
+
 #include "peeracle/Storage/StorageInterface.h"
 
 /**
@@ -49,6 +52,9 @@ class MemoryStorage
                 uint32_t length, char *dest);
   bool store(const std::string &hash, uint32_t segment, uint32_t offset,
              uint32_t length, const char *src);
+
+ private:
+  std::map<std::string, std::map<uint32_t, char*>> _entries;
 };
 
 /**

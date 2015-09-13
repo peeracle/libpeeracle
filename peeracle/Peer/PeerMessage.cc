@@ -32,6 +32,7 @@ PeerMessage::PeerMessage(uint8_t type) : _type(type) {
 }
 
 PeerMessage::~PeerMessage() {
+  _keys.clear();
 }
 
 uint8_t PeerMessage::getType() const {
@@ -152,8 +153,6 @@ bool PeerMessage::_serializeRequest(DataStream *dataStream) {
 
   get("segment", &segment, 0);
   get("chunk", &chunk, 0);
-
-  std::cout << "write " << hash << " " << segment << " " << chunk << std::endl;
 
   dataStream->write(hash);
   dataStream->write(segment);

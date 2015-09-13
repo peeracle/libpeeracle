@@ -342,7 +342,7 @@ bool TrackerMessage::_unserializeEnter(DataStream *dataStream) {
   set("got", gotCount);
 
   std::cout << "unserializeEnter " << hash << " " << peer << " " <<
-  reinterpret_cast<void*>(gotCount) << std::endl;
+    gotCount << std::endl;
 
   for (uint32_t i = 0; i < gotCount; ++i) {
     strm.clear();
@@ -350,6 +350,7 @@ bool TrackerMessage::_unserializeEnter(DataStream *dataStream) {
     strm << "got" << i;
     dataStream->read(&got);
     set(strm.str(), got);
+    std::cout << "got" << i << " = " << got << std::endl;
   }
 
   return true;

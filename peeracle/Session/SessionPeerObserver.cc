@@ -72,9 +72,6 @@ void SessionPeerObserver::onDisconnect() {
 void SessionPeerObserver::onChunk(const std::string &hash, uint32_t segment,
                                   uint32_t chunk, uint32_t offset,
                                   uint32_t length, const char *bytes) {
-  std::cout << "[SessionPeerObserver::onChunk] " << segment << " " <<
-    chunk << " " << offset << " " << length << std::endl;
-
   if (!_peer) {
     return;
   }

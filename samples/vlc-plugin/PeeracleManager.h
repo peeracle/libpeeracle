@@ -32,7 +32,8 @@
 #include "samples/vlc-plugin/plugin.h"
 #include "PeeracleStreamInterface.h"
 
-class PeeracleManager : public PeeracleManagerInterface {
+class PeeracleManager : public PeeracleManagerInterface,
+                        peeracle::SessionHandleObserver {
  public:
   explicit PeeracleManager(demux_t *demux);
   ~PeeracleManager();
@@ -40,6 +41,14 @@ class PeeracleManager : public PeeracleManagerInterface {
   bool Init();
   int Control(int i_query, va_list args);
   int Demux();
+
+  void onEnter(peeracle::PeerInterface *peer);
+  void onLeave(peeracle::PeerInterface *peer);
+  void onRequest(peeracle::PeerInterface *peer, uint32_t segment,
+                 uint32_t chunk);
+  void onChunk(peeracle::PeerInterface *peer, uint32_t segment, uint32_t chunk,
+               uint32_t offset, const char *bytes, uint32_t length);
+  void onMediaSegment(uint32_t segment, const char *bytes, uint32_t length);
 
  private:
   bool _initialized;
@@ -49,6 +58,7 @@ class PeeracleManager : public PeeracleManagerInterface {
   peeracle::MetadataInterface *_metadata;
   peeracle::DataStream *_metadataDataStream;
   peeracle::SessionInterface *_session;
+  peeracle::SessionHandleInterface *_sessionHandle;
   peeracle::SessionObserver *_sessionObserver;
   peeracle::SessionHandleObserver *_handleObserver;
   peeracle::StorageInterface *_storage;

@@ -24,6 +24,7 @@
 #define PEERACLE_SESSION_SESSIONHANDLE_H_
 
 #include <string>
+#include <map>
 #include <vector>
 
 #include "peeracle/Peer/PeerInterface.h"
@@ -59,6 +60,7 @@ class SessionHandle
   std::vector<uint32_t> _got;
   MetadataInterface *_metadata;
   std::vector<Request *> _requests;
+  std::map<uint32_t, uint32_t> _done;
 
   void _processRequests();
   void _processRequest(Request *request);

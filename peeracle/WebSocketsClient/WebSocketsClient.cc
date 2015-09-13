@@ -20,7 +20,6 @@
  * SOFTWARE.
  */
 
-#ifdef USE_LIBWESOCKETS
 #include <stdint.h>
 #include <algorithm>
 #include <string>
@@ -145,19 +144,21 @@ int WebSocketsClient::Callback(
 
       client->_messages.pop();
 
-      delete message->buffer;
-      delete message;
+      delete[] message->buffer;
 
       if (n < 0) {
         lwsl_err("ERROR %d writing to socket, hanging up\n", n);
+        delete message;
         return -1;
       }
 
       if (n < static_cast<int>(message->length)) {
         lwsl_err("Partial write\n");
+        delete message;
         return -1;
       }
 
+      delete message;
       break;
     }
     case LWS_CALLBACK_OPENSSL_LOAD_EXTRA_CLIENT_VERIFY_CERTS: {
@@ -190,6 +191,7 @@ bool WebSocketsClient::Init() {
   _protocols[0].name = strdup("prcl-0.0.1");
   _protocols[0].callback = Callback;
   _protocols[0].per_session_data_size = sizeof(struct Userdata);
+  _protocols[0].rx_buffer_size = sizeof(struct Userdata);
 
   _protocols[1].name = NULL;
   _protocols[1].callback = NULL;
@@ -306,4 +308,3 @@ bool WebSocketsClient::Disconnect() {
 }
 
 }  // namespace peeracle
-#endif

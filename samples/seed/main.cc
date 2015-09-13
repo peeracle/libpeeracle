@@ -32,6 +32,7 @@
 #include "peeracle/peeracle.h"
 
 peeracle::Metadata metadata;
+peeracle::MetadataStreamInterface *stream;
 peeracle::Session *session;
 peeracle::SessionHandleInterface *sessionHandle;
 peeracle::StorageInterface *storage;
@@ -63,7 +64,13 @@ class MySessionHandleObserver
                uint32_t offset, const char *bytes, uint32_t length) {
   }
 
-  void onSegment(uint32_t segment, const char *bytes, uint32_t length) {
+  void onMediaSegment(uint32_t segment, const char *bytes, uint32_t length) {
+    std::cout << "onMediaSegment " << segment << " received " << length <<
+    " bytes" << std::endl;
+
+    if (segment + 1 < stream->getMediaSegments().size()) {
+      _handle->requestSegment(segment + 1);
+    }
   }
 
   void setSessionHandle(peeracle::SessionHandleInterface *handle) {
@@ -104,6 +111,7 @@ int main(int argc, char **argv) {
   session = new peeracle::Session(storage, &sessionObserver);
   sessionHandleObserver = new MySessionHandleObserver();
 
+  stream = metadata.getStreams()[0];
   sessionHandle = session->addMetadata(&metadata, sessionHandleObserver);
   sessionHandleObserver->setSessionHandle(sessionHandle);
 

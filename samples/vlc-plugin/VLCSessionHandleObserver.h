@@ -37,6 +37,7 @@ class VLCSessionHandleObserver
                  uint32_t chunk);
   void onChunk(peeracle::PeerInterface *peer, uint32_t segment, uint32_t chunk,
                uint32_t offset, const char *bytes, uint32_t length);
+  void onMediaSegment(uint32_t segment, const char *bytes, uint32_t length);
 
   void setSessionHandle(peeracle::SessionHandleInterface *handle);
 

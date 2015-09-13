@@ -25,8 +25,8 @@
 #include "samples/vlc-plugin/VLCDataStream.h"
 #include "samples/vlc-plugin/plugin.h"
 
-VLCDataStream::VLCDataStream(stream_t *stream) : _stream(stream),
-                                                 _bigEndian(true) {
+VLCDataStream::VLCDataStream(stream_t *stream) : _stream(stream) {
+  this->_bigEndian = true;
 }
 
 std::streamsize VLCDataStream::length() {
@@ -45,7 +45,6 @@ std::streamsize VLCDataStream::vread(char *buffer,
                                     std::streamsize length) {
   return stream_Read(this->_stream, buffer, static_cast<int>(length));
 }
-
 
 std::streamsize VLCDataStream::vpeek(char *buffer, std::streamsize length) {
   int ret;

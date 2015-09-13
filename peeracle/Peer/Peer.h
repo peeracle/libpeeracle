@@ -75,6 +75,8 @@ class Peer
   const std::string &getId() const;
   SessionHandleInterface::Request *getRequest() const;
   void sendRequest(SessionHandleInterface::Request *request);
+  void clearRequest();
+  void cancelRequest();
 
   void processSdp(const std::string &type, const std::string &sdp);
   void processIceCandidate(const std::string &candidate,

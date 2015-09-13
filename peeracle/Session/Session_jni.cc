@@ -36,7 +36,7 @@ class JNIPeer
   JNIPeer(JNIEnv *jni, jobject j_PeerInterface, const std::string &id,
                    TrackerClientInterface *tracker,
                    PeerInterface::Observer *observer)
-    : Peer(id, tracker, observer),
+    : Peer(observer, id, tracker),
       _j_global(jni, j_PeerInterface),
       _j_class(jni, GetObjectClass(jni, j_PeerInterface)) {
   }
@@ -57,6 +57,22 @@ class JNISessionHandleObserver : public SessionHandleObserver {
   }
 
   ~JNISessionHandleObserver() {
+  }
+
+  void onEnter(PeerInterface *peer) {
+  }
+
+  void onLeave(PeerInterface *peer) {
+  }
+
+  void onRequest(PeerInterface *peer, uint32_t segment, uint32_t chunk) {
+  }
+
+  void onChunk(PeerInterface *peer, uint32_t segment, uint32_t chunk,
+               uint32_t offset, const char *bytes, uint32_t length) {
+  }
+
+  void onMediaSegment(uint32_t segment, const char *bytes, uint32_t length) {
   }
 
  private:
@@ -81,8 +97,9 @@ class JNISessionObserver : public SessionObserver {
 
 class JNISession : public Session {
  public:
-  JNISession(JNIEnv *jni, jobject j_Session, SessionObserver *observer)
-    : Session(observer),
+  JNISession(JNIEnv *jni, jobject j_Session, StorageInterface *storage,
+             SessionObserver *observer)
+    : Session(storage, observer),
       _j_global(jni, j_Session),
       _j_class(jni, GetObjectClass(jni, j_Session)) {
   }
@@ -153,8 +170,8 @@ JOPS(jobject, addMetadata)(JNIEnv *jni, jobject j_this, jobject j_metadata,
   jfieldID  fieldId = GetFieldID(jni, sessionHandle_class,
                                  "nativeSessionHandle", "J");
   jobject return_obj = jni->NewObject(sessionHandle_class, init_sessionHandle);
-  SetLongField(jni, return_obj, fieldId,
-               jlongFromPointer(s->addMetadata(m, sessionHandleObserver)));
+  jni->SetLongField(return_obj, fieldId,
+                    jlongFromPointer(s->addMetadata(m, sessionHandleObserver)));
   return return_obj;
 }
 
@@ -185,8 +202,7 @@ JOPS(jobject, getPeers)(JNIEnv *jni, jobject j_this) {
                                    "nativePeer", "J");
     jobject j_peerInterface = jni->NewObject(peerInterface_class,
                                         init_peerInterface);
-    SetLongField(jni, j_peerInterface, fieldId,
-                 jlongFromPointer((*it).second));
+    jni->SetLongField(j_peerInterface, fieldId, jlongFromPointer((*it).second));
     jni->CallBooleanMethod(return_obj, add_map, j_peerInterface);
   }
   return return_obj;
@@ -202,10 +218,14 @@ JOPS(jobject, getHandles)(JNIEnv *, jobject) {
  * Signature: (J)J
  */
 JOPS(jlong, nativeCreateSession)(JNIEnv *jni, jobject j_this,
+                                 jlong j_nativeStorage,
                                  jlong j_nativeObserver) {
+  peeracle::StorageInterface *storage =
+    reinterpret_cast<peeracle::StorageInterface *>(j_nativeStorage);
   peeracle::SessionObserver *observer =
     reinterpret_cast<peeracle::SessionObserver *>(j_nativeObserver);
-  peeracle::Session *session = new peeracle::JNISession(jni, j_this, observer);
+  peeracle::Session *session = new peeracle::JNISession(jni, j_this, storage,
+                                                        observer);
   return jlongFromPointer(session);
 }
 

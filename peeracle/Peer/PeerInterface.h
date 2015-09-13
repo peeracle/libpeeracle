@@ -88,6 +88,8 @@ class PeerInterface {
   virtual const std::string &getId() const = 0;
   virtual SessionHandleInterface::Request *getRequest() const = 0;
   virtual void sendRequest(SessionHandleInterface::Request *request) = 0;
+  virtual void clearRequest() = 0;
+  virtual void cancelRequest() = 0;
 
   virtual void processSdp(const std::string &type, const std::string &sdp) = 0;
   virtual void processIceCandidate(const std::string &candidate,

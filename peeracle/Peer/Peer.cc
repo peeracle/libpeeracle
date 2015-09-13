@@ -185,8 +185,6 @@ void Peer::onIceGatheringChange(int state) {
 }
 
 void Peer::onMessage(PeerMessageInterface *message, DataStream *dataStream) {
-  std::cout << "got message" << std::endl;
-
   int type = message->getType();
 
   switch (type) {
@@ -242,16 +240,12 @@ SessionHandleInterface::Request *Peer::getRequest() const {
 }
 
 void Peer::sendRequest(SessionHandleInterface::Request *request) {
-  std::cout << "[Peer::sendRequest]" << std::endl;
   _request = request;
 
   if (_state == State::Disconnected) {
     CreateOffer(this);
     return;
   }
-
-  std::cout << "[Peer::sendRequest] Send the request NOW " << request->hash <<
-  " " << request->segment << " " << request->chunk << std::endl;
 
   PeerMessageInterface *message =
     new PeerMessage(PeerMessageInterface::kRequest);
@@ -261,6 +255,14 @@ void Peer::sendRequest(SessionHandleInterface::Request *request) {
   message->set("chunk", request->chunk);
 
   _sendMessage(message);
+  delete message;
+}
+
+void Peer::clearRequest() {
+  _request = NULL;
+}
+
+void Peer::cancelRequest() {
 }
 
 void Peer::_sendMessage(PeerMessageInterface *message) {
@@ -276,14 +278,13 @@ void Peer::_sendMessage(PeerMessageInterface *message) {
   length = dataStream->length();
   bytes = new char[length];
 
-  std::cout << "send " << length << " bytes" << std::endl;
   dataStream->read(bytes, length);
   rtc::Buffer buffer(bytes, length);
   webrtc::DataBuffer dataBuffer(buffer, true);
   _peer->_dataChannel->Send(dataBuffer);
 
   delete dataStream;
-  delete bytes;
+  delete[] bytes;
 }
 
 void Peer::processSdp(const std::string &type, const std::string &sdp) {
@@ -298,8 +299,8 @@ void Peer::processSdp(const std::string &type, const std::string &sdp) {
 void Peer::processIceCandidate(const std::string &candidate,
                                const std::string &sdpMid,
                                uint32_t sdpMLineIndex) {
-  AddICECandidate(sdpMid, sdpMLineIndex, candidate);
   std::cout << "[Peer::processIceCandidate]" << std::endl;
+  AddICECandidate(sdpMid, sdpMLineIndex, candidate);
 }
 
 }  // namespace peeracle

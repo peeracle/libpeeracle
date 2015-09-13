@@ -49,6 +49,11 @@
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
         }],
+        ['OS=="android"', {
+          'sources!': [
+            'WebSocketsClient.cc',
+          ]
+        }],
       ],
       'includes': [
         '../../build/lint.gypi',
