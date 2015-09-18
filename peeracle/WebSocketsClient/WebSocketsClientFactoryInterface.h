@@ -20,24 +20,23 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
-#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTFACTORYINTERFACE_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTFACTORYINTERFACE_H_
 
-#include <cstddef>
+#include <string>
+#include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
 
 namespace peeracle {
 
-class WebSocketsClientInterface {
+class WebSocketsClientFactoryInterface {
  public:
-  virtual ~WebSocketsClientInterface() {}
+  virtual ~WebSocketsClientFactoryInterface() {}
 
-  virtual bool Init() = 0;
-  virtual bool Connect() = 0;
-  virtual bool Update() = 0;
-  virtual bool Send(const char *buffer, size_t length) = 0;
-  virtual bool Disconnect() = 0;
+  virtual WebSocketsClientInterface *CreateWebSocketsClient(
+    const std::string& url, WebSocketsClientObserver *observer) = 0;
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTINTERFACE_H_
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTFACTORYINTERFACE_H_

@@ -20,69 +20,45 @@
  * SOFTWARE.
  */
 
-#ifdef WEBRTC_ANDROID
-#include <android/log.h>
-#endif
-
+#include <string.h>
 #include <string>
 
 #include "java/jni/classreferenceholder.h"
 #include "java/jni/jni_helpers.h"
 #include "third_party/webrtc/webrtc/base/logging.h"
-#include "peeracle/WebSocketsClient/WebSocketsClient.h"
-
-class WebSocketsClient;
+#include "peeracle/WebSocketsClient/WebSocketsClient_jni.h"
 
 namespace peeracle {
 
-WebSocketsClient::WebSocketsClient(const std::string &url,
+JNIWebSocketsClient::JNIWebSocketsClient(const std::string &url,
                                    WebSocketsClientObserver *observer)
-  : _url(url), _observer(observer),
-    _j_class(GetEnv(), FindClass(GetEnv(), "org/peeracle/WebSocketsClient")),
+  : _j_class(GetEnv(), FindClass(GetEnv(), "org/peeracle/WebSocketsClient")),
     _j_init(GetMethodID(GetEnv(),  *_j_class, "<init>",
       "(Ljava/lang/String;J)V")),
     _j_global(GetEnv(), GetEnv()->NewObject(*_j_class, _j_init,
       JavaStringFromStdString(GetEnv(), url), jlongFromPointer(observer))) {
-#ifdef WEBRTC_ANDROID
-  __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "ctor");
-#endif
 }
 
-WebSocketsClient::~WebSocketsClient() {
-#ifdef WEBRTC_ANDROID
-  __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "dtor");
-#endif
+JNIWebSocketsClient::~JNIWebSocketsClient() {
 }
 
-bool WebSocketsClient::Init() {
+bool JNIWebSocketsClient::Init() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "init", "()Z");
-
-#ifdef WEBRTC_ANDROID
-  __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Init");
-#endif
   return GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
-bool WebSocketsClient::Connect() {
+bool JNIWebSocketsClient::Connect() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "connect", "()Z");
-
-#ifdef WEBRTC_ANDROID
-  __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Connect");
-#endif
   return  GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
-bool WebSocketsClient::Update() {
+bool JNIWebSocketsClient::Update() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "update", "()Z");
   return GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
-bool WebSocketsClient::Send(const char *buffer, size_t length) {
+bool JNIWebSocketsClient::Send(const char *buffer, size_t length) {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "send", "([BJ)Z");
-#ifdef WEBRTC_ANDROID
-  __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Send");
-#endif
-
   jbyteArray j_byteArray = GetEnv()->NewByteArray(static_cast<jsize>(length));
   jlong j_length = static_cast<jlong>(length);
   GetEnv()->SetByteArrayRegion(j_byteArray, 0, static_cast<jsize>(length),
@@ -95,11 +71,8 @@ bool WebSocketsClient::Send(const char *buffer, size_t length) {
   return ret != 0;
 }
 
-bool WebSocketsClient::Disconnect() {
+bool JNIWebSocketsClient::Disconnect() {
   jmethodID m = GetMethodID(GetEnv(),  *_j_class, "disconnect", "()Z");
-#ifdef WEBRTC_ANDROID
-  __android_log_write(ANDROID_LOG_DEBUG, "WebSocketsClient", "Disconnect");
-#endif
   return GetEnv()->CallBooleanMethod(*_j_global, m);
 }
 
@@ -127,11 +100,6 @@ static peeracle::WebSocketsClientObserver*
 JOPWO(void, onConnect)(JNIEnv *jni, jobject j_this) {
   peeracle::WebSocketsClientObserver *w =
     ExtractNativeWebSocketsClientObserver(jni, j_this);
-
-#ifdef WEBRTC_ANDROID
-  __android_log_print(ANDROID_LOG_DEBUG, "WebSocketsClientObserver::onConnect",
-                      "Call onConnect");
-#endif
   w->onConnect();
 }
 

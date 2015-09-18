@@ -20,53 +20,22 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
-#define PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTFACTORY_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTFACTORY_H_
 
-#include <stdint.h>
 #include <string>
-#include <vector>
-
-#include "peeracle/Tracker/Client/TrackerClientInterface.h"
-#include "peeracle/Tracker/Client/TrackerClientObserver.h"
-#include "peeracle/Tracker/Message/TrackerMessageInterface.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientFactoryInterface.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
 
 namespace peeracle {
 
-class TrackerClient
-  : public TrackerClientInterface {
+class WebSocketsClientFactory : public WebSocketsClientFactoryInterface {
  public:
-  explicit TrackerClient(const std::string &url,
-                         TrackerClientObserver *observer);
-  ~TrackerClient();
-
-  bool Init();
-  bool Connect();
-  bool Update();
-  const std::string &getUrl() const;
-  void announce(const std::string &id, const std::vector<uint32_t> &got);
-  void sendSdp(const std::string &id, const std::string &hash,
-               const std::string &sdp, const std::string &type);
-  void sendIceCandidate(const std::string &id, const std::string &hash,
-                        const std::string &sdpMid, uint32_t sdpMLineIndex,
-                        const std::string &candidate);
-
-  void send(TrackerMessageInterface *message);
-
-  void _send(TrackerMessageInterface *message);
-
- private:
-  const std::string _url;
-
-  TrackerClientObserver *_observer;
-  WebSocketsClientObserver *_webSocketsClientObserver;
-  WebSocketsClientFactoryInterface *_webSocketsClientFactory;
-  WebSocketsClientInterface *_webSocketsClient;
+  WebSocketsClientInterface *CreateWebSocketsClient(const std::string &url,
+    WebSocketsClientObserver *observer);
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_TRACKER_CLIENT_TRACKERCLIENT_H_
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENTFACTORY_H_

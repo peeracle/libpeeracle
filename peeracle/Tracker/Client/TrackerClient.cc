@@ -27,7 +27,7 @@
 #include "peeracle/DataStream/MemoryDataStream.h"
 #include "peeracle/Tracker/Client/TrackerClient.h"
 #include "peeracle/Tracker/Message/TrackerMessage.h"
-#include "peeracle/WebSocketsClient/WebSocketsClient.h"
+#include "peeracle/WebSocketsClient/WebSocketsClientFactory.h"
 
 namespace peeracle {
 
@@ -149,7 +149,9 @@ TrackerClient::TrackerClient(const std::string &url,
   _url(url), _observer(observer) {
   _webSocketsClientObserver = new TrackerWebSocketsClientObserver(this,
                                                                   observer);
-  _webSocketsClient = new WebSocketsClient(url, _webSocketsClientObserver);
+  _webSocketsClientFactory = new WebSocketsClientFactory();
+  _webSocketsClient = _webSocketsClientFactory->CreateWebSocketsClient(url,
+    _webSocketsClientObserver);
 }
 
 TrackerClient::~TrackerClient() {

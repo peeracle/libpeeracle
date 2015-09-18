@@ -71,7 +71,8 @@
         '../peeracle/Session/SessionHandle_jni.cc',
         '../peeracle/Storage/Storage_jni.cc',
         '../peeracle/Tracker/Client/TrackerClient_jni.cc',
-        '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc'
+        '../peeracle/WebSocketsClient/WebSocketsClient_jni.cc',
+        '../peeracle/WebSocketsClient/WebSocketsClient_jni.h'
       ],
       'conditions': [
         ['OS=="android"', {
@@ -80,6 +81,10 @@
             # required symbols will be kept.
             'use_native_jni_exports': 1,
           },
+          'sources': [
+            'jni/WebSocketsClientFactory.cc',
+            'jni/WebSocketsClientFactory.h',
+          ],
         }],
       ],
     },

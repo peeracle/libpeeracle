@@ -20,24 +20,22 @@
  * SOFTWARE.
  */
 
-#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
-#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
+#ifndef PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_JNI_H_
+#define PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_JNI_H_
 
 #include <string>
-#include <queue>
-
-#include "third_party/libwebsockets/lib/libwebsockets.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientInterface.h"
 #include "peeracle/WebSocketsClient/WebSocketsClientObserver.h"
+#include "java/jni/classreferenceholder.h"
+#include "java/jni/jni_helpers.h"
 
 namespace peeracle {
 
-#define MAX_TRACKER_PAYLOAD 32768
-
-class WebSocketsClient : public WebSocketsClientInterface {
+class JNIWebSocketsClient : public WebSocketsClientInterface {
  public:
-  WebSocketsClient(const std::string& url, WebSocketsClientObserver *observer);
-  ~WebSocketsClient();
+  JNIWebSocketsClient(const std::string& url,
+                      WebSocketsClientObserver *observer);
+  ~JNIWebSocketsClient();
 
   bool Init();
   bool Connect();
@@ -46,35 +44,11 @@ class WebSocketsClient : public WebSocketsClientInterface {
   bool Disconnect();
 
  private:
-  const std::string &_url;
-  WebSocketsClientObserver *_observer;
-  bool _connected;
-
-  struct libwebsocket *_wsi;
-  struct libwebsocket_context *_context;
-  struct lws_context_creation_info _info;
-  struct libwebsocket_protocols _protocols[2];
-
-  struct Message {
-    const char *buffer;
-    size_t length;
-  };
-
-  std::queue<Message *> _messages;
-
-  struct Userdata {
-    WebSocketsClient *client;
-    unsigned char buffer[LWS_SEND_BUFFER_PRE_PADDING +
-                         MAX_TRACKER_PAYLOAD +
-                         LWS_SEND_BUFFER_POST_PADDING];
-  } _userData;
-
-  static int Callback(struct libwebsocket_context *context,
-                      struct libwebsocket *wsi,
-                      enum libwebsocket_callback_reasons reason,
-                      void *user, void *in, size_t len);
+  const ScopedGlobalRef<jclass> _j_class;
+  jmethodID _j_init;
+  const ScopedGlobalRef<jobject> _j_global;
 };
 
 }  // namespace peeracle
 
-#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_H_
+#endif  // PEERACLE_WEBSOCKETSCLIENT_WEBSOCKETSCLIENT_JNI_H_

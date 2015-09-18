@@ -30,13 +30,11 @@
       'type': 'static_library',
       'standalone_static_library': 1,
       'sources': [
-        'WebSocketsClient.h',
         'WebSocketsClientInterface.h',
         'WebSocketsClientObserver.h',
-        'WebSocketsClient.cc',
       ],
       'conditions': [
-        ['OS!="android" and OS!="ios"', {
+        ['OS=="win" or OS=="mac" or OS=="linux"', {
           'defines': [
             'USE_LIBWEBSOCKETS',
           ],
@@ -48,10 +46,11 @@
             '<(webrtc_depth)/third_party/boringssl/boringssl.gyp:boringssl',
             '<(DEPTH)/third_party/libwebsockets/libwebsockets.gyp:*',
           ],
-        }],
-        ['OS=="android"', {
-          'sources!': [
+          'sources': [
             'WebSocketsClient.cc',
+            'WebSocketsClient.h',
+            'WebSocketsClientFactory.cc',
+            'WebSocketsClientFactory.h',
           ]
         }],
       ],
