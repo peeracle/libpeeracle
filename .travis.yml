@@ -1,0 +1,20 @@
+language: cpp
+
+before_install:
+- sudo apt-get -qq update
+- sudo apt-get -qq install -y build-essential libglib2.0-dev libgtk2.0-dev libxtst-dev
+  libxss-dev libpci-dev libdbus-1-dev libgconf2-dev libgnome-keyring-dev 
+  libnss3-dev libasound2-dev libpulse-dev libudev-dev
+
+install:
+- unset CC
+- unset CXX
+- export PATH=$PATH:`pwd`/third_party/depot_tools
+- ./gyp_peeracle
+
+script:
+- ninja -C out/Release
+
+notifications:
+  slack:
+    secure: oA3TQMIq6q1wNKa9s5Sp3zJzUlBLk5sk+YR08sGe/OVThlJ6cc9lM83bwNyllt8n4nPD95/v9V3DjiHb64lL0//GpO2FOe3CMQTZ+xkRHtlRQrlVw1iyQEToP6kEq3plI4KEbjptAPWj7mMC50YAmA/RTv0VeQ3Quy7jaQXOldRDdYUouvEx1HJv04BA6/W+nCisP1PA4Dr9FSQfw2caEjOwUh0fPd3R0QUCaneVj67maG1g4UVz2ajNnGBKwk0FCtbZr7pGpjZidhSx0T24ljS+DQf/S+SX5gduaAuZlI3czA/hRB4Xjds1P0J9j8KVGOw9+Zc7kWECKbSCvrEyY1i1ydAgDm29B9qjLdo4jE98xKc4oPlBNhp30GBZPf64Yqe2VwoDvCoe70133aIc+933AEcNp2qY9wCnJ3BDoVSdMzOp7ChPnaK0XKIx5PL39jzvdjfsdKvmKSEzKp2CvX5Yj2dvrKSO5JrWl5CIMVj+37P3LP6/YV6awY4/JYDFWv5DS36I1IrbkR32cJHNFWvBsPGC2eFRXggLykJlMMGQeGRdZ0J5jh69Y1WgG/S7u/EdonIkGyP5pX7e/3xbRzZqPH1vix6DyHJcY+5HvZ9SqIJUeoOc+uSaHyV2ZwQKexmaczZap32E0iHXQ44UCfL49kczcbK2v+G9VBgqfik=
